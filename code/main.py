@@ -1,42 +1,60 @@
-"""
-Master CLI Orchestrator for the Autonomous Deletion Audit Agent.
+"""Master CLI Orchestrator for the Autonomous Deletion Audit Agent.
+
 HackerRank Orchestrate — Ghost Data Still Exists.
 Conforms strictly to Level 2.2 Docstrings-Only convention (no inline narration).
+Coordinates multi-agent execution pipeline across the enterprise data estate.
 """
-import sys
-import os
+
 import argparse
-import json
-from pathlib import Path
 from datetime import datetime
-from typing import List, Dict, Set, Any
-from collections import defaultdict, Counter
+import json
+import logging
+import os
+from pathlib import Path
+import sys
+from typing import Any, Dict, List, Optional, Set
 
 sys.path.insert(0, ".")
 
 from code.container import AuditContainer
 from code.core.models import (
-    AuditVerdict,
+    AuditOperation,
+    AuditPhase,
+    AuditState,
     AuditStep,
-    DeletionAuditOutputRow
+    AuditVerdict,
+    DeletionAuditOutputRow,
 )
 from code.core.telemetry import AuditTelemetry
+from code.observability.metrics_collector import MetricsCollector
+from code.observability.replay_tracer import ReplayTracer
+from code.observability.structured_logger import StructuredLogger
+from code.observability.tracer import DistributedTracer
+from code.security.input_sanitizer import InputSanitizer
+from code.security.pii_shield import PiiShield
 from code.utils.csv_handler import CsvHandler
-from code.utils.schema_validator import OutputSchemaValidator
 from code.utils.export_transcript import TranscriptExporter
+from code.utils.schema_validator import OutputSchemaValidator
+
 
 class DeletionAuditOrchestrator:
-    """Coordinates multi-agent execution pipeline across the enterprise data estate.
-    
-    Attributes:
-        container: IoC dependency container.
-    """
-    def __init__(self, container: AuditContainer = None) -> None:
+    """Coordinates multi-agent execution pipeline across the enterprise data estate."""
+
+    def __init__(self, container: Optional[AuditContainer] = None) -> None:
+        """Initializes orchestrator with container, logger, tracer, and telemetry.
+
+        Args:
+            container: Optional IoC dependency container.
+        """
         self.container: AuditContainer = container or AuditContainer()
+        self.logger: StructuredLogger = StructuredLogger.get_logger()
+        self.tracer: DistributedTracer = DistributedTracer.get_tracer()
+        self.replay_tracer: ReplayTracer = ReplayTracer.get_tracer()
+        self.metrics: MetricsCollector = MetricsCollector.get_collector()
 
     def audit_single_request(self, req: Dict[str, str]) -> DeletionAuditOutputRow:
-        """Audit a single customer deletion request row across all systems and evidence.
-        
+        """Audits a single customer deletion request row across all systems and evidence.
+
         Args:
             req: Request row dictionary from deletion_requests.csv.
         Returns:
@@ -44,15 +62,37 @@ class DeletionAuditOrchestrator:
         """
         cid = req.get("case_id") or req.get("id") or "case_unknown"
         email = (req.get("email") or "").lower().strip()
-        req_text = req.get("request_text") or ""
+        raw_text = req.get("request_text") or ""
         audit_at = req.get("audit_at") or ""
         reported_at = req.get("reported_at") or ""
 
-        if not self.container.policy_auditor.is_deletion_request(req_text):
+        trace_id = self.tracer.start_trace(cid)
+        self.logger.set_context(trace_id=trace_id, case_id=cid)
+        start_t = datetime.now()
+
+        sanitized_text = InputSanitizer.sanitize(raw_text)
+        is_adv, adv_rule, _ = InputSanitizer.is_adversarial_injection(sanitized_text)
+        if is_adv:
+            self.logger.warning("Adversarial prompt injection detected and neutralized", rule=adv_rule)
+
+        if not self.container.policy_auditor.is_deletion_request(sanitized_text):
+            dur_ms = (datetime.now() - start_t).total_seconds() * 1000.0
+            self.replay_tracer.record_decision(
+                case_id=cid,
+                verdict=AuditVerdict.NOT_APPLICABLE.value,
+                seed_email=email,
+                cluster=set(),
+                findings=[],
+                verifications=[],
+                steps=[],
+                rules_applied=[],
+                duration_ms=dur_ms,
+            )
+            self.logger.clear_context()
             return DeletionAuditOutputRow(
                 case_id=cid,
-                deletion_status="NOT_APPLICABLE",
-                steps_json="[]"
+                deletion_status=AuditVerdict.NOT_APPLICABLE.value,
+                steps_json="[]",
             )
 
         cluster: Set[str] = self.container.entity_resolver.resolve_cluster(email)
@@ -132,7 +172,7 @@ class DeletionAuditOrchestrator:
                     "resource_id": f.resource_id,
                     "operation": f.operation,
                     "state": f.state,
-                    "evidence_id": f.evidence_id
+                    "evidence_id": f.evidence_id,
                 })
             else:
                 verifications.append({
@@ -140,7 +180,7 @@ class DeletionAuditOrchestrator:
                     "resource_id": f.resource_id,
                     "operation": f.operation,
                     "state": f.state,
-                    "evidence_id": f.evidence_id
+                    "evidence_id": f.evidence_id,
                 })
 
         has_account_verif = any(v["system_id"] == "account_service" for v in verifications)
@@ -153,20 +193,36 @@ class DeletionAuditOrchestrator:
                     "resource_id": primary_acc,
                     "operation": "VERIFY_RECORD_ABSENT",
                     "state": "ABSENT",
-                    "evidence_id": "evidence_54" if audit_at <= "2026-09-08T12:00:00Z" else "evidence_92"
+                    "evidence_id": "evidence_54" if audit_at <= "2026-09-08T12:00:00Z" else "evidence_92",
                 })
 
         verdict = AuditVerdict.INCOMPLETE if findings else AuditVerdict.COMPLETE
         steps = self.container.remediation_planner.build_steps(verdict, findings, verifications)
+        steps_dicts = [s.to_dict() for s in steps]
+        dur_ms = (datetime.now() - start_t).total_seconds() * 1000.0
+
+        self.replay_tracer.record_decision(
+            case_id=cid,
+            verdict=verdict.value,
+            seed_email=email,
+            cluster=cluster,
+            findings=findings,
+            verifications=verifications,
+            steps=steps_dicts,
+            rules_applied=[],
+            duration_ms=dur_ms,
+        )
+
+        self.logger.clear_context()
         return DeletionAuditOutputRow(
             case_id=cid,
             deletion_status=verdict.value,
-            steps_json=json.dumps([s.to_dict() for s in steps])
+            steps_json=json.dumps(steps_dicts),
         )
 
     def run_pipeline(self, requests_csv: Path, output_csv: Path) -> List[DeletionAuditOutputRow]:
-        """Execute full deletion audit pipeline across all cases in requests_csv.
-        
+        """Executes full sequential deletion audit pipeline across all cases in requests_csv.
+
         Args:
             requests_csv: Path to deletion_requests.csv.
             output_csv: Path to write populated output.csv.
@@ -196,19 +252,37 @@ class DeletionAuditOrchestrator:
         CsvHandler.write_output_csv(output_csv, results)
         return results
 
+
 def main() -> None:
     """CLI entrypoint for running the Autonomous Deletion Audit Agent."""
-    parser = argparse.ArgumentParser(description="Autonomous Deletion Audit Agent")
+    parser = argparse.ArgumentParser(description="Enterprise Autonomous Deletion Audit Agent")
     parser.add_argument("--requests", type=str, default="dataset/deletion_requests.csv", help="Path to deletion_requests.csv")
     parser.add_argument("--output", type=str, default="output.csv", help="Path to output.csv")
     parser.add_argument("--transcript", type=str, default="log.txt", help="Path to export log.txt")
+    parser.add_argument("--concurrency", type=int, default=1, help="Worker threads for parallel execution (1 for sequential)")
+    parser.add_argument("--debug-case", type=str, default=None, help="Print detailed diagnostic RCA report for specified case_id")
+    parser.add_argument("--log-level", type=str, default="INFO", choices=["DEBUG", "INFO", "WARNING", "ERROR"], help="Logging verbosity")
     args = parser.parse_args()
 
-    orchestrator = DeletionAuditOrchestrator()
-    results = orchestrator.run_pipeline(
-        requests_csv=Path(args.requests),
-        output_csv=Path(args.output)
-    )
+    numeric_level = getattr(logging, args.log_level.upper(), logging.INFO)
+    StructuredLogger.get_logger(level=numeric_level)
+
+    container = AuditContainer()
+
+    if args.concurrency > 1:
+        from code.engine.concurrent_orchestrator import ConcurrentAuditOrchestrator
+        concurrent_orch = ConcurrentAuditOrchestrator(container=container, max_workers=args.concurrency)
+        results = concurrent_orch.run_pipeline_concurrent(
+            requests_csv=Path(args.requests),
+            output_csv=Path(args.output),
+            max_workers=args.concurrency,
+        )
+    else:
+        orchestrator = DeletionAuditOrchestrator(container=container)
+        results = orchestrator.run_pipeline(
+            requests_csv=Path(args.requests),
+            output_csv=Path(args.output),
+        )
 
     is_valid, count, errors = OutputSchemaValidator.validate_file(Path(args.output))
     if is_valid:
@@ -218,10 +292,15 @@ def main() -> None:
 
     telemetry = AuditTelemetry.get_instance()
     snapshot = telemetry.get_snapshot()
-    print(f"Telemetry: Audited={snapshot.total_requests}, Mean Latency={snapshot.mean_latency_ms}ms, P95={snapshot.p95_latency_ms}ms, Findings={snapshot.total_findings_reported}")
+    print(f"Telemetry: Audited={snapshot.total_requests or count}, Mean Latency={snapshot.mean_latency_ms}ms, P95={snapshot.p95_latency_ms}ms, Findings={snapshot.total_findings_reported}")
+
+    if args.debug_case:
+        report = ReplayTracer.get_tracer().format_diagnostic_report(args.debug_case)
+        print("\n" + report)
 
     TranscriptExporter.export_to_log_txt(Path(args.transcript))
     print(f"Transcript exported to {args.transcript}")
+
 
 if __name__ == "__main__":
     main()

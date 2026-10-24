@@ -8,6 +8,7 @@ from collections import Counter
 from dataclasses import dataclass, field
 import json
 import logging
+import threading
 import time
 from typing import Any, Optional
 
@@ -33,6 +34,7 @@ class AuditTelemetry:
 
     def __init__(self) -> None:
         """Initializes empty telemetry accumulators and counters."""
+        self._lock = threading.Lock()
         self._request_counter: int = 0
         self._status_counts: Counter[str] = Counter()
         self._latencies_ms: list[float] = []
@@ -73,11 +75,12 @@ class AuditTelemetry:
             findings_count: Number of non-compliant findings discovered.
             remediations_count: Number of corrective remediation steps scheduled.
         """
-        self._request_counter += 1
-        self._status_counts[status] += 1
-        self._latencies_ms.append(duration_ms)
-        self._total_findings += findings_count
-        self._total_remediations += remediations_count
+        with self._lock:
+            self._request_counter += 1
+            self._status_counts[status] += 1
+            self._latencies_ms.append(duration_ms)
+            self._total_findings += findings_count
+            self._total_remediations += remediations_count
 
     def compute_percentiles(self) -> tuple[float, float, float, float]:
         """Calculates mean, 50th, 95th, and 99th latency percentiles.
@@ -85,18 +88,19 @@ class AuditTelemetry:
         Returns:
             A tuple containing (mean, p50, p95, p99) latencies in milliseconds.
         """
-        if not self._latencies_ms:
-            return 0.0, 0.0, 0.0, 0.0
+        with self._lock:
+            if not self._latencies_ms:
+                return 0.0, 0.0, 0.0, 0.0
 
-        sorted_latencies = sorted(self._latencies_ms)
-        n = len(sorted_latencies)
-        mean_val = sum(sorted_latencies) / n
+            sorted_latencies = sorted(self._latencies_ms)
+            n = len(sorted_latencies)
+            mean_val = sum(sorted_latencies) / n
 
-        def get_percentile(p: float) -> float:
-            idx = int(p * n)
-            return sorted_latencies[min(idx, n - 1)]
+            def get_percentile(p: float) -> float:
+                idx = int(p * n)
+                return sorted_latencies[min(idx, n - 1)]
 
-        return mean_val, get_percentile(0.50), get_percentile(0.95), get_percentile(0.99)
+            return mean_val, get_percentile(0.50), get_percentile(0.95), get_percentile(0.99)
 
     def get_snapshot(self) -> TelemetrySnapshot:
         """Constructs an immutable TelemetrySnapshot summarizing aggregate metrics.
@@ -105,16 +109,17 @@ class AuditTelemetry:
             A populated TelemetrySnapshot instance.
         """
         mean_l, p50_l, p95_l, p99_l = self.compute_percentiles()
-        return TelemetrySnapshot(
-            total_requests=self._request_counter,
-            status_distribution=dict(self._status_counts),
-            mean_latency_ms=round(mean_l, 2),
-            p50_latency_ms=round(p50_l, 2),
-            p95_latency_ms=round(p95_l, 2),
-            p99_latency_ms=round(p99_l, 2),
-            total_findings_reported=self._total_findings,
-            total_remediations_scheduled=self._total_remediations,
-        )
+        with self._lock:
+            return TelemetrySnapshot(
+                total_requests=self._request_counter,
+                status_distribution=dict(self._status_counts),
+                mean_latency_ms=round(mean_l, 2),
+                p50_latency_ms=round(p50_l, 2),
+                p95_latency_ms=round(p95_l, 2),
+                p99_latency_ms=round(p99_l, 2),
+                total_findings_reported=self._total_findings,
+                total_remediations_scheduled=self._total_remediations,
+            )
 
     def to_json(self) -> str:
         """Serializes aggregate telemetry snapshot into a JSON string.

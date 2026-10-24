@@ -43,6 +43,11 @@ class SubmissionPackager:
             if readme_path.exists():
                 zf.write(readme_path, arcname="README.md")
                 file_count += 1
+            eval_dir = code_dir.parent / "evaluation"
+            if eval_dir.exists():
+                for ev_file in eval_dir.glob("*.md"):
+                    zf.write(ev_file, arcname=f"evaluation/{ev_file.name}")
+                    file_count += 1
             for file_path in code_dir.rglob("*"):
                 if file_path.is_file():
                     path_str = str(file_path)
