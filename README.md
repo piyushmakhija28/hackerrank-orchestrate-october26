@@ -124,7 +124,9 @@ Following submission, participants enter a **30-minute AI Judge Voice Interview*
    - **Entity Resolution Logic:** How you handled ambiguous or transitive identifiers across disparate datasets.
    - **Safety & Anti-Hallucination:** How you verified that the LLM did not hallucinate ghost records or suggest dangerous drop-table remediation steps.
    - **Trade-offs:** How you balanced privacy erasure (GDPR) with legal tax retention policies.
+   - **AI Optimization & Token Engineering:** How you implemented calibrated BPE budgeting, fact fingerprinting, and dense serialization ($\ge 68\%$ token compression).
    - **AI Collaboration:** How you leveraged AI coding assistants during the build process (as shown in `log.txt`).
+4. **Complete 25-Question Defense Compendium:** See [Master AI Judge Voice Interview Defense Guide](docs/ai_judge_interview_prep.md) for 25 technical scenarios across 6 pillars, PREP framework responses, fast-recall numbers, and 5 adversarial trap question defenses.
 
 ---
 
@@ -337,7 +339,7 @@ The engineering and mathematical foundations are documented in `docs/`:
 - **[Formal Mathematical Proofs](docs/formal_mathematical_proofs.md):** Rigorous proofs for Theorems 1–4 (DSU inverse Ackermann complexity $\mathcal{O}(M \alpha(N))$, Poset DAG topological sort acyclicity, Hoare logic anti-hallucination grounding $\{P\} \mathcal{A} \{Q\}$, and Little's Law queueing stability).
 - **[Performance & Scale Analysis](docs/performance_and_scale_analysis.md):** Memory footprint analysis, ephemeral in-memory SQLite indexing, and Kingman's heavy-traffic approximation.
 - **[Anti-Hallucination & Evidence Grounding](docs/anti_hallucination_and_grounding.md):** Evidence grounding invariants, non-erasure request elimination, and dual-verification bijectivity ($P(\text{Hallucination}) = 0$).
-- **[AI Voice Interview Defense Guide](docs/ai_judge_interview_prep.md):** 30-minute voice interview preparation defending architecture, entity resolution, statutory retention, and race conditions.
+- **[AI Voice Interview Defense Guide](docs/ai_judge_interview_prep.md):** Exhaustive 25-question interview defense compendium covering multi-agent architecture, entity resolution, statutory retention, poset DAG scheduling, token optimization, anti-hallucination proofs, and 5 rapid-fire trap questions.
 
 ---
 
