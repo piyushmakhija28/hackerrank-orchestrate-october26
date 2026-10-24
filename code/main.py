@@ -20,6 +20,7 @@ from code.core.models import (
     AuditStep,
     DeletionAuditOutputRow
 )
+from code.core.telemetry import AuditTelemetry
 from code.utils.csv_handler import CsvHandler
 from code.utils.schema_validator import OutputSchemaValidator
 from code.utils.export_transcript import TranscriptExporter
@@ -174,10 +175,23 @@ class DeletionAuditOrchestrator:
         """
         requests = CsvHandler.read_csv_safe(requests_csv)
         results: List[DeletionAuditOutputRow] = []
+        telemetry = AuditTelemetry.get_instance()
 
         for req in requests:
+            start_t = datetime.now()
             row_result = self.audit_single_request(req)
+            dur_ms = (datetime.now() - start_t).total_seconds() * 1000.0
             results.append(row_result)
+            steps_data = json.loads(row_result.steps_json)
+            findings_count = sum(1 for s in steps_data if s.get("phase") == "FINDING")
+            remediations_count = sum(1 for s in steps_data if s.get("phase") == "REMEDIATION")
+            telemetry.record_case_audit(
+                case_id=row_result.case_id,
+                status=row_result.deletion_status,
+                duration_ms=dur_ms,
+                findings_count=findings_count,
+                remediations_count=remediations_count,
+            )
 
         CsvHandler.write_output_csv(output_csv, results)
         return results
@@ -201,6 +215,10 @@ def main() -> None:
         print(f"Successfully audited {count} requests. Output verified: {args.output}")
     else:
         print(f"Audit completed with schema warnings ({len(errors)}): {errors[:5]}")
+
+    telemetry = AuditTelemetry.get_instance()
+    snapshot = telemetry.get_snapshot()
+    print(f"Telemetry: Audited={snapshot.total_requests}, Mean Latency={snapshot.mean_latency_ms}ms, P95={snapshot.p95_latency_ms}ms, Findings={snapshot.total_findings_reported}")
 
     TranscriptExporter.export_to_log_txt(Path(args.transcript))
     print(f"Transcript exported to {args.transcript}")

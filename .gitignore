@@ -23,4 +23,5 @@ Thumbs.db
 logs/
 *.log
 scratch/
+submission/
 .pytest_cache/

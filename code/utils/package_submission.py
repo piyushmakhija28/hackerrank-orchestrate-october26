@@ -39,6 +39,10 @@ class SubmissionPackager:
         file_count = 0
 
         with zipfile.ZipFile(zip_output, mode="w", compression=zipfile.ZIP_DEFLATED) as zf:
+            readme_path = code_dir.parent / "README.md"
+            if readme_path.exists():
+                zf.write(readme_path, arcname="README.md")
+                file_count += 1
             for file_path in code_dir.rglob("*"):
                 if file_path.is_file():
                     path_str = str(file_path)

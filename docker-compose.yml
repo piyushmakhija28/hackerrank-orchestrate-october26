@@ -1,0 +1,14 @@
+services:
+  audit-agent:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: northstar/deletion-audit-agent:latest
+    container_name: northstar-deletion-audit-agent
+    volumes:
+      - ./dataset:/app/dataset:ro
+      - ./output.csv:/app/output.csv:rw
+      - ./log.txt:/app/log.txt:rw
+    environment:
+      - PYTHONUNBUFFERED=1
+    command: ["--requests", "dataset/deletion_requests.csv", "--output", "output.csv"]

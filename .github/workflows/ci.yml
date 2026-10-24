@@ -1,0 +1,41 @@
+name: CI/CD Deletion Audit Quality Gate
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test-and-validate:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.12", "3.13"]
+
+    steps:
+      - name: Checkout Code Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: 'pip'
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Execute Full Pytest Test Suite
+        run: |
+          python -m pytest tests/ -v
+
+      - name: Validate Production Output Schema
+        run: |
+          python -c "from code.utils.schema_validator import OutputSchemaValidator; from pathlib import Path; assert OutputSchemaValidator.validate_file(Path('output.csv'))[0], 'Schema validation failed'"
+
+      - name: Package Official Submission Zip
+        run: |
+          python scratch/package_submission.py || python code/utils/package_submission.py

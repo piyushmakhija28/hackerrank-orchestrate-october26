@@ -1,0 +1,117 @@
+<mxfile host="app.diagrams.net" modified="2026-10-24T14:40:00.000Z" agent="Antigravity Multi-Agent Runtime" version="24.7.17" type="device">
+  <diagram id="deletion-audit-architecture" name="Enterprise Deletion Audit Architecture">
+    <mxGraphModel dx="1422" dy="794" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        
+        <!-- Canvas Header -->
+        <mxCell id="hdr" value="&lt;b&gt;Northstar Shop — Autonomous Deletion Audit Agent Architecture&lt;/b&gt;&lt;br&gt;HackerRank Orchestrate (October 2026) | Claude Global Library Orchestration (25 Subagents)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1e293b;strokeColor=#0f172a;fontColor=#ffffff;fontSize=18;align=center;" vertex="1" parent="1">
+          <mxGeometry x="100" y="30" width="1400" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Squad 0: Governance & Orchestration Spine -->
+        <mxCell id="g_squad0" value="0. Orchestration Spine &amp; Verification Gates" style="swimlane;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#3b82f6;fontColor=#1e3a8a;fontSize=14;fontStyle=1;startSize=30;" vertex="1" parent="1">
+          <mxGeometry x="100" y="110" width="320" height="420" as="geometry" />
+        </mxCell>
+        <mxCell id="ag_orch" value="&lt;b&gt;orchestrator-agent&lt;/b&gt;&lt;br&gt;Workflow Master Orchestrator" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#2563eb;fontColor=#1e40af;fontSize=11;" vertex="1" parent="g_squad0">
+          <mxGeometry x="20" y="45" width="280" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="ag_d21" value="&lt;b&gt;harness-engineering-architect (D21)&lt;/b&gt;&lt;br&gt;Evaluation Harness &amp; Stopping Gates" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#2563eb;fontColor=#1e40af;fontSize=11;" vertex="1" parent="g_squad0">
+          <mxGeometry x="20" y="110" width="280" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="ag_d22" value="&lt;b&gt;context-faithfulness-engineer (D22)&lt;/b&gt;&lt;br&gt;Zero-Hallucination &amp; Grounding Gates" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#2563eb;fontColor=#1e40af;fontSize=11;" vertex="1" parent="g_squad0">
+          <mxGeometry x="20" y="175" width="280" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="ag_d23" value="&lt;b&gt;impact-analysis-agent (D23)&lt;/b&gt;&lt;br&gt;Cross-System Invariant Enforcer" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#2563eb;fontColor=#1e40af;fontSize=11;" vertex="1" parent="g_squad0">
+          <mxGeometry x="20" y="240" width="280" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="ag_sec" value="&lt;b&gt;cloud-security-architect&lt;/b&gt;&lt;br&gt;Non-Root OCI Security &amp; Secrets Hygiene" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#2563eb;fontColor=#1e40af;fontSize=11;" vertex="1" parent="g_squad0">
+          <mxGeometry x="20" y="305" width="280" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Squad 1: Performance & Distributed Scale Squad -->
+        <mxCell id="g_squad1" value="1. Performance &amp; Scale Engineering Squad" style="swimlane;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#10b981;fontColor=#065f46;fontSize=14;fontStyle=1;startSize=30;" vertex="1" parent="1">
+          <mxGeometry x="460" y="110" width="320" height="420" as="geometry" />
+        </mxCell>
+        <mxCell id="ag_pte" value="&lt;b&gt;performance-testing-engineer&lt;/b&gt;&lt;br&gt;Sub-20ms SLA &amp; Throughput Profiling" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d1fae5;strokeColor=#059669;fontColor=#064e3b;fontSize=11;" vertex="1" parent="g_squad1">
+          <mxGeometry x="20" y="45" width="280" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="ag_dse" value="&lt;b&gt;database-storage-engineer&lt;/b&gt;&lt;br&gt;In-Memory SQLite Relational Dumps (:memory:)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d1fae5;strokeColor=#059669;fontColor=#064e3b;fontSize=11;" vertex="1" parent="g_squad1">
+          <mxGeometry x="20" y="110" width="280" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="ag_dsme" value="&lt;b&gt;distributed-systems-mathematics-expert&lt;/b&gt;&lt;br&gt;CDC Sync &amp; Race Condition Modeling" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d1fae5;strokeColor=#059669;fontColor=#064e3b;fontSize=11;" vertex="1" parent="g_squad1">
+          <mxGeometry x="20" y="175" width="280" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="ag_aca" value="&lt;b&gt;algorithm-complexity-analyst&lt;/b&gt;&lt;br&gt;DSU O(α(N)) Amortized Bounds Proof" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d1fae5;strokeColor=#059669;fontColor=#064e3b;fontSize=11;" vertex="1" parent="g_squad1">
+          <mxGeometry x="20" y="240" width="280" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="ag_sre" value="&lt;b&gt;sre-mathematics-expert&lt;/b&gt;&lt;br&gt;Little&#39;s Law Queueing &amp; Prometheus Telemetry" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d1fae5;strokeColor=#059669;fontColor=#064e3b;fontSize=11;" vertex="1" parent="g_squad1">
+          <mxGeometry x="20" y="305" width="280" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Squad 2: Formal Mathematics & Proof Squad -->
+        <mxCell id="g_squad2" value="2. Formal Mathematics &amp; Proof Squad" style="swimlane;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#8b5cf6;fontColor=#5b21b6;fontSize=14;fontStyle=1;startSize=30;" vertex="1" parent="1">
+          <mxGeometry x="820" y="110" width="320" height="420" as="geometry" />
+        </mxCell>
+        <mxCell id="ag_fmme" value="&lt;b&gt;formal-methods-mathematics-expert&lt;/b&gt;&lt;br&gt;Hoare Logic Invariants: {P} Audit {Q}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ede9fe;strokeColor=#7c3aed;fontColor=#4c1d95;fontSize=11;" vertex="1" parent="g_squad2">
+          <mxGeometry x="20" y="45" width="280" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="ag_geme" value="&lt;b&gt;graph-engineering-mathematics-expert&lt;/b&gt;&lt;br&gt;Poset DAG Topological Sort Acyclicity" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ede9fe;strokeColor=#7c3aed;fontColor=#4c1d95;fontSize=11;" vertex="1" parent="g_squad2">
+          <mxGeometry x="20" y="110" width="280" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="ag_ahm" value="&lt;b&gt;anti-hallucination-mathematician&lt;/b&gt;&lt;br&gt;P(Hallucination) = 0 Grounding Bounds" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ede9fe;strokeColor=#7c3aed;fontColor=#4c1d95;fontSize=11;" vertex="1" parent="g_squad2">
+          <mxGeometry x="20" y="175" width="280" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="ag_me" value="&lt;b&gt;mathematics-engineer&lt;/b&gt;&lt;br&gt;Kingman Heavy-Traffic Queue Modeling" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ede9fe;strokeColor=#7c3aed;fontColor=#4c1d95;fontSize=11;" vertex="1" parent="g_squad2">
+          <mxGeometry x="20" y="240" width="280" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="ag_tme" value="&lt;b&gt;testing-mathematics-expert&lt;/b&gt;&lt;br&gt;Triad Coverage Completeness Proof" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ede9fe;strokeColor=#7c3aed;fontColor=#4c1d95;fontSize=11;" vertex="1" parent="g_squad2">
+          <mxGeometry x="20" y="305" width="280" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Squad 3: Multi-Agent Processing Pipeline -->
+        <mxCell id="g_squad3" value="3. Autonomous Multi-Agent Core Engine (code/agent/)" style="swimlane;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#f59e0b;fontColor=#b45309;fontSize=14;fontStyle=1;startSize=30;" vertex="1" parent="1">
+          <mxGeometry x="1180" y="110" width="320" height="420" as="geometry" />
+        </mxCell>
+        <mxCell id="ag_ir" value="&lt;b&gt;IdentityResolver (identity_resolver.py)&lt;/b&gt;&lt;br&gt;DSU Path Compression &amp; Alias Clustering" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#d97706;fontColor=#78350f;fontSize=11;" vertex="1" parent="g_squad3">
+          <mxGeometry x="20" y="45" width="280" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="ag_mmi" value="&lt;b&gt;MultimodalInspector (multimodal_inspector.py)&lt;/b&gt;&lt;br&gt;Inverted Index, SQL Tables &amp; OCR Engine" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#d97706;fontColor=#78350f;fontSize=11;" vertex="1" parent="g_squad3">
+          <mxGeometry x="20" y="110" width="280" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="ag_lt" value="&lt;b&gt;LineageTracer (lineage_tracer.py)&lt;/b&gt;&lt;br&gt;CDC Streams &amp; Temporal Restore Detection" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#d97706;fontColor=#78350f;fontSize=11;" vertex="1" parent="g_squad3">
+          <mxGeometry x="20" y="175" width="280" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="ag_pa" value="&lt;b&gt;PolicyAuditor (policy_auditor.py)&lt;/b&gt;&lt;br&gt;GDPR Art. 17 vs. 7-Yr Statutory Retention" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#d97706;fontColor=#78350f;fontSize=11;" vertex="1" parent="g_squad3">
+          <mxGeometry x="20" y="240" width="280" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="ag_rp" value="&lt;b&gt;RemediationPlanner (remediation_planner.py)&lt;/b&gt;&lt;br&gt;Poset 15-Rank Sorter &amp; Dual Verification" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#d97706;fontColor=#78350f;fontSize=11;" vertex="1" parent="g_squad3">
+          <mxGeometry x="20" y="305" width="280" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Lower Section: Ingestion, Pipeline Execution & Outputs -->
+        <mxCell id="box_inputs" value="&lt;b&gt;Enterprise Input Datastores (dataset/)&lt;/b&gt;&lt;br&gt;• deletion_requests.csv (518 Cases)&lt;br&gt;• user_identities.csv &amp; user_audit_log.csv&lt;br&gt;• system_activity.csv (Global CDC Stream)&lt;br&gt;• evidence_files.csv &amp; dataset/evidence/ (94 files)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f1f5f9;strokeColor=#64748b;fontColor=#334155;fontSize=12;align=left;spacingLeft=15;" vertex="1" parent="1">
+          <mxGeometry x="100" y="560" width="400" height="150" as="geometry" />
+        </mxCell>
+
+        <mxCell id="box_pipe" value="&lt;b&gt;Execution Flow &amp; Poset Invariant&lt;/b&gt;&lt;br&gt;1. Non-Erasure Detection: NOT_APPLICABLE short-circuit&lt;br&gt;2. DSU Transitive Resolution: emails, user_ids, phones, hashes&lt;br&gt;3. Temporal Cutoff Horizon: ignore records with T &gt; audit_at&lt;br&gt;4. Poset Dependency Schedule:&lt;br&gt;&lt;i&gt;DISABLE_DATA_FLOW ≺ BLOCK_RESTORE ≺ DELETE_RECORD ≺ REDACT_RECORD&lt;/i&gt;&lt;br&gt;5. Dual Verification: Every finding has an exact post-check" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#eff6ff;strokeColor=#3b82f6;fontColor=#1e3a8a;fontSize=12;align=left;spacingLeft=15;" vertex="1" parent="1">
+          <mxGeometry x="540" y="560" width="520" height="150" as="geometry" />
+        </mxCell>
+
+        <mxCell id="box_outputs" value="&lt;b&gt;Verified Contest Deliverables&lt;/b&gt;&lt;br&gt;• &lt;b&gt;output.csv&lt;/b&gt; (518 valid cases, RFC-4180)&lt;br&gt;• &lt;b&gt;code.zip&lt;/b&gt; (42.3 KB, clean source package)&lt;br&gt;• &lt;b&gt;log.txt&lt;/b&gt; (Verbatim AGENTS.md §5 transcript)&lt;br&gt;• &lt;b&gt;evaluation_report.md&lt;/b&gt; &amp; &lt;b&gt;usage_report.md&lt;/b&gt;&lt;br&gt;• &lt;b&gt;AI Voice Interview Defense Prep&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f0fdf4;strokeColor=#16a34a;fontColor=#14532d;fontSize=12;align=left;spacingLeft=15;" vertex="1" parent="1">
+          <mxGeometry x="1100" y="560" width="400" height="150" as="geometry" />
+        </mxCell>
+
+        <!-- Connectors -->
+        <mxCell id="edge1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563eb;strokeWidth=2;" edge="1" parent="1" source="box_inputs" target="box_pipe">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#16a34a;strokeWidth=2;" edge="1" parent="1" source="box_pipe" target="box_outputs">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

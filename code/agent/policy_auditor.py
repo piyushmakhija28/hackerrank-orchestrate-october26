@@ -42,7 +42,16 @@ class PolicyAuditor(IPolicyAuditor):
             "ne pas supprimer",
             "nicht löschen",
             "no eliminar",
-            "non cancellare"
+            "non cancellare",
+            "export of all my personal data",
+            "export of my personal data",
+            "export my data",
+            "gdpr art. 20",
+            "unsubscribe me",
+            "marketing promotional emails",
+            "password expired",
+            "unlock link",
+            "password reset"
         ]
         if rules_csv and rules_csv.exists():
             self.load_rules_from_csv(rules_csv)
