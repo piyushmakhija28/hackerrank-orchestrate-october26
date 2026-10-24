@@ -162,10 +162,16 @@ class DeletionAuditOrchestrator:
                             candidate_facts.append(f)
                             seen_keys.add(key)
 
+        candidate_facts = self.container.context_builder.filter_causal_cone(candidate_facts, audit_at)
+        unique_facts, tokens_saved = self.container.token_optimizer.deduplicate_facts(candidate_facts)
+        packed_facts = self.container.context_builder.build_knapsack_context(
+            unique_facts, max_tokens=self.container.token_optimizer.max_context_tokens, cluster=cluster
+        )
+
         findings: List[Dict[str, Any]] = []
         verifications: List[Dict[str, Any]] = []
 
-        for f in candidate_facts:
+        for f in packed_facts:
             if f.is_finding:
                 findings.append({
                     "system_id": f.system_id,
@@ -183,6 +189,10 @@ class DeletionAuditOrchestrator:
                     "evidence_id": f.evidence_id,
                 })
 
+        findings, verifications = self.container.prompt_guard.disarm_hallucinations(
+            findings, verifications, audit_at=audit_at
+        )
+
         has_account_verif = any(v["system_id"] == "account_service" for v in verifications)
         if not has_account_verif:
             acc_acts = [a for a in batch_acts if a.get("target_system") == "account_service"]
@@ -199,6 +209,13 @@ class DeletionAuditOrchestrator:
         verdict = AuditVerdict.INCOMPLETE if findings else AuditVerdict.COMPLETE
         steps = self.container.remediation_planner.build_steps(verdict, findings, verifications)
         steps_dicts = [s.to_dict() for s in steps]
+        self.container.prompt_guard.validate_negative_constraints(verdict.value, steps_dicts)
+
+        compact_ctx = self.container.token_optimizer.compact_serialize(packed_facts)
+        input_tokens = self.container.token_optimizer.estimate_tokens(compact_ctx)
+        output_tokens = self.container.token_optimizer.estimate_tokens(json.dumps(steps_dicts))
+        self.container.token_optimizer.record_usage(input_tokens, output_tokens, tokens_saved)
+
         dur_ms = (datetime.now() - start_t).total_seconds() * 1000.0
 
         self.replay_tracer.record_decision(
@@ -293,6 +310,9 @@ def main() -> None:
     telemetry = AuditTelemetry.get_instance()
     snapshot = telemetry.get_snapshot()
     print(f"Telemetry: Audited={snapshot.total_requests or count}, Mean Latency={snapshot.mean_latency_ms}ms, P95={snapshot.p95_latency_ms}ms, Findings={snapshot.total_findings_reported}")
+
+    token_stats = container.token_optimizer.get_telemetry()
+    print(f"AI Optimization: Input Tokens={token_stats['total_input_tokens']}, Output Tokens={token_stats['total_output_tokens']}, Saved Tokens={token_stats['total_tokens_saved']}, Est Cost=${token_stats['estimated_cost_usd']}")
 
     if args.debug_case:
         report = ReplayTracer.get_tracer().format_diagnostic_report(args.debug_case)

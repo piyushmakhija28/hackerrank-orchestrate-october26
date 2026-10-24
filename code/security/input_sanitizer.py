@@ -31,6 +31,19 @@ class InputSanitizer:
     ]
 
     @classmethod
+    def strip_zero_width_characters(cls, text: str) -> str:
+        """Strips zero-width Unicode characters and directional overrides from input text.
+
+        Args:
+            text: Raw input string containing possible invisible characters.
+        Returns:
+            Cleaned string without zero-width or hidden directional control characters.
+        """
+        if not text:
+            return ""
+        return "".join(ch for ch in text if ch not in cls.ZERO_WIDTH_CHARS)
+
+    @classmethod
     def sanitize(cls, text: str) -> str:
         """Sanitizes text by normalizing Unicode, stripping hidden chars, and bounding length.
 
