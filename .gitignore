@@ -1,0 +1,26 @@
+# Python & Environments
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.env
+.venv/
+env/
+
+# Datasets and Media Corpus (Excluded from submission zip)
+data/
+dataset/
+*.zip
+*.tar.gz
+
+# IDE and OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Logs and Artifacts
+logs/
+*.log
+scratch/
+.pytest_cache/
