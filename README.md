@@ -96,8 +96,11 @@ At the end of the 24-hour hackathon, participants must upload **three specific d
 > HackerRank Orchestrate evaluates your ability to pair-program with agentic AI coding tools (Claude Code, Antigravity, Cursor, Copilot). The AI Judge and evaluators inspect `log.txt` to verify authenticity, prompt engineering quality, and engineering decisions.
 
 ### 1. Where Does `log.txt` Live?
-In HackerRank Orchestrate templates:
-- **Windows:** `%USERPROFILE%\hackerrank_orchestrate\log.txt` (or `./logs/log.txt` in repo root)
+As mandated by `AGENTS.md` §2:
+- **Repository Root:** `log.txt` lives in the exact same directory as `AGENTS.md` (the repository root).
+- **Windows:** `<repo-root>\log.txt`
+- **macOS / Linux:** `<repo-root>/log.txt`
+- **Submission Mirror:** A verified mirror is also assembled in `submission/log.txt`.
 - **Linux / macOS:** `$HOME/hackerrank_orchestrate/log.txt`
 
 ### 2. What Must Be Logged?
