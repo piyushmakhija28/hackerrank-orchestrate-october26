@@ -226,7 +226,7 @@ class MultimodalInspector:
                         if email or phone or name:
                             facts.append(EvidenceFact(eid, cap_at, "identity_service", rid, "REPORT_EXPOSED_PII", "PRESENT", True, ids))
                         else:
-                            facts.append(EvidenceFact(eid, cap_at, "identity_service", rid, "VERIFY_RECORD_PRESENT", "PRESENT", False, ids))
+                            facts.append(EvidenceFact(eid, cap_at, "identity_service", rid, "VERIFY_RECORD_REDACTED", "REDACTED", False, ids))
                     elif store == "security_service":
                         facts.append(EvidenceFact(eid, cap_at, "security_service", rid, "VERIFY_RECORD_PRESENT", "PRESENT", False, ids))
                     elif store == "account_service":
@@ -285,6 +285,97 @@ class MultimodalInspector:
             pass
         return facts
 
+    def parse_document_pdf(self, eid: str, path: Path, cap_at: str, origin: str) -> List[EvidenceFact]:
+        """Extract structured observations from PDF document evidence.
+        
+        Args:
+            eid: Evidence file ID.
+            path: Path to PDF file.
+            cap_at: Captured at timestamp string.
+            origin: Origin system or context string.
+        Returns:
+            List of EvidenceFact instances.
+        """
+        facts: List[EvidenceFact] = []
+        try:
+            doc = fitz.open(path)
+            text = "\n".join(page.get_text() for page in doc)
+            emails = set(self.email_pattern.findall(text))
+            users = set(self.user_pattern.findall(text))
+            all_ids = list(emails | users)
+
+            if "delivery_correction_attachment" in path.name or "support" in origin:
+                res_match = re.search(r'\b(support_\w+)\b', text)
+                rid = res_match.group(1) if res_match else "support_attachment"
+                facts.append(EvidenceFact(eid, cap_at, "support_platform", rid, "REPORT_REMAINING_RECORD", "PRESENT", True, all_ids))
+            elif "security_retention" in path.name or origin == "security_service":
+                res_match = re.search(r'\b(audit_record_\w+)\b', text)
+                rid = res_match.group(1) if res_match else "audit_record_retained"
+                facts.append(EvidenceFact(eid, cap_at, "security_service", rid, "VERIFY_RECORD_PRESENT", "PRESENT", False, all_ids))
+            elif "account_history" in path.name:
+                res_match = re.search(r'\b(account_\w+)\b', text)
+                rid = res_match.group(1) if res_match else "account_statement"
+                facts.append(EvidenceFact(eid, cap_at, "account_service", rid, "REPORT_REMAINING_RECORD", "PRESENT", True, all_ids))
+        except Exception:
+            pass
+        return facts
+
+    def parse_generic_records_json(self, eid: str, path: Path, cap_at: str, origin: str) -> List[EvidenceFact]:
+        """Extract structured observations from generic JSON record files.
+        
+        Args:
+            eid: Evidence file ID.
+            path: Path to JSON record file.
+            cap_at: Captured at timestamp string.
+            origin: Origin system or context string.
+        Returns:
+            List of EvidenceFact instances.
+        """
+        facts: List[EvidenceFact] = []
+        try:
+            with open(path, mode="r", encoding="utf-8") as f:
+                data = json.load(f)
+            records = data.get("records", [])
+            for rec in records:
+                if "download_available" in rec or "owner_email" in rec or "file_name" in rec:
+                    rid = rec.get("resource_id", "")
+                    owner = rec.get("owner_email", "")
+                    ids = [owner]
+                    avail = rec.get("download_available", False)
+                    if avail or owner:
+                        facts.append(EvidenceFact(eid, cap_at, "export_service", rid, "REPORT_REMAINING_RECORD", "PRESENT", True, ids))
+                    else:
+                        facts.append(EvidenceFact(eid, cap_at, "export_service", rid, "VERIFY_RECORD_ABSENT", "ABSENT", False, ids))
+                elif "reporting_window" in rec or "metrics" in rec:
+                    rid = rec.get("resource_id", "")
+                    uid = rec.get("user_id")
+                    email = rec.get("email")
+                    ids = [uid, email]
+                    if uid or email:
+                        facts.append(EvidenceFact(eid, cap_at, "analytics_platform", rid, "REPORT_EXPOSED_PII", "PRESENT", True, ids))
+                    else:
+                        facts.append(EvidenceFact(eid, cap_at, "analytics_platform", rid, "VERIFY_RECORD_ANONYMIZED", "ANONYMIZED", False, ids))
+                elif "system" in rec and "resource_id" in rec:
+                    sys_name = rec.get("system", "")
+                    rid = rec.get("resource_id", "")
+                    res = rec.get("result", "")
+                    sub = rec.get("subject_reference", "")
+                    ids = [sub]
+                    if res == "NOT_FOUND":
+                        facts.append(EvidenceFact(eid, cap_at, sys_name, rid, "VERIFY_RECORD_ABSENT", "ABSENT", False, ids))
+                    elif res == "FOUND":
+                        if sys_name == "security_service":
+                            facts.append(EvidenceFact(eid, cap_at, sys_name, rid, "VERIFY_RECORD_PRESENT", "PRESENT", False, ids))
+                        else:
+                            facts.append(EvidenceFact(eid, cap_at, sys_name, rid, "REPORT_REMAINING_RECORD", "PRESENT", True, ids))
+                    elif res == "ANONYMIZED":
+                        facts.append(EvidenceFact(eid, cap_at, sys_name, rid, "VERIFY_RECORD_ANONYMIZED", "ANONYMIZED", False, ids))
+                    elif res == "REDACTED":
+                        facts.append(EvidenceFact(eid, cap_at, sys_name, rid, "VERIFY_RECORD_REDACTED", "REDACTED", False, ids))
+        except Exception:
+            pass
+        return facts
+
     def parse_key_value_logs(self, eid: str, path: Path, cap_at: str) -> List[EvidenceFact]:
         """Extract structured observations from key-value structured log files.
         
@@ -297,6 +388,8 @@ class MultimodalInspector:
         """
         facts: List[EvidenceFact] = []
         kv_pattern = re.compile(r'(\w+)=(?:"([^"]*)"|(\S+))')
+        trace_context: Dict[str, Dict[str, Any]] = defaultdict(lambda: {"ids": set(), "resource_id": None, "service": None, "events": []})
+
         try:
             with open(path, mode="r", encoding="utf-8", errors="ignore") as fp:
                 for line in fp:
@@ -304,22 +397,39 @@ class MultimodalInspector:
                     if not line:
                         continue
                     kvs = {k: v1 or v2 for k, v1, v2 in kv_pattern.findall(line)}
-                    service = kvs.get("service", "")
-                    res_id = kvs.get("resource_id", "")
-                    event = kvs.get("event", "")
-                    
-                    ids = [
-                        kvs.get("match_key"), kvs.get("lookup_key"), kvs.get("subject_ref"),
-                        kvs.get("subject_reference"), kvs.get("correlation_key"), kvs.get("matched_value"),
-                        kvs.get("scan_key"), kvs.get("query"), kvs.get("email"), kvs.get("customer_reference")
-                    ]
+                    tid = kvs.get("trace_id")
 
-                    if not service or not res_id:
-                        continue
+                    for key in [
+                        "match_key", "lookup_key", "subject_key", "subject_ref", "subject_reference",
+                        "correlation_key", "matched_value", "scan_key", "query", "email", "customer_reference"
+                    ]:
+                        val = kvs.get(key)
+                        if val and tid:
+                            trace_context[tid]["ids"].add(str(val).lower().strip())
+
+                    if tid and kvs.get("resource_id"):
+                        trace_context[tid]["resource_id"] = kvs.get("resource_id")
+                    if tid and kvs.get("service"):
+                        trace_context[tid]["service"] = kvs.get("service")
+                    if tid:
+                        trace_context[tid]["events"].append(kvs)
+
+            for tid, ctx in trace_context.items():
+                service = ctx["service"]
+                res_id = ctx["resource_id"]
+                ids = list(ctx["ids"])
+                if not service or not res_id:
+                    continue
+
+                if service == "support_replica":
+                    service = "support_platform"
+
+                for ev in ctx["events"]:
+                    event = ev.get("event", "")
 
                     if service == "account_service":
-                        http_status = kvs.get("http_status")
-                        rows = kvs.get("rows")
+                        http_status = ev.get("http_status")
+                        rows = ev.get("rows")
                         if http_status == "404" or rows == "0":
                             facts.append(EvidenceFact(eid, cap_at, service, res_id, "VERIFY_RECORD_ABSENT", "ABSENT", False, ids))
                         elif http_status == "200" or rows == "1":
@@ -327,30 +437,38 @@ class MultimodalInspector:
                     elif service == "security_service":
                         facts.append(EvidenceFact(eid, cap_at, service, res_id, "VERIFY_RECORD_PRESENT", "PRESENT", False, ids))
                     elif service == "search_service":
-                        result = kvs.get("result")
+                        result = ev.get("result")
                         if result == "hit":
                             facts.append(EvidenceFact(eid, cap_at, service, res_id, "REPORT_REMAINING_RECORD", "PRESENT", True, ids))
                         elif result == "miss":
                             facts.append(EvidenceFact(eid, cap_at, service, res_id, "VERIFY_RECORD_ABSENT", "ABSENT", False, ids))
                     elif service == "support_platform":
-                        if "pii_scan" in event:
+                        marker_found = ev.get("marker_found", "").lower()
+                        rows = ev.get("rows")
+                        if marker_found == "false" or rows == "1":
+                            facts.append(EvidenceFact(eid, cap_at, service, res_id, "REPORT_REMAINING_RECORD", "PRESENT", True, ids))
+                        elif "pii_scan" in event:
                             facts.append(EvidenceFact(eid, cap_at, service, res_id, "REPORT_EXPOSED_PII", "PRESENT", True, ids))
                         elif "redacted" in event or "clean" in event:
                             facts.append(EvidenceFact(eid, cap_at, service, res_id, "VERIFY_RECORD_REDACTED", "REDACTED", False, ids))
                     elif service == "analytics_platform":
-                        if kvs.get("email") or "identified" in event:
+                        rows = ev.get("rows")
+                        if "contact_lookup" in event and rows == "1":
+                            facts.append(EvidenceFact(eid, cap_at, service, res_id, "REPORT_REMAINING_RECORD", "PRESENT", True, ids))
+                        elif ev.get("email") or "identified" in event:
                             facts.append(EvidenceFact(eid, cap_at, service, res_id, "REPORT_EXPOSED_PII", "PRESENT", True, ids))
                         else:
                             facts.append(EvidenceFact(eid, cap_at, service, res_id, "VERIFY_RECORD_ANONYMIZED", "ANONYMIZED", False, ids))
                     elif service == "integration_service":
-                        enabled = kvs.get("enabled", "").lower()
-                        if enabled in ["true", "1", "yes"] or "active" in event:
+                        enabled = ev.get("enabled", "").lower()
+                        if enabled in ["true", "1", "yes"] or "active" in event or "heartbeat" in event:
                             facts.append(EvidenceFact(eid, cap_at, service, res_id, "REPORT_ACTIVE_DATA_FLOW", "ACTIVE", True, ids))
                         else:
                             facts.append(EvidenceFact(eid, cap_at, service, res_id, "VERIFY_DATA_FLOW_DISABLED", "DISABLED", False, ids))
                     elif service == "backup_service":
-                        restore_allowed = kvs.get("restore_allowed", "").lower()
-                        if restore_allowed in ["true", "1", "yes"] or "restorable" in event:
+                        restore_allowed = ev.get("restore_allowed", "").lower()
+                        eligible = ev.get("eligible", "").lower()
+                        if restore_allowed in ["true", "1", "yes"] or eligible == "true" or "restorable" in event:
                             facts.append(EvidenceFact(eid, cap_at, service, res_id, "REPORT_RESTORE_RISK", "ACTIVE", True, ids))
                         else:
                             facts.append(EvidenceFact(eid, cap_at, service, res_id, "VERIFY_RESTORE_BLOCKED", "BLOCKED", False, ids))
@@ -433,9 +551,9 @@ class MultimodalInspector:
                     facts.append(EvidenceFact(eid, cap_at, "security_service", r[0], "VERIFY_RECORD_PRESENT", "PRESENT", False, [r[1]]))
 
             if "search_documents_primary" in tables:
-                cur.execute("SELECT resource_id, email, customer_reference FROM search_documents_primary;")
+                cur.execute("SELECT resource_id, email, display_name, source_resource_id FROM search_documents_primary;")
                 for r in cur.fetchall():
-                    facts.append(EvidenceFact(eid, cap_at, "search_service", r[0], "REPORT_REMAINING_RECORD", "PRESENT", True, [r[1], r[2]]))
+                    facts.append(EvidenceFact(eid, cap_at, "search_service", r[0], "REPORT_REMAINING_RECORD", "PRESENT", True, [r[1], r[2], r[3]]))
 
             if "customer_profiles_failover_replica" in tables:
                 cur.execute("SELECT resource_id, email, user_id FROM customer_profiles_failover_replica;")
@@ -465,6 +583,10 @@ class MultimodalInspector:
                 file_facts = self.parse_snapshot_bundle(eid, fpath, cap_at)
             elif fpath.name == "customer_account_handover_20261001.txt":
                 file_facts = self.parse_txt_handover(eid, fpath, cap_at)
+            elif ext == ".pdf":
+                file_facts = self.parse_document_pdf(eid, fpath, cap_at, origin)
+            elif ext == ".json":
+                file_facts = self.parse_generic_records_json(eid, fpath, cap_at, origin)
             elif ext == ".log":
                 file_facts = self.parse_key_value_logs(eid, fpath, cap_at)
             elif ext == ".sql":

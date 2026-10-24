@@ -98,8 +98,6 @@ class IdentityResolver(IEntityResolver):
                         self.link_identifiers(email, uid)
                     if phone and uid:
                         self.link_identifiers(phone, uid)
-                    if name and uid:
-                        self.link_identifiers(name, uid)
                     if ehash and uid:
                         self.link_identifiers(ehash, uid)
 
@@ -118,7 +116,7 @@ class IdentityResolver(IEntityResolver):
                         if new_val and uid:
                             self.email_to_user_id[new_val.lower()] = uid
                             self.link_identifiers(new_val.lower(), uid)
-                    elif field == "phone":
+                    elif field in ["phone", "email_hash"]:
                         if old_val and uid:
                             self.link_identifiers(old_val, uid)
                         if new_val and uid:
