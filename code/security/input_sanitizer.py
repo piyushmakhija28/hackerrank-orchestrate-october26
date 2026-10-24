@@ -15,12 +15,12 @@ class InputSanitizer:
     MAX_PAYLOAD_BYTES: int = 16384
 
     ZERO_WIDTH_CHARS: set[str] = {
-        "\u200b",  # Zero-width space
-        "\u200c",  # Zero-width non-joiner
-        "\u200d",  # Zero-width joiner
-        "\ufeff",  # Zero-width no-break space
-        "\u202a",  # Left-to-right embedding
-        "\u202e",  # Right-to-left override
+        "\u200b",
+        "\u200c",
+        "\u200d",
+        "\ufeff",
+        "\u202a",
+        "\u202e",
     }
 
     ADVERSARIAL_PATTERNS: list[tuple[str, re.Pattern]] = [
