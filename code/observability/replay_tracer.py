@@ -6,7 +6,9 @@ Captures full decision graphs per case for reproducible compliance debugging.
 
 from typing import Any, Dict, List, Optional, Set
 import json
+from pathlib import Path
 import threading
+from code.security.crypto_vault import CryptoSecurityVault
 
 
 class ReplayTracer:
@@ -159,3 +161,58 @@ class ReplayTracer:
 
         lines.append("=" * 80)
         return "\n".join(lines)
+
+    def export_encrypted_traces(
+        self,
+        target_path: Path,
+        vault: Optional[CryptoSecurityVault] = None,
+    ) -> Path:
+        """Serializes and encrypts all stored decision traces to disk via AES-256-GCM.
+
+        Args:
+            target_path: Destination path for .enc journal file.
+            vault: CryptoSecurityVault instance for authenticated encryption.
+        Returns:
+            Resolved Path of the written encrypted trace file.
+        """
+        active_vault = vault or CryptoSecurityVault()
+        with self._registry_lock:
+            serializable_traces = {}
+            for cid, trace in self._traces.items():
+                copy_tr = dict(trace)
+                copy_tr["identity_cluster"] = sorted(list(copy_tr.get("identity_cluster", set())))
+                serializable_traces[cid] = copy_tr
+
+        raw_bytes = json.dumps(serializable_traces, ensure_ascii=False, indent=2).encode("utf-8")
+        encrypted_bytes = active_vault.encrypt(raw_bytes, associated_data=b"NorthstarShop_ReplayTraces_2026")
+
+        target_path.parent.mkdir(parents=True, exist_ok=True)
+        tmp_target = target_path.with_suffix(target_path.suffix + ".tmp")
+        tmp_target.write_bytes(encrypted_bytes)
+        tmp_target.replace(target_path)
+        return target_path
+
+    def load_encrypted_traces(
+        self,
+        source_path: Path,
+        vault: Optional[CryptoSecurityVault] = None,
+    ) -> Dict[str, Dict[str, Any]]:
+        """Reads and decrypts stored decision traces from an AES-256-GCM encrypted file.
+
+        Args:
+            source_path: Path to encrypted trace journal.
+            vault: CryptoSecurityVault instance for decryption.
+        Returns:
+            Dictionary of case_id to trace objects.
+        """
+        active_vault = vault or CryptoSecurityVault()
+        encrypted_bytes = source_path.read_bytes()
+        decrypted_bytes = active_vault.decrypt(encrypted_bytes, associated_data=b"NorthstarShop_ReplayTraces_2026")
+        loaded_data = json.loads(decrypted_bytes.decode("utf-8"))
+
+        with self._registry_lock:
+            for cid, trace in loaded_data.items():
+                trace["identity_cluster"] = set(trace.get("identity_cluster", []))
+                self._traces[cid] = trace
+
+        return loaded_data

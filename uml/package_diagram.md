@@ -25,11 +25,15 @@ flowchart TD
             TELEMETRY["telemetry.py<br/>AuditTelemetry, LatencyTracker"]
         end
 
-        subgraph SecurityPkg ["package code.security (Zero-Trust Ingress & Guardrails)"]
+        subgraph SecurityPkg ["package code.security (Active Cryptographic Shield & Compliance)"]
             SAN["input_sanitizer.py<br/>OWASP LLM01, Shannon Entropy"]
             PII["pii_shield.py<br/>ISO/IEC 7812 Luhn Card Masking"]
             RATE["rate_limiter.py<br/>TokenBucketRateLimiter, CircuitBreaker"]
             THREAT["threat_detector.py<br/>Adversarial Pattern Detector"]
+            VAULT["crypto_vault.py<br/>AES-256-GCM AEAD, HKDF, HMAC Blind Index"]
+            TAMPER["anti_tamper_guard.py<br/>Anti-Debugging, Code Attestation, Honeytokens"]
+            COMPL["compliance_guard.py<br/>GDPR, DPDP, SOC 2, PCI DSS Mapping"]
+            DATA["data_guard.py<br/>DataShieldManager (Encrypted File Store)"]
         end
 
         subgraph AgentPkg ["package code.agent (Multi-Agent Audit Squad)"]

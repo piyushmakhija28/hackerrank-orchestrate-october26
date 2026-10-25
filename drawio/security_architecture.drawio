@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<mxfile host="app.diagrams.net" modified="2026-10-25T05:00:00.000Z" agent="Antigravity Multi-Agent Runtime" version="24.7.17" type="device">
+<mxfile host="app.diagrams.net" modified="2026-10-25T06:00:00.000Z" agent="Antigravity Multi-Agent Runtime" version="24.7.17" type="device">
   <diagram id="security-architecture" name="Zero-Trust Defense-in-Depth Security Model">
     <mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2000" pageHeight="1400" math="0" shadow="0">
       <root>
@@ -7,7 +7,7 @@
         <mxCell id="1" parent="0" />
 
         <!-- Canvas Header -->
-        <mxCell id="hdr" value="&lt;b&gt;Ghost Data Still Exists — Zero-Trust Defense-in-Depth Security Architecture&lt;/b&gt;&lt;br&gt;OWASP LLM Top 10 Mitigations | ISO/IEC 7812 Luhn Card Masking | Shannon Entropy Filtering | Bounded LRU Isolation" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0f172a;strokeColor=#1e293b;fontColor=#ffffff;fontSize=18;align=center;" vertex="1" parent="1">
+        <mxCell id="hdr" value="&lt;b&gt;Ghost Data Still Exists — Active Cryptographic &amp;amp; Anti-Reverse-Engineering Security Architecture&lt;/b&gt;&lt;br&gt;AES-256-GCM AEAD | HMAC Blind Indexing | Anti-Debugging &amp;amp; Code Attestation | Honeytoken Traps | GDPR &amp;amp; DPDP Regulatory Engine" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0f172a;strokeColor=#1e293b;fontColor=#ffffff;fontSize=18;align=center;" vertex="1" parent="1">
           <mxGeometry x="50" y="30" width="1900" height="60" as="geometry" />
         </mxCell>
 
@@ -54,7 +54,7 @@
           <mxGeometry x="20" y="50" width="410" height="85" as="geometry" />
         </mxCell>
 
-        <mxCell id="s3_ctrl1" value="&lt;b&gt;ALGORITHMIC CONTROL: ISO/IEC 7812 Luhn Algorithm Check&lt;/b&gt;&lt;hr&gt;&amp;bull; Checksum: SUM( (2d - 9 if 2d &gt; 9 else 2d) ) mod 10 == 0&lt;br&gt;&amp;bull; Discards false positives (order IDs, phone digits)&lt;br&gt;&amp;bull; Masks real Visa / Mastercard / Amex PANs&lt;br&gt;&amp;bull; Emits '[REDACTED_CREDIT_CARD]' tokens" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dcfce7;strokeColor=#16a34a;fontColor=#14532d;align=left;spacingLeft=10;fontSize=10;" vertex="1" parent="lyr3">
+        <mxCell id="s3_ctrl1" value="&lt;b&gt;ALGORITHMIC CONTROL: ISO/IEC 7812 Luhn Algorithm Check&lt;/b&gt;&lt;hr&gt;&amp;bull; Checksum: SUM( (2d - 9 if 2d &gt; 9 else 2d) ) mod 10 == 0&lt;br&gt;&amp;bull; Discards false positives (order IDs, phone digits)&lt;br&gt;&amp;bull; Masks real Visa / Mastercard / Amex PANs&lt;br&gt;&amp;bull; Emits '[REDACTED_CARD]' tokens" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dcfce7;strokeColor=#16a34a;fontColor=#14532d;align=left;spacingLeft=10;fontSize=10;" vertex="1" parent="lyr3">
           <mxGeometry x="20" y="155" width="410" height="110" as="geometry" />
         </mxCell>
 
@@ -79,8 +79,59 @@
           <mxGeometry x="20" y="285" width="410" height="110" as="geometry" />
         </mxCell>
 
+        <!-- DEFENSE LAYER 5: CRYPTOGRAPHIC VAULT (NEW) -->
+        <mxCell id="lyr5" value="Layer 5: Cryptographic Vault &amp; Zero-Knowledge Memory Plane" style="swimlane;whiteSpace=wrap;html=1;fillColor=#f0fdf4;strokeColor=#16a34a;fontColor=#14532d;fontSize=13;fontStyle=1;startSize=30;" vertex="1" parent="1">
+          <mxGeometry x="60" y="580" width="580" height="420" as="geometry" />
+        </mxCell>
+
+        <mxCell id="s5_threat" value="&lt;b&gt;THREAT VECTORS&lt;/b&gt;&lt;hr&gt;&amp;bull; Cold Disk Extraction &amp; Database Snapshot Theft&lt;br&gt;&amp;bull; Live RAM Scraping via /proc/$PID/mem or Core Dumps&lt;br&gt;&amp;bull; Chosen-Ciphertext (CCA2) &amp; Bit-Flipping Attacks&lt;br&gt;&amp;bull; Side-Channel Timing Leaks on Identifier Comparisons" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dcfce7;strokeColor=#16a34a;fontColor=#14532d;align=left;spacingLeft=10;fontSize=10;" vertex="1" parent="lyr5">
+          <mxGeometry x="20" y="50" width="540" height="85" as="geometry" />
+        </mxCell>
+
+        <mxCell id="s5_ctrl1" value="&lt;b&gt;CRYPTOGRAPHIC CONTROL: AES-256-GCM AEAD &amp; HKDF-SHA256&lt;/b&gt;&lt;hr&gt;&amp;bull; Authenticated 256-bit encryption with unique 96-bit CSPRNG nonces&lt;br&gt;&amp;bull; 128-bit MAC tag verification bound: P(Forgery) &amp;lt; 1.93 x 10^-34&lt;br&gt;&amp;bull; HKDF-SHA256 Extract-and-Expand key derivation per RFC 5869&lt;br&gt;&amp;bull; DataShieldManager: Encrypted JSON journals and persistent caches" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#16a34a;fontColor=#14532d;align=left;spacingLeft=10;fontSize=10;" vertex="1" parent="lyr5">
+          <mxGeometry x="20" y="155" width="540" height="110" as="geometry" />
+        </mxCell>
+
+        <mxCell id="s5_ctrl2" value="&lt;b&gt;ZERO-KNOWLEDGE CONTROL: HMAC Blind Indexing &amp; Memory Scrubbing&lt;/b&gt;&lt;hr&gt;&amp;bull; Deterministic one-way pseudonym: B(t) = HMAC-SHA256(K_salt, t)&lt;br&gt;&amp;bull; Identity clusters indexed via blind digests without exposing raw PII in RAM&lt;br&gt;&amp;bull; scrub_buffer(): Overwrites sensitive buffers with 0x00 immediately after use&lt;br&gt;&amp;bull; Constant-time comparisons via hmac.compare_digest eliminating timing side-channels" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#16a34a;fontColor=#14532d;align=left;spacingLeft=10;fontSize=10;" vertex="1" parent="lyr5">
+          <mxGeometry x="20" y="285" width="540" height="110" as="geometry" />
+        </mxCell>
+
+        <!-- DEFENSE LAYER 6: ANTI-REVERSE-ENGINEERING & HONEYTOKENS (NEW) -->
+        <mxCell id="lyr6" value="Layer 6: Anti-Reverse-Engineering &amp; Cyber Deception Tripwire" style="swimlane;whiteSpace=wrap;html=1;fillColor=#fdf4ff;strokeColor=#c026d3;fontColor=#701a75;fontSize=13;fontStyle=1;startSize=30;" vertex="1" parent="1">
+          <mxGeometry x="680" y="580" width="600" height="420" as="geometry" />
+        </mxCell>
+
+        <mxCell id="s6_threat" value="&lt;b&gt;THREAT VECTORS&lt;/b&gt;&lt;hr&gt;&amp;bull; Static Reverse Engineering &amp; Bytecode (.pyc) Decompilation&lt;br&gt;&amp;bull; Dynamic Debugger Attachment (gdb, debugpy, ptrace, pdb)&lt;br&gt;&amp;bull; Function Hooking &amp; Monkey-Patching Attack&lt;br&gt;&amp;bull; Automated Memory Reconnaissance / Secret Scraping" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fae8ff;strokeColor=#c026d3;fontColor=#701a75;align=left;spacingLeft=10;fontSize=10;" vertex="1" parent="lyr6">
+          <mxGeometry x="20" y="50" width="560" height="85" as="geometry" />
+        </mxCell>
+
+        <mxCell id="s6_ctrl1" value="&lt;b&gt;ANTI-ANALYSIS CONTROL: Code Integrity Attestation &amp; Anti-Debugging&lt;/b&gt;&lt;hr&gt;&amp;bull; Strict Avalanche Criterion (SAC): SHA-256 hash attestation over bytecode&lt;br&gt;&amp;bull; Single-bit opcode patch yields E[d_H] = 128 bit hash flip; P(Bypass) &amp;lt; 10^-77&lt;br&gt;&amp;bull; check_debugger_present(): Inspects sys.gettrace() &amp; thread trace frames&lt;br&gt;&amp;bull; Function pointer self-sealing: Verifies __code__ references at runtime" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#c026d3;fontColor=#701a75;align=left;spacingLeft=10;fontSize=10;" vertex="1" parent="lyr6">
+          <mxGeometry x="20" y="155" width="560" height="110" as="geometry" />
+        </mxCell>
+
+        <mxCell id="s6_ctrl2" value="&lt;b&gt;ACTIVE DECEPTION CONTROL: Bayesian Honeytokens &amp; Emergency Lockdown&lt;/b&gt;&lt;hr&gt;&amp;bull; Canary Honeytokens (HONEY_TOKEN_AWS_*, HONEY_TOKEN_PROD_DB_*)&lt;br&gt;&amp;bull; Stackelberg Security Equilibrium: Expected attacker utility E[U_A] &amp;lt; 0&lt;br&gt;&amp;bull; trigger_tamper_response(): Instantly zeroes master key &amp; scrubs RAM&lt;br&gt;&amp;bull; Fail-secure immediate termination halts unauthorized execution" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#c026d3;fontColor=#701a75;align=left;spacingLeft=10;fontSize=10;" vertex="1" parent="lyr6">
+          <mxGeometry x="20" y="285" width="560" height="110" as="geometry" />
+        </mxCell>
+
+        <!-- DEFENSE LAYER 7: REGULATORY COMPLIANCE ENGINE (NEW) -->
+        <mxCell id="lyr7" value="Layer 7: Regulatory Compliance Framework Engine" style="swimlane;whiteSpace=wrap;html=1;fillColor=#fefce8;strokeColor=#ca8a04;fontColor=#713f12;fontSize=13;fontStyle=1;startSize=30;" vertex="1" parent="1">
+          <mxGeometry x="1320" y="580" width="630" height="420" as="geometry" />
+        </mxCell>
+
+        <mxCell id="s7_threat" value="&lt;b&gt;THREAT VECTORS (ROOT CAUSE OF $2.4M FINE)&lt;/b&gt;&lt;hr&gt;&amp;bull; GDPR Article 17 Violation: Deletion marked complete while ghost records persist&lt;br&gt;&amp;bull; GDPR Article 25 Failure: Synchronization jobs recreating deleted users&lt;br&gt;&amp;bull; Statutory Conflict: Unlawful destruction of 7-year tax/financial invoices&lt;br&gt;&amp;bull; Broken Account Tombstones: Preserving raw direct PII instead of stable user_id" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef9c3;strokeColor=#ca8a04;fontColor=#713f12;align=left;spacingLeft=10;fontSize=10;" vertex="1" parent="lyr7">
+          <mxGeometry x="20" y="50" width="590" height="85" as="geometry" />
+        </mxCell>
+
+        <mxCell id="s7_ctrl1" value="&lt;b&gt;COMPLIANCE CONTROL: ComplianceFrameworkMapper &amp; Dynamic Tagging&lt;/b&gt;&lt;hr&gt;&amp;bull; Formal Mapping: GDPR Art 17 / DPDP Sec 12 (Erasure), GDPR Art 5 (Retention)&lt;br&gt;&amp;bull; GDPR Art 25 / SOC 2 CC6 (Data Flow Disabling &amp; Restore Blocking)&lt;br&gt;&amp;bull; PCI DSS v4.0 Req 3: Automated Primary Account Number (PAN) protection&lt;br&gt;&amp;bull; Generates verifiable ComplianceAttestation certificates per audited case" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#ca8a04;fontColor=#713f12;align=left;spacingLeft=10;fontSize=10;" vertex="1" parent="lyr7">
+          <mxGeometry x="20" y="155" width="590" height="110" as="geometry" />
+        </mxCell>
+
+        <mxCell id="s7_ctrl2" value="&lt;b&gt;MATHEMATICAL CONTROL: Statutory Retention Calculus &amp; Tombstone Proof&lt;/b&gt;&lt;hr&gt;&amp;bull; Invariant: Preserve(r) &amp;hArr; (t_audit - t_r) &amp;lt; T_statutory &amp;and; Category(r) in LegalExemptions&lt;br&gt;&amp;bull; Erase(r) &amp;hArr; (t_audit - t_r) &amp;ge; T_statutory &amp;or; Category(r) not in LegalExemptions&lt;br&gt;&amp;bull; Tombstone Invariant: Preserves user_id while asserting zero exposed PII in cluster&lt;br&gt;&amp;bull; Prevents Northstar Shop $2.4M compliance penalty recurrence" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#ca8a04;fontColor=#713f12;align=left;spacingLeft=10;fontSize=10;" vertex="1" parent="lyr7">
+          <mxGeometry x="20" y="285" width="590" height="110" as="geometry" />
+        </mxCell>
+
         <!-- SECURITY FLOW CONNECTORS -->
-        <mxCell id="sec_f1" value="Sanitized &amp;amp; Rate-Checked Request" edge="1" source="lyr1" target="lyr2" parent="1" style="endArrow=block;strokeColor=#e11d48;strokeWidth=2;fontSize=10;">
+        <mxCell id="sec_f1" value="Sanitized &amp;amp; Rate-Checked" edge="1" source="lyr1" target="lyr2" parent="1" style="endArrow=block;strokeColor=#e11d48;strokeWidth=2;fontSize=10;">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
 
@@ -88,7 +139,19 @@
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
 
-        <mxCell id="sec_f3" value="PII-Masked Context &amp;amp; Traces" edge="1" source="lyr3" target="lyr4" parent="1" style="endArrow=block;strokeColor=#2563eb;strokeWidth=2;fontSize=10;">
+        <mxCell id="sec_f3" value="PII-Masked Context" edge="1" source="lyr3" target="lyr4" parent="1" style="endArrow=block;strokeColor=#2563eb;strokeWidth=2;fontSize=10;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="sec_f4" value="Grounded Evidence Facts" edge="1" source="lyr4" target="lyr5" parent="1" style="endArrow=block;strokeColor=#16a34a;strokeWidth=2;fontSize=10;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="sec_f5" value="Sealed Memory &amp; Blind Indices" edge="1" source="lyr5" target="lyr6" parent="1" style="endArrow=block;strokeColor=#c026d3;strokeWidth=2;fontSize=10;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="sec_f6" value="Tamper-Verified Attestations" edge="1" source="lyr6" target="lyr7" parent="1" style="endArrow=block;strokeColor=#ca8a04;strokeWidth=2;fontSize=10;">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
 

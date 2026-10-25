@@ -13,6 +13,10 @@ from code.agent.remediation_planner import RemediationPlanner
 from code.ai.context_builder import ContextBuilder
 from code.ai.prompt_guard import PromptGuard
 from code.ai.token_optimizer import TokenOptimizer
+from code.security.anti_tamper_guard import AntiTamperGuard
+from code.security.compliance_guard import ComplianceFrameworkMapper
+from code.security.crypto_vault import CryptoSecurityVault
+from code.security.data_guard import DataShieldManager
 
 
 class AuditContainer:
@@ -28,6 +32,10 @@ class AuditContainer:
         token_optimizer: Subsystem for token estimation, deduplication, and budgeting.
         context_builder: Subsystem for causal context filtering and knapsack packing.
         prompt_guard: Subsystem for anti-hallucination witness verification.
+        crypto_vault: Cryptographic vault for AES-256-GCM AEAD and blind indexing.
+        anti_tamper_guard: Guard for anti-debugging and bytecode attestation.
+        compliance_guard: Mapper for regulatory compliance and audit attestation.
+        data_guard: Manager for transparent encrypted file persistence.
     """
 
     def __init__(self, dataset_dir: Path = Path("dataset")) -> None:
@@ -37,6 +45,11 @@ class AuditContainer:
             dataset_dir: Root dataset path.
         """
         self.dataset_dir: Path = dataset_dir
+        self.crypto_vault: CryptoSecurityVault = CryptoSecurityVault()
+        self.anti_tamper_guard: AntiTamperGuard = AntiTamperGuard()
+        self.compliance_guard: ComplianceFrameworkMapper = ComplianceFrameworkMapper()
+        self.data_guard: DataShieldManager = DataShieldManager(self.crypto_vault, self.anti_tamper_guard)
+
         self.entity_resolver: IdentityResolver = IdentityResolver()
         self.multimodal_inspector: MultimodalInspector = MultimodalInspector(dataset_dir)
         self.lineage_tracer: LineageTracer = LineageTracer(dataset_dir / "system_activity.csv")

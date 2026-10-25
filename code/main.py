@@ -51,6 +51,7 @@ class DeletionAuditOrchestrator:
         self.tracer: DistributedTracer = DistributedTracer.get_tracer()
         self.replay_tracer: ReplayTracer = ReplayTracer.get_tracer()
         self.metrics: MetricsCollector = MetricsCollector.get_collector()
+        self.container.anti_tamper_guard.register_module_baseline("orchestrator", self.audit_single_request)
 
     def audit_single_request(self, req: Dict[str, str]) -> DeletionAuditOutputRow:
         """Audits a single customer deletion request row across all systems and evidence.
@@ -69,6 +70,12 @@ class DeletionAuditOrchestrator:
         trace_id = self.tracer.start_trace(cid)
         self.logger.set_context(trace_id=trace_id, case_id=cid)
         start_t = datetime.now()
+
+        if self.container.anti_tamper_guard.is_honeytoken_probed(raw_text):
+            self.container.anti_tamper_guard.trigger_tamper_response(
+                f"Honeytoken Canary probe intercepted in case {cid}",
+                vault=self.container.crypto_vault,
+            )
 
         sanitized_text = InputSanitizer.sanitize(raw_text)
         is_adv, adv_rule, _ = InputSanitizer.is_adversarial_injection(sanitized_text)
@@ -195,6 +202,12 @@ class DeletionAuditOrchestrator:
         plan_dur_ms = (datetime.now() - t_plan_start).total_seconds() * 1000.0
         self.metrics.record_subagent_duration("remediation_planner", plan_dur_ms)
         self.metrics.record_verdict(verdict.value)
+
+        attestation = self.container.compliance_guard.generate_case_attestation(
+            case_id=cid,
+            verdict=verdict.value,
+            steps=steps_dicts,
+        )
 
         self.container.prompt_guard.validate_negative_constraints(verdict.value, steps_dicts)
 

@@ -287,6 +287,47 @@ classDiagram
         +is_payload_safe(payload: str)$ bool
     }
 
+    class CryptoSecurityVault {
+        -bytearray _master_key
+        -bytes _blind_salt
+        -bool _is_locked
+        -AESGCM _aesgcm
+        +encrypt(plaintext: Union~str, bytes~, associated_data: Optional~bytes~) bytes
+        +decrypt(payload: bytes, associated_data: Optional~bytes~) bytes
+        +blind_index(token: str) str
+        +scrub_buffer(buf: Union~bytearray, memoryview~) void$
+        +lock_vault() void
+        +is_locked() bool
+    }
+
+    class AntiTamperGuard {
+        -Set~str~ _honeytokens
+        -Dict~str, str~ _baseline_hashes
+        -bool _tamper_detected
+        -Optional~str~ _violation_reason
+        +check_debugger_present() bool
+        +register_honeytoken(token: str) void
+        +is_honeytoken_probed(payload: str) bool
+        +verify_module_integrity(name: str, obj: Any) bool
+        +trigger_tamper_response(reason: str, vault: Optional~Any~) void
+        +is_tampered() bool
+    }
+
+    class ComplianceFrameworkMapper {
+        +map_operation_to_compliance(operation: str, resource_id: str)$ List~ComplianceStandard~
+        +verify_tombstone_compliance(cluster_tokens: Set~str~, user_id: str, findings: List~dict~)$ bool
+        +generate_case_attestation(case_id: str, verdict: str, steps: List~dict~)$ ComplianceAttestation
+    }
+
+    class DataShieldManager {
+        -CryptoSecurityVault vault
+        -AntiTamperGuard anti_tamper
+        +save_encrypted_json(target_path: Path, data: Any, associated_data: Optional~bytes~) Path
+        +load_encrypted_json(source_path: Path, associated_data: Optional~bytes~) Any
+        +secure_write_bytes(target_path: Path, data: bytes, associated_data: Optional~bytes~) Path
+        +secure_read_bytes(source_path: Path, associated_data: Optional~bytes~) bytes
+    }
+
     %% ==========================================
     %% 7. OBSERVABILITY SUBSYSTEM (code/observability/)
     %% ==========================================
@@ -347,6 +388,10 @@ classDiagram
         +TokenOptimizer token_optimizer
         +ContextBuilder context_builder
         +PromptGuard prompt_guard
+        +CryptoSecurityVault crypto_vault
+        +AntiTamperGuard anti_tamper_guard
+        +ComplianceFrameworkMapper compliance_guard
+        +DataShieldManager data_guard
         +initialize_identities() void
     }
 
@@ -397,6 +442,13 @@ classDiagram
     AuditContainer *-- ContextBuilder : composes
     AuditContainer *-- TokenOptimizer : composes
     AuditContainer *-- PromptGuard : composes
+    AuditContainer *-- CryptoSecurityVault : composes
+    AuditContainer *-- AntiTamperGuard : composes
+    AuditContainer *-- ComplianceFrameworkMapper : composes
+    AuditContainer *-- DataShieldManager : composes
+    DataShieldManager --> CryptoSecurityVault : uses
+    DataShieldManager --> AntiTamperGuard : uses
+    ReplayTracer ..> CryptoSecurityVault : encrypts journals via
 
     DeletionAuditOrchestrator *-- AuditContainer : injects
     DeletionAuditOrchestrator --> StructuredLogger : logs with MDC

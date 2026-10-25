@@ -26,14 +26,18 @@ flowchart TD
     end
 
     %% ==========================================
-    %% TIER 2: SECURITY INGRESS GUARDRAILS
+    %% TIER 2: SECURITY & COMPLIANCE SUBSYSTEM
     %% ==========================================
-    subgraph Tier2 ["Tier 2: Zero-Trust Security & Ingress Guardrails (code/security/)"]
+    subgraph Tier2 ["Tier 2: Cryptographic Security & Regulatory Compliance (code/security/)"]
         direction TB
         C_SAN["component: InputSanitizer<br/>(OWASP LLM01 Prompt Injection Filter)"]
         C_PII["component: PiiShield<br/>(ISO/IEC 7812 Luhn Card Masking)"]
         C_RATE["component: RateLimiter<br/>(Token Bucket Burst 1000 / Refill 500s)"]
         C_CB["component: CircuitBreaker<br/>(Tri-State Concurrent Circuit Breaker)"]
+        C_VAULT["component: CryptoSecurityVault<br/>(AES-256-GCM AEAD & Blind Indexing)"]
+        C_TAMPER["component: AntiTamperGuard<br/>(Anti-Debugging & Honeytoken Traps)"]
+        C_COMPL["component: ComplianceFrameworkMapper<br/>(GDPR, DPDP, SOC 2, PCI DSS)"]
+        C_DATA["component: DataShieldManager<br/>(Encrypted File Store)"]
     end
 
     %% ==========================================
