@@ -41,7 +41,7 @@ A customer deletion is defined as **`COMPLETE`** if and only if **all four condi
 | Metric Category | Verified Benchmark Value | Reference / Standard |
 |:---|:---:|:---|
 | **Total Evaluation Cases Audited** | **518 cases** | Full dataset (`dataset/deletion_requests.csv`) |
-| **Status Partitioning** | **264 COMPLETE, 244 INCOMPLETE, 10 NOT_APPLICABLE** | 100% partitioning of full enterprise estate |
+| **Status Partitioning** | **248 COMPLETE, 260 INCOMPLETE, 10 NOT_APPLICABLE** | 100% partitioning of full enterprise estate |
 | **Schema Validation Errors** | **0 errors (100.0% valid)** | Verified via strict `OutputSchemaValidator` |
 | **Public Ground-Truth Accuracy** | **100.00% Status Accuracy (32/32)** | Evaluated against `dataset/sample_output.csv` |
 | **Sequence Order Compliance** | **100.00%** | Poset DAG partial order $\text{FINDING} \prec \text{REMED} \prec \text{VERIF}$ |

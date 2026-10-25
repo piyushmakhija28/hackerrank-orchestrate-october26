@@ -12,7 +12,7 @@ Memorize these exact figures before turning on your camera:
 | Metric Category | Precise Value | Context / Reference |
 |:---|:---:|:---|
 | **Total Evaluation Cases Audited** | **518** | Exact match with `dataset/deletion_requests.csv` (`case_33` to `case_542`) |
-| **Status Breakdown** | **264 COMPLETE, 244 INCOMPLETE, 10 NOT_APPLICABLE** | 100% partitioning of full enterprise estate |
+| **Status Breakdown** | **248 COMPLETE, 260 INCOMPLETE, 10 NOT_APPLICABLE** | 100% partitioning of full enterprise estate |
 | **Schema Validation Errors** | **0 errors (100.0% valid)** | Verified via `OutputSchemaValidator` and RFC-4180 parser |
 | **Total Automated Tests Passing** | **128 / 128 passed (100%)** | Unit, scale, triad matrix, concurrency, cryptography, anti-tamper, and compliance |
 | **Formal Mathematical Theorems** | **12 Theorems (Theorems 1–12)** | Formally proven bounds: DSU, Bisect, Poset, LRU, Grounding, GCM, HKDF, Blind Index, Entropy, SAC, Stackelberg, Retention |

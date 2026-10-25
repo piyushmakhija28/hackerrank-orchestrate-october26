@@ -58,17 +58,17 @@ The 518 requests in Northstar Shop's audit estate split into three distinct comp
 * **Average Output Tokens:** 35 tokens
 * **Total Cost (10 cases):** < $0.001 USD
 
-### 2. Verified Compliant Deletion Requests (`COMPLETE`, 264 cases)
+### 2. Verified Compliant Deletion Requests (`COMPLETE`, 248 cases)
 * **Characteristics:** Cross-referencing primary database, replicas, and audit ledger; proving absence of residual PII and presence of statutory audit records.
 * **Average Input Tokens:** 2,680 tokens
 * **Average Output Tokens:** 420 tokens
-* **Total Cost (264 cases):** $0.086 USD
+* **Total Cost (248 cases):** $0.081 USD
 
-### 3. Residual Finding & Remediation Requests (`INCOMPLETE`, 244 cases)
+### 3. Residual Finding & Remediation Requests (`INCOMPLETE`, 260 cases)
 * **Characteristics:** Detection of residual PII, active sync bridges, or restore risks; formulating ordered 3-phase remediation plans (`FINDING` $\to$ `REMEDIATION` $\to$ `VERIFICATION`).
 * **Average Input Tokens:** 3,140 tokens
 * **Average Output Tokens:** 810 tokens
-* **Total Cost (244 cases):** $0.117 USD
+* **Total Cost (260 cases):** $0.125 USD
 
 ---
 

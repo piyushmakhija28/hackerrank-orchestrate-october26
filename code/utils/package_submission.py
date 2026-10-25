@@ -53,6 +53,26 @@ class SubmissionPackager:
                     zf.write(ev_file, arcname=f"evaluation/{ev_file.name}")
                     file_count += 1
 
+            tests_dir = code_dir.parent / "tests"
+            if tests_dir.exists():
+                for t_file in tests_dir.rglob("*"):
+                    if t_file.is_file():
+                        if any(excluded in str(t_file) for excluded in cls.EXCLUDED_PATTERNS):
+                            continue
+                        arcname = t_file.relative_to(code_dir.parent)
+                        zf.write(t_file, arcname=arcname)
+                        file_count += 1
+
+            docs_dir = code_dir.parent / "docs"
+            if docs_dir.exists():
+                for d_file in docs_dir.rglob("*"):
+                    if d_file.is_file():
+                        if any(excluded in str(d_file) for excluded in cls.EXCLUDED_PATTERNS):
+                            continue
+                        arcname = d_file.relative_to(code_dir.parent)
+                        zf.write(d_file, arcname=arcname)
+                        file_count += 1
+
             for file_path in code_dir.rglob("*"):
                 if file_path.is_file():
                     path_str = str(file_path)
