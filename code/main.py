@@ -77,10 +77,11 @@ class DeletionAuditOrchestrator:
 
         if not self.container.policy_auditor.is_deletion_request(sanitized_text):
             dur_ms = (datetime.now() - start_t).total_seconds() * 1000.0
+            self.metrics.record_verdict(AuditVerdict.NOT_APPLICABLE.value)
             self.replay_tracer.record_decision(
                 case_id=cid,
                 verdict=AuditVerdict.NOT_APPLICABLE.value,
-                seed_email=email,
+                seed_email=PiiShield.mask_pii_in_text(email),
                 cluster=set(),
                 findings=[],
                 verifications=[],
@@ -95,6 +96,7 @@ class DeletionAuditOrchestrator:
                 steps_json="[]",
             )
 
+        t_id_start = datetime.now()
         cluster: Set[str] = self.container.entity_resolver.resolve_cluster(email)
         cluster.add(email)
         uid = self.container.entity_resolver.email_to_user_id.get(email)
@@ -105,6 +107,8 @@ class DeletionAuditOrchestrator:
                 v = rec.get(k, "").lower().strip()
                 if v:
                     cluster.add(v)
+        id_dur_ms = (datetime.now() - t_id_start).total_seconds() * 1000.0
+        self.metrics.record_subagent_duration("identity_resolver", id_dur_ms)
 
         rep_dt: Optional[datetime] = None
         if reported_at:
@@ -133,37 +137,31 @@ class DeletionAuditOrchestrator:
                         if -300 <= diff <= 7200:
                             batch_acts.append(a)
 
-        candidate_facts = []
-        seen_keys = set()
+        t_inspect_start = datetime.now()
+        raw_candidate_facts = []
 
         for token in cluster:
             for f in self.container.multimodal_inspector.facts_by_token.get(token, []):
                 if f.captured_at <= audit_at:
-                    key = (f.system_id, f.resource_id, f.operation)
-                    if key not in seen_keys:
-                        candidate_facts.append(f)
-                        seen_keys.add(key)
+                    raw_candidate_facts.append(f)
 
         for res in user_resources:
             for f in self.container.multimodal_inspector.facts_by_res.get(res.lower(), []):
                 if f.captured_at <= audit_at:
-                    key = (f.system_id, f.resource_id, f.operation)
-                    if key not in seen_keys:
-                        candidate_facts.append(f)
-                        seen_keys.add(key)
+                    raw_candidate_facts.append(f)
 
-        if not candidate_facts and batch_acts:
+        if not raw_candidate_facts and batch_acts:
             for a in batch_acts:
                 res = a.get("resource_id", "")
                 for f in self.container.multimodal_inspector.facts_by_res.get(res.lower(), []):
                     if f.captured_at <= audit_at:
-                        key = (f.system_id, f.resource_id, f.operation)
-                        if key not in seen_keys:
-                            candidate_facts.append(f)
-                            seen_keys.add(key)
+                        raw_candidate_facts.append(f)
 
-        candidate_facts = self.container.context_builder.filter_causal_cone(candidate_facts, audit_at)
-        unique_facts, tokens_saved = self.container.token_optimizer.deduplicate_facts(candidate_facts)
+        inspect_dur_ms = (datetime.now() - t_inspect_start).total_seconds() * 1000.0
+        self.metrics.record_subagent_duration("multimodal_inspector", inspect_dur_ms)
+
+        candidate_facts = self.container.context_builder.filter_causal_cone(raw_candidate_facts, audit_at)
+        unique_facts, _ = self.container.token_optimizer.deduplicate_facts(candidate_facts)
         packed_facts = self.container.context_builder.build_knapsack_context(
             unique_facts, max_tokens=self.container.token_optimizer.max_context_tokens, cluster=cluster
         )
@@ -207,21 +205,33 @@ class DeletionAuditOrchestrator:
                 })
 
         verdict = AuditVerdict.INCOMPLETE if findings else AuditVerdict.COMPLETE
+        t_plan_start = datetime.now()
         steps = self.container.remediation_planner.build_steps(verdict, findings, verifications)
         steps_dicts = [s.to_dict() for s in steps]
+        plan_dur_ms = (datetime.now() - t_plan_start).total_seconds() * 1000.0
+        self.metrics.record_subagent_duration("remediation_planner", plan_dur_ms)
+        self.metrics.record_verdict(verdict.value)
+
         self.container.prompt_guard.validate_negative_constraints(verdict.value, steps_dicts)
 
         compact_ctx = self.container.token_optimizer.compact_serialize(packed_facts)
-        input_tokens = self.container.token_optimizer.estimate_tokens(compact_ctx)
+        compression_tokens_saved = self.container.token_optimizer.calculate_serialization_savings(
+            packed_facts, compact_ctx
+        )
+        input_tokens = self.container.token_optimizer.estimate_prompt_tokens(
+            compact_ctx, request_text=sanitized_text, include_system_prompt=True
+        )
         output_tokens = self.container.token_optimizer.estimate_tokens(json.dumps(steps_dicts))
-        self.container.token_optimizer.record_usage(input_tokens, output_tokens, tokens_saved)
+        self.container.token_optimizer.record_usage(
+            input_tokens, output_tokens, additional_tokens_saved=compression_tokens_saved
+        )
 
         dur_ms = (datetime.now() - start_t).total_seconds() * 1000.0
 
         self.replay_tracer.record_decision(
             case_id=cid,
             verdict=verdict.value,
-            seed_email=email,
+            seed_email=PiiShield.mask_pii_in_text(email),
             cluster=cluster,
             findings=findings,
             verifications=verifications,
@@ -312,7 +322,7 @@ def main() -> None:
     print(f"Telemetry: Audited={snapshot.total_requests or count}, Mean Latency={snapshot.mean_latency_ms}ms, P95={snapshot.p95_latency_ms}ms, Findings={snapshot.total_findings_reported}")
 
     token_stats = container.token_optimizer.get_telemetry()
-    print(f"AI Optimization: Input Tokens={token_stats['total_input_tokens']}, Output Tokens={token_stats['total_output_tokens']}, Saved Tokens={token_stats['total_tokens_saved']}, Est Cost=${token_stats['estimated_cost_usd']}")
+    print(f"AI Optimization: Input Tokens={token_stats['total_input_tokens']}, Output Tokens={token_stats['total_output_tokens']}, Saved Tokens={token_stats['total_tokens_saved']} (Dedup={token_stats['total_dedup_saved']}, Dense={token_stats['total_compression_saved']}), Est Cost=${token_stats['estimated_cost_usd']}")
 
     if args.debug_case:
         report = ReplayTracer.get_tracer().format_diagnostic_report(args.debug_case)

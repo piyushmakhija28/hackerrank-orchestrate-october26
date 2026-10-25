@@ -58,7 +58,10 @@ class AuditEvaluator:
             return (r.get("deletion_status") or r.get("status") or "").strip().upper()
 
         gt_map = {get_case_id(r): r for r in ground_truth if get_case_id(r)}
-        total = len(predictions)
+        pred_map = {get_case_id(r): r for r in predictions if get_case_id(r)}
+        common_cids = [cid for cid in pred_map if cid in gt_map]
+        total = len(common_cids)
+
         if total == 0:
             return {
                 "total_evaluated": 0,
@@ -66,7 +69,11 @@ class AuditEvaluator:
                 "exact_match_ratio": 0.0,
                 "macro_f1": 0.0,
                 "step_count_accuracy": 0.0,
-                "sequence_accuracy": 0.0,
+                "sequence_order_accuracy": 0.0,
+                "field_level_accuracy": 0.0,
+                "overlap_warning": True,
+                "warning_message": f"Zero overlapping case_ids between predictions ({len(predictions)}) and ground_truth ({len(ground_truth)}). Check case_id alignment.",
+                "per_class_metrics": {},
             }
 
         status_matches = 0
@@ -82,11 +89,8 @@ class AuditEvaluator:
         total_fields_matched = 0
         total_fields_expected = 0
 
-        for pred in predictions:
-            cid = get_case_id(pred)
-            if cid not in gt_map:
-                continue
-
+        for cid in common_cids:
+            pred = pred_map[cid]
             gt = gt_map[cid]
             pred_status = get_status(pred)
             gt_status = get_status(gt)
@@ -178,6 +182,7 @@ class AuditEvaluator:
             "sequence_order_accuracy": round(seq_acc, 4),
             "field_level_accuracy": round(field_acc, 4),
             "macro_f1": round(macro_f1, 4),
+            "overlap_warning": False,
             "per_class_metrics": per_class_summary,
         }
 
@@ -196,6 +201,11 @@ def main() -> None:
     print("=" * 70)
     print("HACKERRANK ORCHESTRATE — DELETION AUDIT EVALUATION SCORECARD")
     print("=" * 70)
+    if metrics.get("overlap_warning"):
+        print(f"WARNING: {metrics.get('warning_message')}")
+        print("=" * 70)
+        return
+
     print(f"Total Cases Evaluated   : {metrics['total_evaluated']}")
     print(f"Case Status Accuracy    : {metrics['status_accuracy'] * 100:.2f}%")
     print(f"Step Count Accuracy     : {metrics['step_count_accuracy'] * 100:.2f}%")

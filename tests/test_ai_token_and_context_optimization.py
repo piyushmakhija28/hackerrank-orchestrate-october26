@@ -315,3 +315,81 @@ def test_edge_06_tombstone_redacted_witness_validation() -> None:
     is_valid, err = guard.validate_step_schema(step)
     assert is_valid is True
     assert err is None
+
+
+def test_pos_07_prompt_tokens_estimation_reconciliation() -> None:
+    """Verifies that prompt token estimation correctly models multi-agent system prompt baseline."""
+    optimizer = TokenOptimizer()
+    sample_facts = "account_service|account_01|REPORT_REMAINING_RECORD|PRESENT|evidence_01"
+    req_text = "Please delete my account and personal data."
+    total_tokens = optimizer.estimate_prompt_tokens(sample_facts, req_text, include_system_prompt=True)
+    assert total_tokens > optimizer.SYSTEM_PROMPT_BASE_TOKENS
+    assert total_tokens >= 2470
+
+
+def test_pos_08_calculate_serialization_savings() -> None:
+    """Verifies that dense serialization yields positive compression savings over verbose JSON."""
+    optimizer = TokenOptimizer()
+    facts = [
+        EvidenceFact(
+            system_id="account_service",
+            resource_id="account_001",
+            operation="REPORT_REMAINING_RECORD",
+            state="PRESENT",
+            evidence_id="evidence_01",
+            captured_at="2026-09-01T12:00:00Z",
+            is_finding=True,
+        ),
+        EvidenceFact(
+            system_id="support_service",
+            resource_id="ticket_999",
+            operation="REPORT_EXPOSED_PII",
+            state="PRESENT",
+            evidence_id="evidence_02",
+            captured_at="2026-09-01T12:00:00Z",
+            is_finding=True,
+        ),
+    ]
+    compact_str = optimizer.compact_serialize(facts)
+    savings = optimizer.calculate_serialization_savings(facts, compact_str)
+    assert savings > 0
+
+
+def test_neg_07_empty_payloads_graceful_handling() -> None:
+    """Verifies that empty strings, empty lists, and None payloads return zero without crashing."""
+    optimizer = TokenOptimizer()
+    assert optimizer.estimate_tokens("") == 0
+    assert optimizer.estimate_prompt_tokens("", "", include_system_prompt=False) == 0
+    assert optimizer.calculate_serialization_savings([], "") == 0
+    u, s = optimizer.deduplicate_facts([])
+    assert u == []
+    assert s == 0
+
+
+def test_edge_07_multithreaded_token_optimizer_concurrency() -> None:
+    """Verifies that concurrent multi-threaded worker calls maintain exact token counter integrity."""
+    from concurrent.futures import ThreadPoolExecutor
+
+    optimizer = TokenOptimizer()
+    base_fact = EvidenceFact(
+        system_id="database",
+        resource_id="row_100",
+        operation="REPORT_REMAINING_RECORD",
+        state="PRESENT",
+        evidence_id="evidence_01",
+        captured_at="2026-09-01T12:00:00Z",
+        is_finding=True,
+    )
+
+    def worker_task(worker_id: int) -> None:
+        optimizer.deduplicate_facts([base_fact, base_fact])
+        optimizer.record_usage(input_tokens=100, output_tokens=50, additional_tokens_saved=10)
+
+    with ThreadPoolExecutor(max_workers=8) as executor:
+        list(executor.map(worker_task, range(20)))
+
+    telemetry = optimizer.get_telemetry()
+    assert telemetry["total_input_tokens"] == 2000
+    assert telemetry["total_output_tokens"] == 1000
+    assert telemetry["total_compression_saved"] == 200
+    assert telemetry["total_tokens_saved"] >= 200

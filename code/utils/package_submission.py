@@ -1,13 +1,15 @@
-"""
-Zero-Error Submission Packager for HackerRank Orchestrate.
+"""Zero-Error Submission Packager for HackerRank Orchestrate.
+
 Packages code.zip (excluding datasets and virtualenvs) and verifies all 3 deliverables.
 Conforms strictly to Level 2.2 Docstrings-Only convention (no inline narration).
 """
-import zipfile
-import shutil
+
 import argparse
 from pathlib import Path
-from typing import Tuple, List
+import shutil
+from typing import List, Tuple
+import zipfile
+
 
 class SubmissionPackager:
     """Packages code and verifies the three required deliverables for HackerRank."""
@@ -22,13 +24,13 @@ class SubmissionPackager:
         ".git",
         ".idea",
         ".vscode",
-        ".DS_Store"
+        ".DS_Store",
     }
 
     @classmethod
     def create_code_zip(cls, code_dir: Path, zip_output: Path) -> int:
-        """Create a clean zip archive containing only the code/ directory.
-        
+        """Create a clean zip archive containing only the code/ directory and required root manifests.
+
         Args:
             code_dir: Path to code/ source directory.
             zip_output: Destination path for code.zip.
@@ -39,15 +41,18 @@ class SubmissionPackager:
         file_count = 0
 
         with zipfile.ZipFile(zip_output, mode="w", compression=zipfile.ZIP_DEFLATED) as zf:
-            readme_path = code_dir.parent / "README.md"
-            if readme_path.exists():
-                zf.write(readme_path, arcname="README.md")
-                file_count += 1
+            for root_doc in ["README.md", "requirements.txt", "VERSION"]:
+                doc_path = code_dir.parent / root_doc
+                if doc_path.exists():
+                    zf.write(doc_path, arcname=root_doc)
+                    file_count += 1
+
             eval_dir = code_dir.parent / "evaluation"
             if eval_dir.exists():
                 for ev_file in eval_dir.glob("*.md"):
                     zf.write(ev_file, arcname=f"evaluation/{ev_file.name}")
                     file_count += 1
+
             for file_path in code_dir.rglob("*"):
                 if file_path.is_file():
                     path_str = str(file_path)
@@ -56,6 +61,11 @@ class SubmissionPackager:
                     arcname = file_path.relative_to(code_dir.parent)
                     zf.write(file_path, arcname=arcname)
                     file_count += 1
+
+        root_zip = code_dir.parent / "code.zip"
+        if zip_output.resolve() != root_zip.resolve():
+            shutil.copy2(zip_output, root_zip)
+
         return file_count
 
     @classmethod
@@ -64,10 +74,10 @@ class SubmissionPackager:
         code_dir: Path,
         predictions_csv: Path,
         transcript_log: Path,
-        submission_dir: Path
+        submission_dir: Path,
     ) -> Tuple[bool, List[str]]:
         """Assemble all 3 deliverables into the submission directory and verify them.
-        
+
         Args:
             code_dir: Path to code directory.
             predictions_csv: Path to output.csv.
@@ -98,11 +108,12 @@ class SubmissionPackager:
             messages.append(f"3. Chat Transcript: MISSING at {transcript_log}!")
 
         all_present = (
-            (submission_dir / "code.zip").exists() and
-            (submission_dir / "output.csv").exists() and
-            (submission_dir / "log.txt").exists()
+            (submission_dir / "code.zip").exists()
+            and (submission_dir / "output.csv").exists()
+            and (submission_dir / "log.txt").exists()
         )
         return all_present, messages
+
 
 def main() -> None:
     """CLI entrypoint for packaging."""
@@ -117,14 +128,15 @@ def main() -> None:
         Path(args.code),
         Path(args.predictions),
         Path(args.transcript),
-        Path(args.dest)
+        Path(args.dest),
     )
     for m in msgs:
         print(m)
     if success:
-        print("\nAll 3 submission deliverables ready in submission/ directory!")
+        print("ALL 3 DELIVERABLES VERIFIED & READY FOR HACKERRANK SUBMISSION!")
     else:
-        print("\nSubmission packaging incomplete. Check missing files above.")
+        print("ERROR: Submission assembly incomplete!")
+
 
 if __name__ == "__main__":
     main()
