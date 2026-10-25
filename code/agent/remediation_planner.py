@@ -169,8 +169,15 @@ class RemediationPlanner(IRemediationPlanner):
         raw_steps.sort(key=step_sort_key)
 
         ordered_steps: List[AuditStep] = []
-        for idx, s in enumerate(raw_steps, start=1):
-            s.step_no = idx
+        seen_keys: Set[Tuple[str, str, str, str, str, str]] = set()
+        step_counter = 1
+        for s in raw_steps:
+            k = (s.phase.value, s.system_id, s.resource_id, s.operation.value, s.state.value, s.evidence_id)
+            if k in seen_keys:
+                continue
+            seen_keys.add(k)
+            s.step_no = step_counter
             ordered_steps.append(s)
+            step_counter += 1
 
         return ordered_steps

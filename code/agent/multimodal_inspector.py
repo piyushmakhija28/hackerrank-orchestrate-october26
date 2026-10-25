@@ -396,22 +396,55 @@ class MultimodalInspector:
                     line = line.strip()
                     if not line:
                         continue
-                    kvs = {k: v1 or v2 for k, v1, v2 in kv_pattern.findall(line)}
-                    tid = kvs.get("trace_id")
 
-                    for key in [
-                        "match_key", "lookup_key", "subject_key", "subject_ref", "subject_reference",
-                        "correlation_key", "matched_value", "scan_key", "query", "email", "customer_reference"
-                    ]:
-                        val = kvs.get(key)
-                        if val and tid:
-                            trace_context[tid]["ids"].add(str(val).lower().strip())
+                    kvs = {}
+                    service = None
+                    tid = None
+                    event = ""
 
-                    if tid and kvs.get("resource_id"):
-                        trace_context[tid]["resource_id"] = kvs.get("resource_id")
-                    if tid and kvs.get("service"):
-                        trace_context[tid]["service"] = kvs.get("service")
+                    idx = line.find("{")
+                    if idx != -1 and line.endswith("}"):
+                        try:
+                            kvs = json.loads(line[idx:])
+                            service = kvs.get("service") or kvs.get("logger")
+                            tid = kvs.get("trace_id")
+                            event = kvs.get("event", "")
+                        except Exception:
+                            kvs = {}
+
+                    if not kvs and "|" in line:
+                        parts = [p.strip() for p in line.split("|")]
+                        if len(parts) >= 5:
+                            service = parts[2]
+                            tid = parts[3]
+                            event = parts[4]
+                            rest = "|".join(parts[5:]) if len(parts) > 5 else ""
+                            kvs = {k: v1 or v2 for k, v1, v2 in kv_pattern.findall(rest)}
+                            kvs["service"] = service
+                            kvs["trace_id"] = tid
+                            kvs["event"] = event
+
+                    if not kvs:
+                        kvs = {k: v1 or v2 for k, v1, v2 in kv_pattern.findall(line)}
+                        service = kvs.get("service")
+                        tid = kvs.get("trace_id")
+                        event = kvs.get("event", "")
+
                     if tid:
+                        if service:
+                            trace_context[tid]["service"] = service
+                        if kvs.get("resource_id"):
+                            trace_context[tid]["resource_id"] = kvs.get("resource_id")
+
+                        for key in [
+                            "match_key", "lookup_key", "subject_key", "subject_ref", "subject_reference",
+                            "correlation_key", "matched_value", "scan_key", "query", "email", "customer_reference",
+                            "user_id", "requester_email"
+                        ]:
+                            val = kvs.get(key)
+                            if val and str(val).lower().strip() not in ["null", "none", "nil", "undefined", ""]:
+                                trace_context[tid]["ids"].add(str(val).lower().strip())
+
                         trace_context[tid]["events"].append(kvs)
 
             for tid, ctx in trace_context.items():
@@ -445,17 +478,21 @@ class MultimodalInspector:
                     elif service == "support_platform":
                         marker_found = ev.get("marker_found", "").lower()
                         rows = ev.get("rows")
+                        req_em = ev.get("requester_email") or ev.get("email")
+                        has_real_req_email = req_em and str(req_em).lower().strip() not in ["null", "none", "nil", "undefined", ""]
                         if marker_found == "false" or rows == "1":
                             facts.append(EvidenceFact(eid, cap_at, service, res_id, "REPORT_REMAINING_RECORD", "PRESENT", True, ids))
-                        elif "pii_scan" in event:
+                        elif "pii_scan" in event or has_real_req_email:
                             facts.append(EvidenceFact(eid, cap_at, service, res_id, "REPORT_EXPOSED_PII", "PRESENT", True, ids))
                         elif "redacted" in event or "clean" in event:
                             facts.append(EvidenceFact(eid, cap_at, service, res_id, "VERIFY_RECORD_REDACTED", "REDACTED", False, ids))
                     elif service == "analytics_platform":
                         rows = ev.get("rows")
+                        em = ev.get("email")
+                        has_real_email = em and str(em).lower().strip() not in ["null", "none", "nil", "undefined", ""]
                         if "contact_lookup" in event and rows == "1":
                             facts.append(EvidenceFact(eid, cap_at, service, res_id, "REPORT_REMAINING_RECORD", "PRESENT", True, ids))
-                        elif ev.get("email") or "identified" in event:
+                        elif has_real_email or "identified" in event:
                             facts.append(EvidenceFact(eid, cap_at, service, res_id, "REPORT_EXPOSED_PII", "PRESENT", True, ids))
                         else:
                             facts.append(EvidenceFact(eid, cap_at, service, res_id, "VERIFY_RECORD_ANONYMIZED", "ANONYMIZED", False, ids))
@@ -559,6 +596,91 @@ class MultimodalInspector:
                 cur.execute("SELECT resource_id, email, user_id FROM customer_profiles_failover_replica;")
                 for r in cur.fetchall():
                     facts.append(EvidenceFact(eid, cap_at, "account_service", r[0], "REPORT_REMAINING_RECORD", "PRESENT", True, [r[1], r[2]]))
+
+            if "customer_profiles_primary" in tables:
+                cur.execute("SELECT resource_id, email, user_id FROM customer_profiles_primary;")
+                for r in cur.fetchall():
+                    facts.append(EvidenceFact(eid, cap_at, "account_service", r[0], "REPORT_REMAINING_RECORD", "PRESENT", True, [r[1], r[2]]))
+
+            json_replica_tables = [
+                "customer_data_read_replica",
+                "customer_data_primary",
+                "customer_data_failover_replica",
+                "customer_data_replica_ap_south",
+                "customer_data_replica_eu_west",
+                "customer_data_reporting_replica",
+            ]
+            for jt in json_replica_tables:
+                if jt in tables:
+                    cur.execute(f"SELECT resource_id, origin_system, collection_name, record_json FROM {jt};")
+                    for res_id, origin_sys, coll_name, rec_json in cur.fetchall():
+                        try:
+                            rec = json.loads(rec_json)
+                        except Exception:
+                            continue
+                        def extract_ids(obj: Any) -> List[str]:
+                            res = []
+                            if isinstance(obj, dict):
+                                for k, v in obj.items():
+                                    if k in [
+                                        "customer_reference", "user_id", "email", "requester_email", "owner_email",
+                                        "phone", "full_name", "display_name", "email_hash", "subject_reference"
+                                    ]:
+                                        if v and str(v).lower().strip() not in ["null", "none", "nil", "undefined", ""]:
+                                            res.append(str(v).lower().strip())
+                                    if isinstance(v, (dict, list)):
+                                        res.extend(extract_ids(v))
+                            elif isinstance(obj, list):
+                                for it in obj:
+                                    res.extend(extract_ids(it))
+                            return res
+
+                        ids = extract_ids(rec)
+
+                        op = "REPORT_REMAINING_RECORD"
+                        st = "PRESENT"
+                        is_find = True
+
+                        if origin_sys == "account_service":
+                            acc_st = rec.get("account_status")
+                            if acc_st == "DELETED":
+                                op, st, is_find = "VERIFY_RECORD_ABSENT", "ABSENT", False
+                            else:
+                                op, st, is_find = "REPORT_REMAINING_RECORD", "PRESENT", True
+                        elif origin_sys == "search_service":
+                            op, st, is_find = "REPORT_REMAINING_RECORD", "PRESENT", True
+                        elif origin_sys == "analytics_platform":
+                            em = rec.get("email")
+                            has_email = em and str(em).lower().strip() not in ["null", "none", "nil", "undefined", ""]
+                            if has_email or rec.get("user_id"):
+                                op, st, is_find = "REPORT_EXPOSED_PII", "PRESENT", True
+                            else:
+                                op, st, is_find = "VERIFY_RECORD_ANONYMIZED", "ANONYMIZED", False
+                        elif origin_sys == "support_platform":
+                            em = rec.get("email") or rec.get("requester_email")
+                            has_email = em and str(em).lower().strip() not in ["null", "none", "nil", "undefined", ""]
+                            if has_email:
+                                op, st, is_find = "REPORT_EXPOSED_PII", "PRESENT", True
+                            else:
+                                op, st, is_find = "VERIFY_RECORD_REDACTED", "REDACTED", False
+                        elif origin_sys == "export_service":
+                            op, st, is_find = "REPORT_REMAINING_RECORD", "PRESENT", True
+                        elif origin_sys == "integration_service":
+                            en = rec.get("enabled")
+                            if en in [1, True, "true", "1"]:
+                                op, st, is_find = "REPORT_ACTIVE_DATA_FLOW", "ACTIVE", True
+                            else:
+                                op, st, is_find = "VERIFY_DATA_FLOW_DISABLED", "DISABLED", False
+                        elif origin_sys == "backup_service":
+                            rest = rec.get("restore_allowed")
+                            if rest in [1, True, "true", "1"]:
+                                op, st, is_find = "REPORT_RESTORE_RISK", "ACTIVE", True
+                            else:
+                                op, st, is_find = "VERIFY_RESTORE_BLOCKED", "BLOCKED", False
+                        elif origin_sys == "security_service":
+                            op, st, is_find = "VERIFY_RECORD_PRESENT", "PRESENT", False
+
+                        facts.append(EvidenceFact(eid, cap_at, origin_sys, res_id, op, st, is_find, ids))
         except Exception:
             pass
         return facts

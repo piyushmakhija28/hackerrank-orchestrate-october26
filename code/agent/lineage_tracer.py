@@ -113,7 +113,7 @@ class LineageTracer:
         self,
         rep_dt: Optional[datetime],
         window_seconds: int = 7200,
-        lead_seconds: int = 300,
+        lead_seconds: int = 1800,
     ) -> List[Dict[str, str]]:
         """Retrieves deletion_worker batch activities within [-lead_seconds, +window_seconds] via binary search.
 
