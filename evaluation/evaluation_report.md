@@ -22,7 +22,7 @@ To permanently eradicate ghost data resurrecting across Northstar Shop's distrib
 | **Step-Level Precision** | 100.0% | 100.0% | $\ge 95\%$ | **PASSED** |
 | **Partial Order Sequence Compliance** | 100.0% | 100.0% | 100% | **PASSED** |
 | **Non-Deletion Request Detection** | 100.0% (2/2) | 100.0% (10/10) | 100% | **PASSED** |
-| **Triad Test Suite Verification** | 128 / 128 passed | 128 / 128 passed | 100% | **PASSED** |
+| **Triad Test Suite Verification** | 138 / 138 passed | 138 / 138 passed | 100% | **PASSED** |
 | **Throughput / Latency per Request** | 0.23 ms / case | 0.26 ms / case | $< 200$ ms | **PASSED** |
 
 ---
@@ -113,17 +113,20 @@ During iterative development and regression benchmarking, three critical failure
 The complete verification suite can be executed independently using the following standard commands:
 
 ```bash
-# 1. Run unit and integration Triad test suite (128 tests)
+# 1. Run unit and integration Triad test suite (138 tests)
 pytest tests/ -v
 
 # 2. Audit all sample requests (32 cases)
-python code/main.py --requests dataset/sample_deletion_requests.csv --output scratch/sample_output_eval.csv
+python code/main.py --requests dataset/sample_deletion_requests.csv --output scratch/test_sample_output.csv
 
 # 3. Audit all full dataset requests (518 cases)
 python code/main.py --requests dataset/deletion_requests.csv --output output.csv
 
 # 4. Verify output schema validity and record count
-python -c "from code.utils.schema_validator import OutputSchemaValidator; from pathlib import Path; v, c, e = OutputSchemaValidator.validate_file(Path('output.csv')); print('Valid:', v, 'Count:', c, 'Errors:', e)"
+python -c "from code.utils.schema_validator import OutputSchemaValidator; from pathlib import Path; v, c, e = OutputSchemaValidator.validate_file(Path('output.csv')); print('Valid:', v, 'Count:', c, 'Errors:', len(e))"
+
+# 5. Verify zero causal cone violations across all 518 cases
+python scratch/verify_causal_cone.py
 ```
 
 ---

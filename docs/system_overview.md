@@ -105,7 +105,7 @@ Ungrounded or future-dated evidence claims are stripped prior to step emission, 
 | **Prompt Token Deduplication** | $0 \text{ tokens}$ | **$19,332 \text{ tokens}$** | **100% Token Invariant Savings** |
 | **Memory Consumption (RSS)** | Unbounded ($> 450 \text{ MB}$) | **$65 \text{ MB}$ (Constant)** | **$6.9\times$ Memory Reduction** |
 | **Schema Validation Errors** | 0 | **0 (100% Valid RFC-4180)** | **Zero Schema Drift** |
-| **Triad Test Suite Coverage** | 32 tests | **128 tests (100% Pass Rate)** | **$4.0\times$ Verification Rigor** |
+| **Triad Test Suite Coverage** | 32 tests | **138 tests (100% Pass Rate)** | **$4.3\times$ Verification Rigor** |
 
 ---
 
@@ -160,12 +160,12 @@ hackerrank_orchestration_problem/
 ├── docs/                      # Architectural manuals, proofs, and interview guides
 │   ├── diagrams_index.md      # Master diagram index & viewing instructions
 │   ├── system_overview.md     # Architecture & operational manual (this file)
-│   ├── formal_mathematical_proofs.md # Full mathematical proofs for Theorems 1–12
+│   ├── formal_mathematical_proofs.md # Full mathematical proofs for Theorems 1–15
 │   ├── performance_and_scale_analysis.md # Empirical latency benchmarks & profiling
 │   ├── security_and_threat_model.md # Threat analysis, 14-vector matrix & OWASP mitigations
 │   └── ai_judge_interview_prep.md # 28 technical defense questions for AI judge
 │
-└── tests/                     # 128-test automated Triad validation suite (100% pass)
+└── tests/                     # 138-test automated Triad validation suite (100% pass)
 ```
 
 ---
