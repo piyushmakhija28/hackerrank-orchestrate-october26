@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" type="diagram" version="24.0.0">
+  <diagram id="diagram_obj" name="Runtime Object Heap Snapshot (case_005)">
+    <mxGraphModel dx="1422" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="950" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- OBJECT: req_005 -->
+        <mxCell id="obj_req" value="&lt;u&gt;req_005 : CaseContext&lt;/u&gt;&#xa;----------------------------------------------------&#xa;case_id = &quot;case_005&quot;&#xa;email = &quot;richard.soto@enterprise.io&quot;&#xa;requested_at = 2026-10-14T08:15:00Z&#xa;reported_status = &quot;COMPLETE&quot;&#xa;audit_at = 2026-10-15T14:30:00Z&#xa;request_text = &quot;Please delete all my personal data.&quot;" style="swimlane;fontStyle=1;align=center;startSize=26;container=1;collapsible=0;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;strokeWidth=1.5;spacingLeft=6;" vertex="1" parent="1">
+          <mxGeometry x="60" y="40" width="380" height="150" as="geometry" />
+        </mxCell>
+
+        <!-- OBJECT: dsu_cluster -->
+        <mxCell id="obj_dsu" value="&lt;u&gt;cluster_005 : DisjointSetUnion&lt;/u&gt;&#xa;----------------------------------------------------&#xa;canonical_root = &quot;user_89104&quot;&#xa;orbit_size = 4&#xa;tokens = {&quot;user_89104&quot;, &quot;richard.soto@enterprise.io&quot;,&#xa;          &quot;r.soto@oldcorp.com&quot;, &quot;+1-555-019-8234&quot;}&#xa;lookup_latency = 0.04ms [O(α(N))]" style="swimlane;fontStyle=1;align=center;startSize=26;container=1;collapsible=0;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;strokeWidth=1.5;spacingLeft=6;" vertex="1" parent="1">
+          <mxGeometry x="520" y="40" width="380" height="150" as="geometry" />
+        </mxCell>
+
+        <!-- OBJECT: verdict_005 -->
+        <mxCell id="obj_verdict" value="&lt;u&gt;verdict_005 : CaseVerdict&lt;/u&gt;&#xa;----------------------------------------------------&#xa;deletion_status = INCOMPLETE&#xa;residual_records_found = 1&#xa;active_flows_found = 1&#xa;total_steps = 3&#xa;witness_grounding_asserted = true" style="swimlane;fontStyle=1;align=center;startSize=26;container=1;collapsible=0;html=1;fillColor=#F8CECC;strokeColor=#B85450;strokeWidth=1.5;spacingLeft=6;" vertex="1" parent="1">
+          <mxGeometry x="970" y="40" width="370" height="150" as="geometry" />
+        </mxCell>
+
+        <!-- OBJECT: fact_db -->
+        <mxCell id="obj_fact" value="&lt;u&gt;fact_08 : EvidenceFact&lt;/u&gt;&#xa;----------------------------------------------------&#xa;evidence_id = &quot;evidence_08&quot;&#xa;system_id = &quot;customer_database&quot;&#xa;resource_id = &quot;users_replica_us_east&quot;&#xa;captured_at = 2026-10-15T11:00:00Z [≤ audit_at]&#xa;tokens_matched = {&quot;user_89104&quot;, &quot;r.soto@oldcorp.com&quot;}&#xa;pii_fields_present = [&quot;email&quot;, &quot;full_name&quot;, &quot;phone&quot;]&#xa;state = PRESENT" style="swimlane;fontStyle=1;align=center;startSize=26;container=1;collapsible=0;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;strokeWidth=1.5;spacingLeft=6;" vertex="1" parent="1">
+          <mxGeometry x="60" y="270" width="410" height="180" as="geometry" />
+        </mxCell>
+
+        <!-- OBJECT: flow_hazard -->
+        <mxCell id="obj_flow" value="&lt;u&gt;flow_4091 : SystemActivity&lt;/u&gt;&#xa;----------------------------------------------------&#xa;activity_id = &quot;act_4091&quot;&#xa;system_id = &quot;cdc_pipeline&quot;&#xa;resource_id = &quot;kafka_user_sync_stream&quot;&#xa;event_type = &quot;SYNCHRONIZATION_ACTIVE&quot;&#xa;hazard_type = REPORT_ACTIVE_DATA_FLOW&#xa;timestamp = 2026-10-15T12:45:00Z [≤ audit_at]&#xa;state = ACTIVE" style="swimlane;fontStyle=1;align=center;startSize=26;container=1;collapsible=0;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;strokeWidth=1.5;spacingLeft=6;" vertex="1" parent="1">
+          <mxGeometry x="520" y="270" width="380" height="180" as="geometry" />
+        </mxCell>
+
+        <!-- OBJECT: step_1 (Finding) -->
+        <mxCell id="obj_step1" value="&lt;u&gt;step_1 : AuditStep&lt;/u&gt;&#xa;----------------------------------------------------&#xa;step_no = 1&#xa;phase = FINDING&#xa;system_id = &quot;customer_database&quot;&#xa;resource_id = &quot;users_replica_us_east&quot;&#xa;operation = REPORT_REMAINING_RECORD&#xa;state = PRESENT&#xa;evidence_id = &quot;evidence_08&quot; [Grounding Cited]" style="swimlane;fontStyle=1;align=center;startSize=26;container=1;collapsible=0;html=1;fillColor=#E1D5E7;strokeColor=#9673A6;strokeWidth=1.5;spacingLeft=6;" vertex="1" parent="1">
+          <mxGeometry x="60" y="520" width="390" height="180" as="geometry" />
+        </mxCell>
+
+        <!-- OBJECT: step_2 (Remediation) -->
+        <mxCell id="obj_step2" value="&lt;u&gt;step_2 : AuditStep&lt;/u&gt;&#xa;----------------------------------------------------&#xa;step_no = 2&#xa;phase = REMEDIATION&#xa;system_id = &quot;customer_database&quot;&#xa;resource_id = &quot;users_replica_us_east&quot;&#xa;operation = DELETE_RECORD&#xa;state = ABSENT&#xa;evidence_id = &quot;&quot; [Mandatory Empty for Future]" style="swimlane;fontStyle=1;align=center;startSize=26;container=1;collapsible=0;html=1;fillColor=#FFE6CC;strokeColor=#D79B00;strokeWidth=1.5;spacingLeft=6;" vertex="1" parent="1">
+          <mxGeometry x="500" y="520" width="400" height="180" as="geometry" />
+        </mxCell>
+
+        <!-- OBJECT: step_3 (Verification) -->
+        <mxCell id="obj_step3" value="&lt;u&gt;step_3 : AuditStep&lt;/u&gt;&#xa;----------------------------------------------------&#xa;step_no = 3&#xa;phase = VERIFICATION&#xa;system_id = &quot;customer_database&quot;&#xa;resource_id = &quot;users_replica_us_east&quot;&#xa;operation = VERIFY_RECORD_ABSENT&#xa;state = ABSENT&#xa;evidence_id = &quot;&quot; [Mandatory Empty for Post-Check]" style="swimlane;fontStyle=1;align=center;startSize=26;container=1;collapsible=0;html=1;fillColor=#D5E8D4;strokeColor=#82B366;strokeWidth=1.5;spacingLeft=6;" vertex="1" parent="1">
+          <mxGeometry x="940" y="520" width="400" height="180" as="geometry" />
+        </mxCell>
+
+        <!-- LINKS -->
+        <mxCell id="l_req_dsu" value="resolved to" style="endArrow=none;html=1;strokeColor=#333333;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="obj_req" target="obj_dsu" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="l_dsu_fact" value="matched token" style="endArrow=none;html=1;strokeColor=#333333;strokeWidth=2;exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" source="obj_dsu" target="obj_fact" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="l_dsu_flow" value="matched cluster" style="endArrow=none;html=1;strokeColor=#333333;strokeWidth=2;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" source="obj_dsu" target="obj_flow" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="l_verdict_req" value="decides" style="endArrow=none;html=1;strokeColor=#333333;strokeWidth=2;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="obj_verdict" target="obj_dsu" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="l_fact_s1" value="proves finding" style="endArrow=none;html=1;strokeColor=#333333;strokeWidth=2;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" source="obj_fact" target="obj_step1" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="l_s1_s2" value="remediated by (Poset order)" style="endArrow=classic;html=1;strokeColor=#333333;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="obj_step1" target="obj_step2" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="l_s2_s3" value="verified by" style="endArrow=classic;html=1;strokeColor=#333333;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="obj_step2" target="obj_step3" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2026-10-25T05:00:00.000Z" agent="Antigravity Multi-Agent Runtime" version="24.7.17" type="device">
+  <diagram id="class-diagram" name="UML 2.5.1 Full Class Diagram">
+    <mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2000" pageHeight="1400" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Canvas Header -->
+        <mxCell id="hdr" value="&lt;b&gt;Ghost Data Still Exists — UML 2.5.1 Enterprise Class Architecture&lt;/b&gt;&lt;br&gt;Clean Architecture Layering | Inversion of Control | O(alpha(N)) Transitive Identity Equivalence Orbits" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0f172a;strokeColor=#1e293b;fontColor=#ffffff;fontSize=18;align=center;" vertex="1" parent="1">
+          <mxGeometry x="50" y="30" width="1900" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================== -->
+        <!-- LAYER 1: DOMAIN MODELS & ENUMS (Top Left) -->
+        <!-- ============================================== -->
+        <mxCell id="grp_domain" value="1. Core Domain Models &amp; Enums (code/core/models.py)" style="swimlane;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#64748b;fontColor=#0f172a;fontSize=13;fontStyle=1;startSize=25;" vertex="1" parent="1">
+          <mxGeometry x="50" y="110" width="450" height="580" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c_verdict" value="&lt;b&gt;&amp;lt;&amp;lt;enumeration&amp;gt;&amp;gt;&lt;br&gt;AuditVerdict&lt;/b&gt;&lt;hr&gt;+ COMPLETE : str&lt;br&gt;+ INCOMPLETE : str&lt;br&gt;+ NOT_APPLICABLE : str" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f1f5f9;strokeColor=#94a3b8;fontColor=#0f172a;align=left;spacingLeft=10;fontSize=10;" vertex="1" parent="grp_domain">
+          <mxGeometry x="20" y="40" width="190" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c_phase" value="&lt;b&gt;&amp;lt;&amp;lt;enumeration&amp;gt;&amp;gt;&lt;br&gt;AuditPhase&lt;/b&gt;&lt;hr&gt;+ FINDING : str&lt;br&gt;+ REMEDIATION : str&lt;br&gt;+ VERIFICATION : str" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f1f5f9;strokeColor=#94a3b8;fontColor=#0f172a;align=left;spacingLeft=10;fontSize=10;" vertex="1" parent="grp_domain">
+          <mxGeometry x="240" y="40" width="190" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c_op" value="&lt;b&gt;&amp;lt;&amp;lt;enumeration&amp;gt;&amp;gt;&lt;br&gt;AuditOperation&lt;/b&gt;&lt;hr&gt;+ REPORT_REMAINING_RECORD&lt;br&gt;+ REPORT_EXPOSED_PII&lt;br&gt;+ REPORT_ACTIVE_DATA_FLOW&lt;br&gt;+ REPORT_RESTORE_RISK&lt;br&gt;+ DISABLE_DATA_FLOW&lt;br&gt;+ BLOCK_RESTORE&lt;br&gt;+ DELETE_RECORD / REDACT / ANONYMIZE&lt;br&gt;+ VERIFY_RECORD_ABSENT / PRESENT&lt;br&gt;+ VERIFY_RECORD_REDACTED / ANONYMIZED&lt;br&gt;+ VERIFY_DATA_FLOW_DISABLED / BLOCKED&lt;hr&gt;+ priority_rank(op: str) int" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f1f5f9;strokeColor=#94a3b8;fontColor=#0f172a;align=left;spacingLeft=10;fontSize=10;" vertex="1" parent="grp_domain">
+          <mxGeometry x="20" y="145" width="410" height="180" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c_step" value="&lt;b&gt;AuditStep&lt;/b&gt;&lt;hr&gt;+ step_no : int&lt;br&gt;+ phase : AuditPhase&lt;br&gt;+ system_id : str&lt;br&gt;+ resource_id : str&lt;br&gt;+ operation : AuditOperation&lt;br&gt;+ state : AuditState&lt;br&gt;+ evidence_id : str&lt;hr&gt;+ to_dict() : Dict[str, Any]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e2e8f0;strokeColor=#64748b;fontColor=#0f172a;align=left;spacingLeft=10;fontSize=10;" vertex="1" parent="grp_domain">
+          <mxGeometry x="20" y="340" width="190" height="140" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c_outrow" value="&lt;b&gt;DeletionAuditOutputRow&lt;/b&gt;&lt;hr&gt;+ case_id : str&lt;br&gt;+ deletion_status : str&lt;br&gt;+ steps_json : str&lt;hr&gt;+ to_csv_row() : List[str]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e2e8f0;strokeColor=#64748b;fontColor=#0f172a;align=left;spacingLeft=10;fontSize=10;" vertex="1" parent="grp_domain">
+          <mxGeometry x="240" y="340" width="190" height="140" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c_fact" value="&lt;b&gt;EvidenceFact&lt;/b&gt;&lt;hr&gt;+ file_id : str | system_id : str&lt;br&gt;+ resource_id : str | record_type : str&lt;br&gt;+ captured_at : str | tokens : Set[str]&lt;hr&gt;+ compute_fingerprint() : str" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e2e8f0;strokeColor=#64748b;fontColor=#0f172a;align=left;spacingLeft=10;fontSize=10;" vertex="1" parent="grp_domain">
+          <mxGeometry x="20" y="495" width="410" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================== -->
+        <!-- LAYER 2: ABSTRACT INTERFACES & AGENTS (Center Top) -->
+        <!-- ============================================== -->
+        <mxCell id="grp_agents" value="2. Multi-Agent Audit Squad (code/agent/ &amp; code/core/interfaces.py)" style="swimlane;whiteSpace=wrap;html=1;fillColor=#eff6ff;strokeColor=#3b82f6;fontColor=#1e3a8a;fontSize=13;fontStyle=1;startSize=25;" vertex="1" parent="1">
+          <mxGeometry x="530" y="110" width="670" height="580" as="geometry" />
+        </mxCell>
+
+        <mxCell id="i_resolver" value="&lt;b&gt;&amp;lt;&amp;lt;interface&amp;gt;&amp;gt;&lt;br&gt;IEntityResolver&lt;/b&gt;&lt;hr&gt;+ resolve_cluster(seed: str)* : Set[str]&lt;br&gt;+ load_identities_and_audit_log()*" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#2563eb;fontColor=#1e40af;align=left;spacingLeft=10;fontSize=10;" vertex="1" parent="grp_agents">
+          <mxGeometry x="20" y="40" width="300" height="70" as="geometry" />
+        </mxCell>
+
+        <mxCell id="i_policy" value="&lt;b&gt;&amp;lt;&amp;lt;interface&amp;gt;&amp;gt;&lt;br&gt;IPolicyAuditor&lt;/b&gt;&lt;hr&gt;+ is_deletion_request(text: str)* : bool&lt;br&gt;+ evaluate_retention(sys: str, res: str)*" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#2563eb;fontColor=#1e40af;align=left;spacingLeft=10;fontSize=10;" vertex="1" parent="grp_agents">
+          <mxGeometry x="350" y="40" width="300" height="70" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c_dsu" value="&lt;b&gt;DisjointSetUnion&lt;/b&gt;&lt;hr&gt;- parent : Dict[str, str]&lt;br&gt;- rank : Dict[str, int]&lt;hr&gt;+ find(item: str) : str&lt;br&gt;+ union(item_a: str, item_b: str) : void" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e0e7ff;strokeColor=#4f46e5;fontColor=#312e81;align=left;spacingLeft=10;fontSize=10;" vertex="1" parent="grp_agents">
+          <mxGeometry x="20" y="130" width="300" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c_resolver" value="&lt;b&gt;IdentityResolver&lt;/b&gt; (realizes IEntityResolver)&lt;hr&gt;- dsu : DisjointSetUnion&lt;br&gt;- _cluster_cache : Dict[str, Set[str]]&lt;br&gt;- email_to_user_id : Dict[str, str]&lt;br&gt;- user_id_to_record : Dict[str, dict]&lt;hr&gt;+ resolve_cluster(seed: str) : Set[str]&lt;br&gt;+ load_identities_and_audit_log(ids, audit)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#2563eb;fontColor=#1e40af;align=left;spacingLeft=10;fontSize=10;" vertex="1" parent="grp_agents">
+          <mxGeometry x="20" y="240" width="300" height="120" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c_inspector" value="&lt;b&gt;MultimodalInspector&lt;/b&gt;&lt;hr&gt;- facts_by_token : Dict[str, List[Fact]]&lt;br&gt;- facts_by_res : Dict[str, List[Fact]]&lt;br&gt;- in_memory_sqlite_dbs : Dict[str, Conn]&lt;hr&gt;+ load_and_index_manifest(manifest_csv)&lt;br&gt;+ inspect_all_evidence() : void&lt;br&gt;+ query_facts_for_tokens(tokens, cutoff)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#2563eb;fontColor=#1e40af;align=left;spacingLeft=10;fontSize=10;" vertex="1" parent="grp_agents">
+          <mxGeometry x="20" y="380" width="300" height="120" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c_lineage" value="&lt;b&gt;LineageTracer&lt;/b&gt;&lt;hr&gt;- worker_activities_sorted : List[Tuple]&lt;br&gt;- worker_timestamps : List[datetime]&lt;br&gt;- activities_by_token : Dict[str, List]&lt;hr&gt;+ load_activities(activity_csv)&lt;br&gt;+ query_window_worker_activities(dt)&lt;br&gt;+ query_token_activities(tokens)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#2563eb;fontColor=#1e40af;align=left;spacingLeft=10;fontSize=10;" vertex="1" parent="grp_agents">
+          <mxGeometry x="350" y="130" width="300" height="120" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c_policy" value="&lt;b&gt;PolicyAuditor&lt;/b&gt; (realizes IPolicyAuditor)&lt;hr&gt;- rules : Dict[str, PolicyRule]&lt;br&gt;- non_deletion_indicators : List[str]&lt;hr&gt;+ is_deletion_request(text: str) : bool&lt;br&gt;+ evaluate_retention(sys, res) : Rule&lt;br&gt;+ determine_required_treatment(cat)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#2563eb;fontColor=#1e40af;align=left;spacingLeft=10;fontSize=10;" vertex="1" parent="grp_agents">
+          <mxGeometry x="350" y="270" width="300" height="110" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c_planner" value="&lt;b&gt;RemediationPlanner&lt;/b&gt; (realizes IRemediationPlanner)&lt;hr&gt;- PHASE_RANKS : Dict[Phase, int]&lt;hr&gt;+ build_steps(verdict, findings, verifs) : List[AuditStep]&lt;br&gt;- injective_sort_key(step) : Tuple[int, int, str, str, str, str]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#2563eb;fontColor=#1e40af;align=left;spacingLeft=10;fontSize=10;" vertex="1" parent="grp_agents">
+          <mxGeometry x="350" y="400" width="300" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================== -->
+        <!-- LAYER 3: AI TOKEN & CONTEXT SUBSYSTEM (Right Top) -->
+        <!-- ============================================== -->
+        <mxCell id="grp_ai" value="3. AI Token &amp; Context Subsystem (code/ai/)" style="swimlane;whiteSpace=wrap;html=1;fillColor=#f0fdf4;strokeColor=#16a34a;fontColor=#14532d;fontSize=13;fontStyle=1;startSize=25;" vertex="1" parent="1">
+          <mxGeometry x="1230" y="110" width="410" height="360" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c_ctx" value="&lt;b&gt;ContextBuilder&lt;/b&gt;&lt;hr&gt;- max_budget : int (4096)&lt;br&gt;- priority_weights : Dict[str, int]&lt;hr&gt;+ filter_causal_cone(facts, audit_at)&lt;br&gt;+ build_knapsack_context(facts, max_tokens)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dcfce7;strokeColor=#16a34a;fontColor=#14532d;align=left;spacingLeft=10;fontSize=10;" vertex="1" parent="grp_ai">
+          <mxGeometry x="20" y="40" width="370" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c_tok" value="&lt;b&gt;TokenOptimizer&lt;/b&gt;&lt;hr&gt;+ total_dedup_saved : int (19,332)&lt;br&gt;+ total_compression_saved : int&lt;hr&gt;+ estimate_prompt_tokens(text: str) : int&lt;br&gt;+ deduplicate_facts(facts) : Tuple[List, int]&lt;br&gt;+ serialize_facts_dense(facts) : str" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dcfce7;strokeColor=#16a34a;fontColor=#14532d;align=left;spacingLeft=10;fontSize=10;" vertex="1" parent="grp_ai">
+          <mxGeometry x="20" y="145" width="370" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c_guard" value="&lt;b&gt;PromptGuard&lt;/b&gt;&lt;hr&gt;- valid_manifest_file_ids : Set[str]&lt;br&gt;- file_id_to_captured_at : Dict[str, str]&lt;hr&gt;+ verify_witness_grounding(steps, audit_at) : bool&lt;br&gt;+ sanitize_step(step: AuditStep) : AuditStep" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dcfce7;strokeColor=#16a34a;fontColor=#14532d;align=left;spacingLeft=10;fontSize=10;" vertex="1" parent="grp_ai">
+          <mxGeometry x="20" y="260" width="370" height="85" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================== -->
+        <!-- LAYER 4: SECURITY GUARDRAILS (Right Middle) -->
+        <!-- ============================================== -->
+        <mxCell id="grp_sec" value="4. Security &amp; Ingress Defense (code/security/)" style="swimlane;whiteSpace=wrap;html=1;fillColor=#fff1f2;strokeColor=#e11d48;fontColor=#881337;fontSize=13;fontStyle=1;startSize=25;" vertex="1" parent="1">
+          <mxGeometry x="1230" y="490" width="410" height="200" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c_san" value="&lt;b&gt;InputSanitizer&lt;/b&gt;&lt;hr&gt;+ sanitize(raw_text: str)$ : str&lt;br&gt;+ is_adversarial_injection(text: str)$ : Tuple[bool, str, float]&lt;br&gt;+ compute_shannon_entropy(text: str)$ : float" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe4e6;strokeColor=#e11d48;fontColor=#881337;align=left;spacingLeft=10;fontSize=10;" vertex="1" parent="grp_sec">
+          <mxGeometry x="20" y="35" width="370" height="75" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c_pii" value="&lt;b&gt;PiiShield&lt;/b&gt;&lt;hr&gt;+ is_valid_luhn(card_number: str)$ : bool&lt;br&gt;+ mask_pii_in_text(text: str)$ : str&lt;br&gt;+ redact_dictionary(data: dict)$ : dict" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe4e6;strokeColor=#e11d48;fontColor=#881337;align=left;spacingLeft=10;fontSize=10;" vertex="1" parent="grp_sec">
+          <mxGeometry x="20" y="120" width="370" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================== -->
+        <!-- LAYER 5: SRE OBSERVABILITY (Bottom Left) -->
+        <!-- ============================================== -->
+        <mxCell id="grp_obs" value="5. SRE Observability &amp; Diagnostics (code/observability/)" style="swimlane;whiteSpace=wrap;html=1;fillColor=#faf5ff;strokeColor=#9333ea;fontColor=#581c87;fontSize=13;fontStyle=1;startSize=25;" vertex="1" parent="1">
+          <mxGeometry x="50" y="710" width="650" height="320" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c_log" value="&lt;b&gt;StructuredLogger&lt;/b&gt;&lt;hr&gt;- _service_name : str | - _logger : Logger&lt;br&gt;- _context_var : ContextVar[Dict[str, str]]$&lt;hr&gt;+ get_logger(name: str)$ : StructuredLogger&lt;br&gt;+ set_context(trace_id, case_id) : void&lt;br&gt;+ info / warning / error(msg, **kwargs)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f3e8ff;strokeColor=#9333ea;fontColor=#581c87;align=left;spacingLeft=10;fontSize=10;" vertex="1" parent="grp_obs">
+          <mxGeometry x="20" y="40" width="290" height="120" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c_tracer" value="&lt;b&gt;DistributedTracer&lt;/b&gt;&lt;hr&gt;- _active_span : ContextVar$&lt;hr&gt;+ get_tracer()$ : DistributedTracer&lt;br&gt;+ start_trace(case_id: str) : str&lt;br&gt;+ end_trace(trace_id: str) : void" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f3e8ff;strokeColor=#9333ea;fontColor=#581c87;align=left;spacingLeft=10;fontSize=10;" vertex="1" parent="grp_obs">
+          <mxGeometry x="340" y="40" width="290" height="120" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c_metrics" value="&lt;b&gt;MetricsCollector&lt;/b&gt;&lt;hr&gt;- verdict_counts : Dict[str, int]&lt;br&gt;- subagent_durations_ms : Dict[str, List]&lt;hr&gt;+ get_collector()$ : MetricsCollector&lt;br&gt;+ record_verdict(v) | record_subagent_duration()&lt;br&gt;+ get_percentiles(metric_name) : Dict[str, float]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f3e8ff;strokeColor=#9333ea;fontColor=#581c87;align=left;spacingLeft=10;fontSize=10;" vertex="1" parent="grp_obs">
+          <mxGeometry x="20" y="180" width="290" height="120" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c_replay" value="&lt;b&gt;ReplayTracer&lt;/b&gt;&lt;hr&gt;- decision_registry : Dict[str, dict]&lt;br&gt;- max_capacity : int (2,000 LRU)&lt;br&gt;- eviction_queue : List[str]&lt;hr&gt;+ record_decision(cid, verdict, steps, ...) : void&lt;br&gt;+ generate_ascii_rca(case_id: str) : str" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f3e8ff;strokeColor=#9333ea;fontColor=#581c87;align=left;spacingLeft=10;fontSize=10;" vertex="1" parent="grp_obs">
+          <mxGeometry x="340" y="180" width="290" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================== -->
+        <!-- LAYER 6: CONTAINER & PIPELINE (Bottom Right) -->
+        <!-- ============================================== -->
+        <mxCell id="grp_orch" value="6. Orchestration &amp; IoC Assembly (code/main.py &amp; code/container.py)" style="swimlane;whiteSpace=wrap;html=1;fillColor=#fffbeb;strokeColor=#d97706;fontColor=#78350f;fontSize=13;fontStyle=1;startSize=25;" vertex="1" parent="1">
+          <mxGeometry x="730" y="710" width="910" height="320" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c_container" value="&lt;b&gt;AuditContainer&lt;/b&gt; (Inversion of Control Container)&lt;hr&gt;+ dataset_dir : Path&lt;br&gt;+ entity_resolver : IdentityResolver&lt;br&gt;+ multimodal_inspector : MultimodalInspector&lt;br&gt;+ lineage_tracer : LineageTracer&lt;br&gt;+ policy_auditor : PolicyAuditor&lt;br&gt;+ remediation_planner : RemediationPlanner&lt;br&gt;+ token_optimizer : TokenOptimizer&lt;br&gt;+ context_builder : ContextBuilder&lt;br&gt;+ prompt_guard : PromptGuard&lt;hr&gt;+ initialize_identities() : void" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#d97706;fontColor=#78350f;align=left;spacingLeft=10;fontSize=10;" vertex="1" parent="grp_orch">
+          <mxGeometry x="20" y="40" width="410" height="260" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c_orch" value="&lt;b&gt;DeletionAuditOrchestrator&lt;/b&gt; (Master Pipeline Coordinator)&lt;hr&gt;+ container : AuditContainer&lt;br&gt;+ logger : StructuredLogger&lt;br&gt;+ tracer : DistributedTracer&lt;br&gt;+ replay_tracer : ReplayTracer&lt;br&gt;+ metrics : MetricsCollector&lt;hr&gt;+ audit_single_request(req: dict) : DeletionAuditOutputRow&lt;br&gt;+ audit_all_requests_concurrent(requests, max_workers=8)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#d97706;fontColor=#78350f;align=left;spacingLeft=10;fontSize=10;" vertex="1" parent="grp_orch">
+          <mxGeometry x="460" y="40" width="430" height="150" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c_csvh" value="&lt;b&gt;CsvHandler&lt;/b&gt;&lt;hr&gt;+ stream_requests(csv_path)$ : Generator&lt;br&gt;+ write_output_csv(out_path, rows)$ : void" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#d97706;fontColor=#78350f;align=left;spacingLeft=10;fontSize=10;" vertex="1" parent="grp_orch">
+          <mxGeometry x="460" y="210" width="200" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c_valid" value="&lt;b&gt;OutputSchemaValidator&lt;/b&gt;&lt;hr&gt;+ validate_output_file(output_csv)$ : Tuple&lt;br&gt;+ validate_steps_json_schema(steps_json)$" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#d97706;fontColor=#78350f;align=left;spacingLeft=10;fontSize=10;" vertex="1" parent="grp_orch">
+          <mxGeometry x="680" y="210" width="210" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================== -->
+        <!-- CONNECTORS / RELATIONSHIPS -->
+        <!-- ============================================== -->
+        <mxCell id="rel1" edge="1" source="c_resolver" target="c_dsu" parent="1" style="endArrow=diamond;endFill=1;strokeColor=#4f46e5;strokeWidth=2;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="rel2" edge="1" source="c_container" target="c_resolver" parent="1" style="endArrow=diamond;endFill=1;strokeColor=#2563eb;strokeWidth=2;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="rel3" edge="1" source="c_container" target="c_inspector" parent="1" style="endArrow=diamond;endFill=1;strokeColor=#2563eb;strokeWidth=2;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="rel4" edge="1" source="c_orch" target="c_container" parent="1" style="endArrow=diamond;endFill=1;strokeColor=#d97706;strokeWidth=2;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="rel5" edge="1" source="c_orch" target="c_outrow" parent="1" style="endArrow=open;dashed=1;strokeColor=#64748b;strokeWidth=1.5;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

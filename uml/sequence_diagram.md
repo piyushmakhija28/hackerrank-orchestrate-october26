@@ -1,94 +1,119 @@
-# UML Sequence Diagram: Autonomous Deletion Audit Agent
+# UML Sequence Diagram (Master Orchestration): Autonomous Deletion Audit Agent
 **Challenge:** HackerRank Orchestrate (October 2026) — *Ghost Data Still Exists*  
 **System:** Enterprise Deletion Audit Agent & Compliance Verification Platform  
-**Authors:** Visual Architecture & Design Squad (`multi-agent-graph-orchestration-engineer`, `uml-diagram-mathematics-expert`)  
-**Specification Standards:** Conforms to Level 2.2 Docstrings-Only convention and RFC-4180 / ISO-8601 contracts.
+**Authors:** Visual Architecture & Design Squad (`uml-interaction-diagram-engineer`, `orchestration-engineer`)  
+**Specification Standards:** Conforms to UML 2.5.1 Section 17.8 (Sequence Diagrams, Combined Fragments, Lifelines) and Level 2.2 Docstrings-Only convention.
+
+---
+
+## 1. End-to-End Multi-Agent Audit Sequence
+
+This sequence diagram models the end-to-end execution flow of auditing a customer deletion request row, capturing lifelines, synchronous and asynchronous message exchanges, parallel investigation forks, and conditional alt fragments.
 
 ```mermaid
 sequenceDiagram
     autonumber
-    actor User as Participant / CLI Runner
-    participant Main as code/main.py (Master Orchestrator)
-    participant Sanitize as InputSanitizer (Security)
-    participant Container as AuditContainer (IoC)
-    participant Identity as IdentityResolver (DSU Orbit Cache)
-    participant Inspector as MultimodalInspector (SQLite)
-    participant Lineage as LineageTracer (Bisect Search)
-    participant Policy as PolicyAuditor (NLU & Rules)
-    participant Context as ContextBuilder (Knapsack)
-    participant Optimizer as TokenOptimizer (BPE)
-    participant Planner as RemediationPlanner (5-Tuple Poset)
-    participant Guard as PromptGuard (Witness Verifier)
-    participant Replay as ReplayTracer (LRU 2000)
-    participant CSV as CSVHandler (RFC-4180)
+    actor Participant as Evaluator / Grader
+    participant Main as DeletionAuditOrchestrator
+    participant San as InputSanitizer
+    participant DSU as IdentityResolver (DSU)
+    participant Insp as MultimodalInspector (SQLite)
+    participant Lin as LineageTracer (Bisect)
+    participant Pol as PolicyAuditor (NLU)
+    participant Rem as RemediationPlanner (Poset DAG)
+    participant Grd as PromptGuard (Witness Assert)
+    participant Log as StructuredLogger (MDC)
+    participant Csv as CsvHandler (RFC-4180)
 
-    User->>Main: execute(python code/main.py --requests deletion_requests.csv)
-    
-    rect rgb(240, 248, 255)
-        Note over Main,Lineage: One-Time Static Pre-Indexing Phase (Amortized Zero-Cost)
-        Main->>Container: initialize()
-        activate Container
-        Container->>Policy: load_rules(deletion_rules.csv)
-        Container->>Identity: load_identities_and_audit_log(identities.csv, audit_log.csv)
-        Identity->>Identity: build_equivalence_orbit_cache() [Theorem 1]
-        Container->>Inspector: index_all_evidence(manifest.csv, evidence_dir)
-        Inspector->>Inspector: spinup_in_memory_sqlite_dbs()
-        Container->>Lineage: load_activities(system_activity.csv)
-        Lineage->>Lineage: sort_worker_timestamps() [Theorem 2]
-        Container-->>Main: container_ready (65 MB RAM)
-        deactivate Container
-    end
+    Participant->>Main: execute_pipeline(requests_csv, output_csv)
+    activate Main
 
-    loop For each DeletionRequest in deletion_requests.csv (518 cases)
-        Main->>Sanitize: sanitize(request_text)
-        Sanitize-->>Main: sanitized_text (OWASP LLM01 injection cleared)
+    Main->>Log: set_context(trace_id, "pipeline_start")
+    Main->>DSU: initialize_identities()
+    activate DSU
+    DSU-->>Main: identities_loaded (O(alpha(N)) cache ready)
+    deactivate DSU
 
-        Main->>Policy: is_deletion_authorized(sanitized_text)
-        alt Request is NOT an erasure mandate (Portability, Rectification, Opt-out)
-            Policy-->>Main: false
-            Main->>Planner: build_plan(case_id, is_authorized=False, ...)
-            Planner-->>Main: (NOT_APPLICABLE, [])
+    loop For each request row in deletion_requests.csv (518 cases)
+        Main->>San: sanitize(request_text)
+        activate San
+        San-->>Main: sanitized_text, is_injection=False
+        deactivate San
+
+        Main->>Pol: is_deletion_request(sanitized_text)
+        activate Pol
+        
+        alt Request is NOT authorized for deletion (Export, Rectification, Opt-out)
+            Pol-->>Main: is_deletion = False
+            Main->>Main: assign_verdict(NOT_APPLICABLE, steps=[])
+            Main->>Csv: write_row(case_id, "NOT_APPLICABLE", "[]")
         else Request authorizes deletion
-            Policy-->>Main: true
-            Main->>Identity: resolve_cluster(seed_email) [O(α(N))]
-            Identity-->>Main: identity_cluster (user_id, emails, phone, hashes)
+            Pol-->>Main: is_deletion = True
+            deactivate Pol
 
-            Main->>Inspector: find_exposed_records(identity_cluster, audit_at)
-            Inspector-->>Main: exposed_evidence_records
+            %% Entity Resolution
+            Main->>DSU: resolve_cluster(email)
+            activate DSU
+            DSU-->>Main: identity_cluster (user_id, emails, phone, hashes)
+            deactivate DSU
 
-            Main->>Lineage: query_token_activities(identity_cluster)
-            Main->>Lineage: query_window_worker_activities(reported_at, 7200, 300) [O(log K)]
-            Lineage-->>Main: active_flows, restore_risks, compliant_records
-
-            Main->>Context: pack_context_knapsack(candidate_facts, budget=4096)
-            Context-->>Main: packed_facts [Theorem 5]
-
-            Main->>Optimizer: calculate_serialization_savings(packed_facts)
-            Optimizer-->>Main: token_metrics (19,332 tokens saved)
-
-            Main->>Planner: build_steps(verdict, findings, verifications)
-            activate Planner
-            alt Findings or Active Flows Detected
-                Planner->>Planner: generate_finding_steps(exposed_records, flows)
-                Planner->>Planner: generate_remediation_steps(DISABLE -> BLOCK -> DELETE -> REDACT)
-                Planner->>Planner: generate_post_verifications(ABSENT, DISABLED, BLOCKED)
-                Planner->>Planner: sort_injective_5_tuple(p_rank, o_rank, sys, res, ev_id, state) [Theorem 3]
-                Planner-->>Main: (INCOMPLETE, ordered_steps_1..K)
-            else Zero Residuals & Compliant Records Exist
-                Planner->>Planner: generate_evidence_backed_verifications(compliant_records)
-                Planner->>Planner: sort_injective_5_tuple(p_rank, o_rank, sys, res, ev_id, state) [Theorem 3]
-                Planner-->>Main: (COMPLETE, verification_steps_1..K)
+            %% Parallel Investigation Phase
+            par Query Evidence Facts
+                Main->>Insp: query_facts_for_tokens(identity_cluster, audit_at)
+                activate Insp
+                Insp-->>Main: candidate_facts (filtered T(e) <= audit_at)
+                deactivate Insp
+            and Query System Activities & Lineage
+                Main->>Lin: trace_active_flows(identity_cluster, audit_at)
+                activate Lin
+                Lin-->>Main: active_flows, restore_risks (bisect search)
+                deactivate Lin
             end
-            deactivate Planner
 
-            Main->>Guard: verify_witness_grounding(steps, audit_at)
-            Guard-->>Main: verified_steps (P(Hallucination) = 0)
+            %% Policy Audit & Decision
+            Main->>Pol: evaluate_facts_and_flows(candidate_facts, active_flows)
+            activate Pol
+            Pol-->>Main: violations_found, required_treatments
+            deactivate Pol
 
-            Main->>Replay: record_decision(case_id, verdict, steps, ...) [LRU 2000 Eviction, Theorem 4]
+            alt Deletion is INCOMPLETE (Residual PII, Active Sync, Restore Hazard)
+                Main->>Rem: build_steps(INCOMPLETE, findings, verifications)
+                activate Rem
+                Rem->>Rem: schedule_poset_dag(Theorem 3 injective 5-tuple)
+                Rem-->>Main: ordered_steps (FINDING -> REMEDIATION -> VERIFICATION)
+                deactivate Rem
+                Main->>Main: set_verdict(INCOMPLETE)
+            else Deletion is COMPLETE (No violations, all tombstone/retained compliant)
+                Main->>Rem: build_steps(COMPLETE, findings=[], verifications)
+                activate Rem
+                Rem-->>Main: verification_steps (evidence-backed checks only)
+                deactivate Rem
+                Main->>Main: set_verdict(COMPLETE)
+            end
+
+            %% Witness Grounding & Safety Guardrail
+            Main->>Grd: verify_witness_grounding(steps, audit_at)
+            activate Grd
+            Grd-->>Main: is_valid = True (Invariant asserted)
+            deactivate Grd
+
+            Main->>Csv: write_row(case_id, deletion_status, steps_json)
         end
-        Main->>CSV: write_row(case_id, deletion_status, steps_json)
     end
 
-    Main->>Main: OutputSchemaValidator.validate_file(output.csv)
-    Main-->>User: Audit complete: 518 cases (0.26ms turnaround, 0 errors, output.csv verified)
+    Main->>Log: info("Pipeline audit complete", total_cases=518)
+    Main-->>Participant: output.csv generated (518 rows sorted)
+    deactivate Main
 ```
+
+---
+
+## 2. Combined Fragments & Architectural Invariants
+
+| Fragment | Operator | Condition / Scope | Invariant Guaranteed |
+|---|---|---|---|
+| **Fast-Path Ingress** | `alt` | Non-deletion intent (`request_text` lacks deletion mandate) | Emits `NOT_APPLICABLE` with `steps_json='[]'`, skipping database lookups. |
+| **Transitive Resolution** | `opt` | Aliases linked across `user_audit_log.csv` | Equivalence orbits queried in $O(\alpha(N))$ amortized via Tarjan's DSU. |
+| **Parallel Discovery** | `par` | Evidence file search $\parallel$ Activity log window scan | Causal cone $T(e) \le \text{audit\_at}$ asserted across all candidate facts. |
+| **Poset Remediation** | `alt` | Residual records, active CDC flows, or backup restore risks found | Poset DAG guarantees $(r_p, r_o, \text{sys}, \text{res}, \text{ev}, \text{state})$ strict injective order. |
+| **Witness Verification** | `seq` | Output step serialization | Every finding cites visible evidence; every remediation step has empty `evidence_id`. |

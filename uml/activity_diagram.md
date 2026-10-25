@@ -1,8 +1,14 @@
 # UML Activity Diagram: Autonomous Deletion Audit Agent
 **Challenge:** HackerRank Orchestrate (October 2026) — *Ghost Data Still Exists*  
 **System:** Enterprise Deletion Audit Agent & Compliance Verification Platform  
-**Authors:** Visual Architecture & Design Squad (`multi-agent-graph-orchestration-engineer`, `uml-diagram-mathematics-expert`)  
-**Specification Standards:** Conforms to Level 2.2 Docstrings-Only convention and RFC-4180 / ISO-8601 contracts.
+**Authors:** Visual Architecture & Design Squad (`uml-behavioral-diagram-engineer`, `uml-diagram-mathematics-expert`)  
+**Specification Standards:** Conforms to UML 2.5.1 Section 15 (Activities) and Level 2.2 Docstrings-Only convention.
+
+---
+
+## 1. Operational End-to-End Activity Workflow
+
+This activity diagram models the operational execution path for auditing an incoming customer deletion request row, capturing decision nodes, parallel investigation forks, and deterministic output emission.
 
 ```mermaid
 flowchart TD
@@ -13,11 +19,16 @@ flowchart TD
     DecisionAuth -- No (Portability, Rectification, Opt-out) --> SetNA[Set deletion_status = NOT_APPLICABLE<br/>Set steps_json = '[]']
     SetNA --> OutputRow[Emit CSV Row: case_id, status, steps_json]
     
-    DecisionAuth -- Yes --> ResolveDSU[Execute DSU Identity Resolver<br/>Lookup Equivalence Orbit Cache in O(α(N))<br/>Extract Transitive Identity Cluster]
-    ResolveDSU --> QueryEvidence[Query Inverted Evidence Hash Indexes & SQLite<br/>Filter records where timestamp <= audit_at]
-    QueryEvidence --> QueryLineage[Query LineageTracer<br/>1. activities_by_token[cluster] in O(|K|)<br/>2. Monotone Bisect Window Search in O(log K)<br/>Detect Active CDC Flows & Restore Hazards]
+    DecisionAuth -- Yes --> ResolveDSU[Execute DSU Identity Resolver<br/>Lookup Equivalence Orbit Cache in O(alpha(N))<br/>Extract Transitive Identity Cluster]
+    ResolveDSU --> ForkInvestigation{Fork: Parallel Scan}
+
+    ForkInvestigation --> QueryEvidence[Query Inverted Evidence Hash Indexes & SQLite<br/>Filter records where timestamp <= audit_at]
+    ForkInvestigation --> QueryLineage[Query LineageTracer<br/>1. activities_by_token[cluster] in O(|K|)<br/>2. Monotone Bisect Window Search in O(log K)<br/>Detect Active CDC Flows & Restore Hazards]
+
+    QueryEvidence --> JoinInvestigation{Join: Candidate Facts}
+    QueryLineage --> JoinInvestigation
     
-    QueryLineage --> PackContext[ContextBuilder: Knapsack Context Allocation<br/>TokenOptimizer: Fact Fingerprinting & Dense Serialization]
+    JoinInvestigation --> PackContext[ContextBuilder: Knapsack Context Allocation<br/>TokenOptimizer: Fact Fingerprinting & Dense Serialization]
     
     PackContext --> CheckState{Were exposed records,<br/>active sync flows, or<br/>restore hazards found?}
     
@@ -37,3 +48,18 @@ flowchart TD
     
     OutputRow --> End([End: Natural Numeric Sorted Output Row])
 ```
+
+---
+
+## 2. Activity Partitions (Swimlanes by Component)
+
+| Swimlane Partition | Components Involved | Core Operations Performed |
+|---|---|---|
+| **Security Boundary** | `InputSanitizer`, `PiiShield` | Shannon entropy check, prompt injection neutralization |
+| **Governance Pre-Gate** | `PolicyAuditor` | Multilingual non-erasure detection, fast-path `NOT_APPLICABLE` |
+| **Entity Resolution** | `IdentityResolver`, `DisjointSetUnion` | Equivalence orbit cache query, alias cluster recovery ($O(\alpha(N))$) |
+| **Evidence & Lineage** | `MultimodalInspector`, `LineageTracer` | In-memory SQLite queries, monotone timestamp bisect search ($O(\log K)$) |
+| **Context & Token AI** | `ContextBuilder`, `TokenOptimizer` | 4096 knapsack allocation, BPE deduplication (19,332 tokens saved) |
+| **Poset Action Engine** | `RemediationPlanner` | Dependency-first scheduling, lexicographical 5-tuple sorting |
+| **Verification & SRE** | `PromptGuard`, `ReplayTracer` | Witness grounding invariant assertion, bounded LRU recording |
+| **Delivery Egress** | `CsvHandler`, `OutputSchemaValidator` | RFC-4180 buffered streaming, schema compliance check |

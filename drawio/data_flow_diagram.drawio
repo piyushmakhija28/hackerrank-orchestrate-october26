@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2026-10-25T05:00:00.000Z" agent="Antigravity Multi-Agent Runtime" version="24.7.17" type="device">
+  <diagram id="dfd-diagram" name="System Data Flow Diagram">
+    <mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2000" pageHeight="1400" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Canvas Header -->
+        <mxCell id="hdr" value="&lt;b&gt;Ghost Data Still Exists — Data Flow Diagram (DFD Level 1 / Level 2)&lt;/b&gt;&lt;br&gt;End-to-End Pipeline Transformations | Data Stores D1-D6 | Multi-Agent Process Nodes | Output Egress" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0f172a;strokeColor=#1e293b;fontColor=#ffffff;fontSize=18;align=center;" vertex="1" parent="1">
+          <mxGeometry x="50" y="30" width="1900" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- EXTERNAL ENTITY: Participant / Grader -->
+        <mxCell id="ent_user" value="&lt;b&gt;External Entity&lt;/b&gt;&lt;br&gt;Participant CLI /&lt;br&gt;HackerRank Grader" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f1f5f9;strokeColor=#475569;fontColor=#0f172a;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="60" y="140" width="160" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- DATA STORES (Open Rectangles) -->
+        <mxCell id="ds_d1" value="&lt;b&gt;D1&lt;/b&gt; | deletion_requests.csv" style="shape=partialRectangle;top=0;bottom=0;fillColor=#eff6ff;strokeColor=#3b82f6;fontColor=#1e3a8a;fontSize=11;align=center;" vertex="1" parent="1">
+          <mxGeometry x="270" y="140" width="220" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ds_d2" value="&lt;b&gt;D2&lt;/b&gt; | user_identities.csv &amp;amp; audit_log.csv" style="shape=partialRectangle;top=0;bottom=0;fillColor=#eff6ff;strokeColor=#3b82f6;fontColor=#1e3a8a;fontSize=11;align=center;" vertex="1" parent="1">
+          <mxGeometry x="540" y="140" width="260" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ds_d3" value="&lt;b&gt;D3&lt;/b&gt; | evidence_files.csv &amp;amp; evidence/*" style="shape=partialRectangle;top=0;bottom=0;fillColor=#faf5ff;strokeColor=#9333ea;fontColor=#581c87;fontSize=11;align=center;" vertex="1" parent="1">
+          <mxGeometry x="840" y="140" width="250" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ds_d4" value="&lt;b&gt;D4&lt;/b&gt; | system_activity.csv" style="shape=partialRectangle;top=0;bottom=0;fillColor=#fef3c7;strokeColor=#d97706;fontColor=#78350f;fontSize=11;align=center;" vertex="1" parent="1">
+          <mxGeometry x="1130" y="140" width="220" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ds_d5" value="&lt;b&gt;D5&lt;/b&gt; | deletion_rules.csv" style="shape=partialRectangle;top=0;bottom=0;fillColor=#fef3c7;strokeColor=#d97706;fontColor=#78350f;fontSize=11;align=center;" vertex="1" parent="1">
+          <mxGeometry x="1390" y="140" width="220" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ds_d6" value="&lt;b&gt;D6&lt;/b&gt; | output.csv (Final Deliverable)" style="shape=partialRectangle;top=0;bottom=0;fillColor=#ecfdf5;strokeColor=#059669;fontColor=#065f46;fontSize=11;align=center;" vertex="1" parent="1">
+          <mxGeometry x="1650" y="140" width="240" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================== -->
+        <!-- PROCESS NODES (Rounded Stadiums / Ellipses) -->
+        <!-- ============================================== -->
+        <!-- Process 1.0: Security Ingress -->
+        <mxCell id="p1" value="&lt;b&gt;1.0&lt;/b&gt;&lt;br&gt;&lt;b&gt;Security Ingress &amp;amp; Sanitization&lt;/b&gt;&lt;hr&gt;InputSanitizer&lt;br&gt;OWASP LLM01 Guard&lt;br&gt;Shannon H in [2.5, 5.0]" style="shape=ellipse;whiteSpace=wrap;html=1;fillColor=#ffe4e6;strokeColor=#e11d48;fontColor=#881337;fontSize=11;align=center;" vertex="1" parent="1">
+          <mxGeometry x="270" y="270" width="220" height="130" as="geometry" />
+        </mxCell>
+
+        <!-- Process 2.0: Authorization & Intent -->
+        <mxCell id="p2" value="&lt;b&gt;2.0&lt;/b&gt;&lt;br&gt;&lt;b&gt;Intent &amp;amp; Authorization Audit&lt;/b&gt;&lt;hr&gt;PolicyAuditor&lt;br&gt;Multilingual NLU&lt;br&gt;30+ Non-Erasure Rules" style="shape=ellipse;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#d97706;fontColor=#78350f;fontSize=11;align=center;" vertex="1" parent="1">
+          <mxGeometry x="540" y="270" width="220" height="130" as="geometry" />
+        </mxCell>
+
+        <!-- Process 3.0: Transitive Entity Resolution -->
+        <mxCell id="p3" value="&lt;b&gt;3.0&lt;/b&gt;&lt;br&gt;&lt;b&gt;Entity Resolution (DSU)&lt;/b&gt;&lt;hr&gt;IdentityResolver&lt;br&gt;Equivalence Orbit Cache&lt;br&gt;O(alpha(N)) Transitive Cluster" style="shape=ellipse;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#2563eb;fontColor=#1e40af;fontSize=11;align=center;" vertex="1" parent="1">
+          <mxGeometry x="810" y="270" width="220" height="130" as="geometry" />
+        </mxCell>
+
+        <!-- Process 4.0: Evidence & Lineage Inspection -->
+        <mxCell id="p4" value="&lt;b&gt;4.0&lt;/b&gt;&lt;br&gt;&lt;b&gt;Evidence &amp;amp; Lineage Investigation&lt;/b&gt;&lt;hr&gt;MultimodalInspector (SQLite)&lt;br&gt;LineageTracer (Bisect Search)&lt;br&gt;Temporal Filter T &amp;lt;= audit_at" style="shape=ellipse;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#2563eb;fontColor=#1e40af;fontSize=11;align=center;" vertex="1" parent="1">
+          <mxGeometry x="1080" y="270" width="240" height="130" as="geometry" />
+        </mxCell>
+
+        <!-- Process 5.0: AI Context Optimization & Dedup -->
+        <mxCell id="p5" value="&lt;b&gt;5.0&lt;/b&gt;&lt;br&gt;&lt;b&gt;AI Token Optimization&lt;/b&gt;&lt;hr&gt;ContextBuilder (Knapsack 4096)&lt;br&gt;TokenOptimizer (BPE Dedup)&lt;br&gt;19,332 Tokens Saved" style="shape=ellipse;whiteSpace=wrap;html=1;fillColor=#dcfce7;strokeColor=#16a34a;fontColor=#14532d;fontSize=11;align=center;" vertex="1" parent="1">
+          <mxGeometry x="1370" y="270" width="220" height="130" as="geometry" />
+        </mxCell>
+
+        <!-- Process 6.0: Poset DAG Planning & Witness Grounding -->
+        <mxCell id="p6" value="&lt;b&gt;6.0&lt;/b&gt;&lt;br&gt;&lt;b&gt;Poset Scheduling &amp;amp; Verification&lt;/b&gt;&lt;hr&gt;RemediationPlanner (5-Tuple)&lt;br&gt;PromptGuard (P(H)=0)&lt;br&gt;ReplayTracer (LRU 2000)" style="shape=ellipse;whiteSpace=wrap;html=1;fillColor=#f3e8ff;strokeColor=#9333ea;fontColor=#581c87;fontSize=11;align=center;" vertex="1" parent="1">
+          <mxGeometry x="1650" y="270" width="240" height="130" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================== -->
+        <!-- DATA FLOW CONNECTORS WITH LABELS -->
+        <!-- ============================================== -->
+        <!-- Launch trigger -->
+        <mxCell id="df1" value="Execute Pipeline" edge="1" source="ent_user" target="p1" parent="1" style="endArrow=block;strokeColor=#0f172a;strokeWidth=1.5;fontSize=10;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Read D1 -->
+        <mxCell id="df2" value="Raw Request Rows" edge="1" source="ds_d1" target="p1" parent="1" style="endArrow=block;strokeColor=#3b82f6;strokeWidth=1.5;fontSize=10;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- P1 -> P2 -->
+        <mxCell id="df3" value="Sanitized Request Text" edge="1" source="p1" target="p2" parent="1" style="endArrow=block;strokeColor=#e11d48;strokeWidth=1.5;fontSize=10;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- P2 -> Fast path to D6 (NOT_APPLICABLE) -->
+        <mxCell id="df_fast" value="NOT_APPLICABLE + '[]'" edge="1" source="p2" target="ds_d6" parent="1" style="endArrow=block;dashed=1;strokeColor=#059669;strokeWidth=1.8;fontSize=10;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="650" y="480" />
+              <mxPoint x="1770" y="480" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- P2 -> P3 (Authorized) -->
+        <mxCell id="df4" value="Authorized Email" edge="1" source="p2" target="p3" parent="1" style="endArrow=block;strokeColor=#2563eb;strokeWidth=1.5;fontSize=10;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Read D2 into P3 -->
+        <mxCell id="df5" value="Identities &amp;amp; Audit History" edge="1" source="ds_d2" target="p3" parent="1" style="endArrow=block;strokeColor=#3b82f6;strokeWidth=1.5;fontSize=10;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- P3 -> P4 -->
+        <mxCell id="df6" value="Transitive Identity Cluster" edge="1" source="p3" target="p4" parent="1" style="endArrow=block;strokeColor=#2563eb;strokeWidth=1.5;fontSize=10;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Read D3 into P4 -->
+        <mxCell id="df7" value="Evidence Artifacts (SQL/PDF/Log)" edge="1" source="ds_d3" target="p4" parent="1" style="endArrow=block;strokeColor=#9333ea;strokeWidth=1.5;fontSize=10;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Read D4 into P4 -->
+        <mxCell id="df8" value="System Activity Stream" edge="1" source="ds_d4" target="p4" parent="1" style="endArrow=block;strokeColor=#d97706;strokeWidth=1.5;fontSize=10;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- P4 -> P5 -->
+        <mxCell id="df9" value="Candidate Facts &amp;amp; Active Flows" edge="1" source="p4" target="p5" parent="1" style="endArrow=block;strokeColor=#2563eb;strokeWidth=1.5;fontSize=10;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- P5 -> P6 -->
+        <mxCell id="df10" value="Knapsack Packed &amp;amp; Deduped Facts" edge="1" source="p5" target="p6" parent="1" style="endArrow=block;strokeColor=#16a34a;strokeWidth=1.5;fontSize=10;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Read D5 into P6 -->
+        <mxCell id="df11" value="Deletion &amp;amp; Retention Rules" edge="1" source="ds_d5" target="p6" parent="1" style="endArrow=block;strokeColor=#d97706;strokeWidth=1.5;fontSize=10;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- P6 -> Write D6 -->
+        <mxCell id="df12" value="Ordered Predictions (case_id, status, steps_json)" edge="1" source="p6" target="ds_d6" parent="1" style="endArrow=block;strokeColor=#059669;strokeWidth=2;fontSize=10;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- D6 -> User (Final Delivery) -->
+        <mxCell id="df13" value="518 Valid Prediction Rows" edge="1" source="ds_d6" target="ent_user" parent="1" style="endArrow=block;strokeColor=#0f172a;strokeWidth=2;fontSize=10;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1770" y="550" />
+              <mxPoint x="140" y="550" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

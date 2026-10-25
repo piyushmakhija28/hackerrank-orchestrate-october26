@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2026-10-25T05:00:00.000Z" agent="Antigravity Multi-Agent Runtime" version="24.7.17" type="device">
+  <diagram id="security-architecture" name="Zero-Trust Defense-in-Depth Security Model">
+    <mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2000" pageHeight="1400" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Canvas Header -->
+        <mxCell id="hdr" value="&lt;b&gt;Ghost Data Still Exists — Zero-Trust Defense-in-Depth Security Architecture&lt;/b&gt;&lt;br&gt;OWASP LLM Top 10 Mitigations | ISO/IEC 7812 Luhn Card Masking | Shannon Entropy Filtering | Bounded LRU Isolation" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0f172a;strokeColor=#1e293b;fontColor=#ffffff;fontSize=18;align=center;" vertex="1" parent="1">
+          <mxGeometry x="50" y="30" width="1900" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- DEFENSE LAYER 1: INGRESS PERIMETER -->
+        <mxCell id="lyr1" value="Layer 1: Ingress Boundary &amp; Rate-Limiting Perimeter" style="swimlane;whiteSpace=wrap;html=1;fillColor=#fff1f2;strokeColor=#e11d48;fontColor=#881337;fontSize=13;fontStyle=1;startSize=30;" vertex="1" parent="1">
+          <mxGeometry x="60" y="120" width="420" height="420" as="geometry" />
+        </mxCell>
+
+        <mxCell id="s1_threat" value="&lt;b&gt;THREAT VECTORS&lt;/b&gt;&lt;hr&gt;&amp;bull; DoS / Resource Exhaustion Floods&lt;br&gt;&amp;bull; Burst Concurrency Starvation&lt;br&gt;&amp;bull; Rogue Thread Hangs / Deadlocks" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe4e6;strokeColor=#e11d48;fontColor=#881337;align=left;spacingLeft=10;fontSize=10;" vertex="1" parent="lyr1">
+          <mxGeometry x="20" y="50" width="380" height="85" as="geometry" />
+        </mxCell>
+
+        <mxCell id="s1_ctrl1" value="&lt;b&gt;SECURITY CONTROL: Token Bucket Rate Limiter&lt;/b&gt;&lt;hr&gt;&amp;bull; Burst Capacity: 1,000 tokens&lt;br&gt;&amp;bull; Sustained Refill Rate: 500 tokens/sec&lt;br&gt;&amp;bull; Mutex-guarded thread-safe acquisition&lt;br&gt;&amp;bull; Prevents thread pool exhaustion" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dcfce7;strokeColor=#16a34a;fontColor=#14532d;align=left;spacingLeft=10;fontSize=10;" vertex="1" parent="lyr1">
+          <mxGeometry x="20" y="155" width="380" height="110" as="geometry" />
+        </mxCell>
+
+        <mxCell id="s1_ctrl2" value="&lt;b&gt;RESILIENCE CONTROL: Concurrent Circuit Breaker&lt;/b&gt;&lt;hr&gt;&amp;bull; Tri-State FSM: CLOSED &amp;rarr; OPEN &amp;rarr; HALF_OPEN&lt;br&gt;&amp;bull; Trip Threshold: 5 consecutive failures&lt;br&gt;&amp;bull; Recovery Reset Window: 30.0s cooldown&lt;br&gt;&amp;bull; Fail-fast protection against database drops" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dcfce7;strokeColor=#16a34a;fontColor=#14532d;align=left;spacingLeft=10;fontSize=10;" vertex="1" parent="lyr1">
+          <mxGeometry x="20" y="285" width="380" height="110" as="geometry" />
+        </mxCell>
+
+        <!-- DEFENSE LAYER 2: INPUT SANITIZATION & OWASP LLM01 -->
+        <mxCell id="lyr2" value="Layer 2: Prompt Injection &amp; Adversarial Guardrails (OWASP LLM01)" style="swimlane;whiteSpace=wrap;html=1;fillColor=#fffbeb;strokeColor=#d97706;fontColor=#78350f;fontSize=13;fontStyle=1;startSize=30;" vertex="1" parent="1">
+          <mxGeometry x="520" y="120" width="450" height="420" as="geometry" />
+        </mxCell>
+
+        <mxCell id="s2_threat" value="&lt;b&gt;THREAT VECTORS&lt;/b&gt;&lt;hr&gt;&amp;bull; Prompt Injection: 'Ignore previous instructions'&lt;br&gt;&amp;bull; System Prompt Exfiltration Attempts&lt;br&gt;&amp;bull; Delimiter Hijacking &amp; Unicode Smuggling&lt;br&gt;&amp;bull; High-Entropy Shellcode Payloads" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#d97706;fontColor=#78350f;align=left;spacingLeft=10;fontSize=10;" vertex="1" parent="lyr2">
+          <mxGeometry x="20" y="50" width="410" height="85" as="geometry" />
+        </mxCell>
+
+        <mxCell id="s2_ctrl1" value="&lt;b&gt;SECURITY CONTROL: InputSanitizer Defense Engine&lt;/b&gt;&lt;hr&gt;&amp;bull; Regex Pattern Bank: 12 injection signatures&lt;br&gt;&amp;bull; Neutralizes 'system override', 'admin instructions'&lt;br&gt;&amp;bull; Delimiter Normalization: Strips markdown code blocks&lt;br&gt;&amp;bull; Neutralizes adversarial prompts without aborting audit" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dcfce7;strokeColor=#16a34a;fontColor=#14532d;align=left;spacingLeft=10;fontSize=10;" vertex="1" parent="lyr2">
+          <mxGeometry x="20" y="155" width="410" height="110" as="geometry" />
+        </mxCell>
+
+        <mxCell id="s2_ctrl2" value="&lt;b&gt;MATHEMATICAL CONTROL: Shannon Entropy Validation&lt;/b&gt;&lt;hr&gt;&amp;bull; H(X) = - SUM( P(x) * log2(P(x)) )&lt;br&gt;&amp;bull; Legitimate Natural Language Band: H in [2.5, 5.0]&lt;br&gt;&amp;bull; Flags encrypted shellcode, gibberish &amp; base64 bursts&lt;br&gt;&amp;bull; Neutralizes anomalous high-entropy payloads" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dcfce7;strokeColor=#16a34a;fontColor=#14532d;align=left;spacingLeft=10;fontSize=10;" vertex="1" parent="lyr2">
+          <mxGeometry x="20" y="285" width="410" height="110" as="geometry" />
+        </mxCell>
+
+        <!-- DEFENSE LAYER 3: PII LEAKAGE & OWASP LLM02 -->
+        <mxCell id="lyr3" value="Layer 3: Sensitive PII Redaction &amp; Privacy (OWASP LLM02)" style="swimlane;whiteSpace=wrap;html=1;fillColor=#eff6ff;strokeColor=#2563eb;fontColor=#1e40af;fontSize=13;fontStyle=1;startSize=30;" vertex="1" parent="1">
+          <mxGeometry x="1010" y="120" width="450" height="420" as="geometry" />
+        </mxCell>
+
+        <mxCell id="s3_threat" value="&lt;b&gt;THREAT VECTORS&lt;/b&gt;&lt;hr&gt;&amp;bull; Accidental Log Leakage of Credit Card PANs&lt;br&gt;&amp;bull; Unmasked Social Security Numbers (SSNs)&lt;br&gt;&amp;bull; Plaintext Personal Phone Numbers &amp; Emails&lt;br&gt;&amp;bull; PII Infiltration into Diagnostic Replay Traces" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#2563eb;fontColor=#1e40af;align=left;spacingLeft=10;fontSize=10;" vertex="1" parent="lyr3">
+          <mxGeometry x="20" y="50" width="410" height="85" as="geometry" />
+        </mxCell>
+
+        <mxCell id="s3_ctrl1" value="&lt;b&gt;ALGORITHMIC CONTROL: ISO/IEC 7812 Luhn Algorithm Check&lt;/b&gt;&lt;hr&gt;&amp;bull; Checksum: SUM( (2d - 9 if 2d &gt; 9 else 2d) ) mod 10 == 0&lt;br&gt;&amp;bull; Discards false positives (order IDs, phone digits)&lt;br&gt;&amp;bull; Masks real Visa / Mastercard / Amex PANs&lt;br&gt;&amp;bull; Emits '[REDACTED_CREDIT_CARD]' tokens" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dcfce7;strokeColor=#16a34a;fontColor=#14532d;align=left;spacingLeft=10;fontSize=10;" vertex="1" parent="lyr3">
+          <mxGeometry x="20" y="155" width="410" height="110" as="geometry" />
+        </mxCell>
+
+        <mxCell id="s3_ctrl2" value="&lt;b&gt;OBSERVABILITY SHIELD: Mapped Diagnostic Context (MDC)&lt;/b&gt;&lt;hr&gt;&amp;bull; StructuredLogger filters all log kwargs via PiiShield&lt;br&gt;&amp;bull; ReplayTracer seeds emails with masked representations&lt;br&gt;&amp;bull; Zero plain-text credentials or secrets recorded in log.txt&lt;br&gt;&amp;bull; GDPR Article 32 &amp; IT Act Section 43A Compliant" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dcfce7;strokeColor=#16a34a;fontColor=#14532d;align=left;spacingLeft=10;fontSize=10;" vertex="1" parent="lyr3">
+          <mxGeometry x="20" y="285" width="410" height="110" as="geometry" />
+        </mxCell>
+
+        <!-- DEFENSE LAYER 4: WITNESS GROUNDING & PROMPT INJECTIONS -->
+        <mxCell id="lyr4" value="Layer 4: Anti-Hallucination &amp; Witness Grounding Invariant" style="swimlane;whiteSpace=wrap;html=1;fillColor=#faf5ff;strokeColor=#9333ea;fontColor=#581c87;fontSize=13;fontStyle=1;startSize=30;" vertex="1" parent="1">
+          <mxGeometry x="1500" y="120" width="450" height="420" as="geometry" />
+        </mxCell>
+
+        <mxCell id="s4_threat" value="&lt;b&gt;THREAT VECTORS&lt;/b&gt;&lt;hr&gt;&amp;bull; Hallucinated Evidence IDs (e.g. 'evidence_9999')&lt;br&gt;&amp;bull; Temporal Infiltration: Citing files captured after audit_at&lt;br&gt;&amp;bull; Fabricated System IDs or Non-Existent Resources&lt;br&gt;&amp;bull; Memory Leak Bloat via Unbounded Decision Graphs" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f3e8ff;strokeColor=#9333ea;fontColor=#581c87;align=left;spacingLeft=10;fontSize=10;" vertex="1" parent="lyr4">
+          <mxGeometry x="20" y="50" width="410" height="85" as="geometry" />
+        </mxCell>
+
+        <mxCell id="s4_ctrl1" value="&lt;b&gt;INVARIANT CONTROL: PromptGuard Witness Verifier (Theorem 5)&lt;/b&gt;&lt;hr&gt;&amp;bull; Hard Manifest Validation: Assert ev_id in evidence_manifest&lt;br&gt;&amp;bull; Causal Cone Enforcement: Assert T(ev_id) &amp;lt;= audit_at&lt;br&gt;&amp;bull; Strips ungrounded evidence_ids from candidate steps&lt;br&gt;&amp;bull; Mathematical Guarantee: P(Hallucination) == 0" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dcfce7;strokeColor=#16a34a;fontColor=#14532d;align=left;spacingLeft=10;fontSize=10;" vertex="1" parent="lyr4">
+          <mxGeometry x="20" y="155" width="410" height="110" as="geometry" />
+        </mxCell>
+
+        <mxCell id="s4_ctrl2" value="&lt;b&gt;MEMORY CONTROL: Bounded LRU Replay Eviction (Theorem 4)&lt;/b&gt;&lt;hr&gt;&amp;bull; Strict Registry Ceiling: Max 2,000 decision graphs&lt;br&gt;&amp;bull; Evicts oldest case upon reaching boundary&lt;br&gt;&amp;bull; O(1) amortized insertion and eviction&lt;br&gt;&amp;bull; Guarantees constant heap memory consumption (65 MB)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dcfce7;strokeColor=#16a34a;fontColor=#14532d;align=left;spacingLeft=10;fontSize=10;" vertex="1" parent="lyr4">
+          <mxGeometry x="20" y="285" width="410" height="110" as="geometry" />
+        </mxCell>
+
+        <!-- SECURITY FLOW CONNECTORS -->
+        <mxCell id="sec_f1" value="Sanitized &amp;amp; Rate-Checked Request" edge="1" source="lyr1" target="lyr2" parent="1" style="endArrow=block;strokeColor=#e11d48;strokeWidth=2;fontSize=10;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="sec_f2" value="Injection-Free Payload" edge="1" source="lyr2" target="lyr3" parent="1" style="endArrow=block;strokeColor=#d97706;strokeWidth=2;fontSize=10;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="sec_f3" value="PII-Masked Context &amp;amp; Traces" edge="1" source="lyr3" target="lyr4" parent="1" style="endArrow=block;strokeColor=#2563eb;strokeWidth=2;fontSize=10;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

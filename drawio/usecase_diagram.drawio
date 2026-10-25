@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" type="diagram" version="24.0.0">
+  <diagram id="diagram_uc" name="System Use Case Diagram">
+    <mxGraphModel dx="1422" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1500" pageHeight="1000" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- ACTORS -->
+        <!-- Actor 1: Participant Runner -->
+        <mxCell id="act_runner" value="Participant Auditor&#xa;(CLI Runner)" style="shape=mxgraph.uml.actor;html=1;fillColor=#FFFFFF;strokeColor=#000000;verticalLabelPosition=bottom;verticalAlign=top;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="50" y="240" width="60" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- Actor 2: HackerRank Grader -->
+        <mxCell id="act_grader" value="HackerRank Grader&#xa;(Official Evaluator)" style="shape=mxgraph.uml.actor;html=1;fillColor=#FFFFFF;strokeColor=#000000;verticalLabelPosition=bottom;verticalAlign=top;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="50" y="620" width="60" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- Actor 3: Evidence Store -->
+        <mxCell id="act_evd" value="Evidence Store&#xa;(94 Multi-Modal Files)" style="shape=mxgraph.uml.actor;html=1;fillColor=#FFFFFF;strokeColor=#000000;verticalLabelPosition=bottom;verticalAlign=top;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1380" y="160" width="60" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- Actor 4: Policy Engine -->
+        <mxCell id="act_pol" value="Statutory Policy Engine&#xa;(GDPR / CCPA Rules)" style="shape=mxgraph.uml.actor;html=1;fillColor=#FFFFFF;strokeColor=#000000;verticalLabelPosition=bottom;verticalAlign=top;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1380" y="440" width="60" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- Actor 5: Observability Backend -->
+        <mxCell id="act_obs" value="Observability Hub&#xa;(OpenTelemetry / SRE)" style="shape=mxgraph.uml.actor;html=1;fillColor=#FFFFFF;strokeColor=#000000;verticalLabelPosition=bottom;verticalAlign=top;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1380" y="720" width="60" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- SYSTEM BOUNDARY -->
+        <mxCell id="sys_box" value="System Boundary: Autonomous Deletion Audit Agent" style="rounded=0;html=1;fillColor=#F8F9FA;strokeColor=#333333;strokeWidth=2;verticalAlign=top;fontStyle=1;align=center;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="170" y="30" width="1160" height="920" as="geometry" />
+        </mxCell>
+
+        <!-- PRIMARY USE CASES -->
+        <mxCell id="uc1" value="UC-01: Audit Deletion Request&#xa;(Master Batch Execution)" style="ellipse;html=1;whiteSpace=wrap;fillColor=#D5E8D4;strokeColor=#82B366;strokeWidth=2;fontStyle=1;" vertex="1" parent="sys_box">
+          <mxGeometry x="50" y="220" width="230" height="70" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc2" value="UC-02: Sanitize &amp; Validate Input&#xa;(Prompt Injection &amp; Entropy)" style="ellipse;html=1;whiteSpace=wrap;fillColor=#DAE8FC;strokeColor=#6C8EBF;strokeWidth=1.5;" vertex="1" parent="sys_box">
+          <mxGeometry x="360" y="50" width="220" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc3" value="UC-03: Determine Request Intent&#xa;(Multilingual NLU Deletion Check)" style="ellipse;html=1;whiteSpace=wrap;fillColor=#DAE8FC;strokeColor=#6C8EBF;strokeWidth=1.5;" vertex="1" parent="sys_box">
+          <mxGeometry x="360" y="130" width="220" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc4" value="UC-04: Resolve User Identity&#xa;(DSU Orbit Cache O(α(N)))" style="ellipse;html=1;whiteSpace=wrap;fillColor=#DAE8FC;strokeColor=#6C8EBF;strokeWidth=1.5;" vertex="1" parent="sys_box">
+          <mxGeometry x="360" y="210" width="220" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc5" value="UC-05: Scan Multi-Modal Evidence&#xa;(In-Memory SQLite Replicas)" style="ellipse;html=1;whiteSpace=wrap;fillColor=#DAE8FC;strokeColor=#6C8EBF;strokeWidth=1.5;" vertex="1" parent="sys_box">
+          <mxGeometry x="360" y="290" width="220" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc6" value="UC-06: Trace System Lineage&#xa;(Bisect Binary Search O(log K))" style="ellipse;html=1;whiteSpace=wrap;fillColor=#DAE8FC;strokeColor=#6C8EBF;strokeWidth=1.5;" vertex="1" parent="sys_box">
+          <mxGeometry x="360" y="370" width="220" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc7" value="UC-07: Apply Deletion Rules&#xa;(Tombstone &amp; Retain Evaluation)" style="ellipse;html=1;whiteSpace=wrap;fillColor=#DAE8FC;strokeColor=#6C8EBF;strokeWidth=1.5;" vertex="1" parent="sys_box">
+          <mxGeometry x="360" y="450" width="220" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc8" value="UC-08: Build Causal-Cone Context&#xa;(Knapsack Budget T(e)≤audit_at)" style="ellipse;html=1;whiteSpace=wrap;fillColor=#FFE6CC;strokeColor=#D79B00;strokeWidth=1.5;" vertex="1" parent="sys_box">
+          <mxGeometry x="640" y="130" width="230" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc9" value="UC-09: Optimize &amp; Dedup Tokens&#xa;(BPE Deduplication: 19,332 Saved)" style="ellipse;html=1;whiteSpace=wrap;fillColor=#FFE6CC;strokeColor=#D79B00;strokeWidth=1.5;" vertex="1" parent="sys_box">
+          <mxGeometry x="640" y="210" width="230" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc10" value="UC-10: Generate Remediation Plan&#xa;(Poset DAG 5-Tuple Scheduler)" style="ellipse;html=1;whiteSpace=wrap;fillColor=#FFF2CC;strokeColor=#D6B656;strokeWidth=1.5;" vertex="1" parent="sys_box">
+          <mxGeometry x="640" y="290" width="230" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc11" value="UC-11: Verify Deletion Completeness&#xa;(Evidence-Backed Verification)" style="ellipse;html=1;whiteSpace=wrap;fillColor=#FFF2CC;strokeColor=#D6B656;strokeWidth=1.5;" vertex="1" parent="sys_box">
+          <mxGeometry x="640" y="370" width="230" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc12" value="UC-12: Detect Prompt Injection&#xa;(OWASP LLM01 Sanitization)" style="ellipse;html=1;whiteSpace=wrap;fillColor=#F8CECC;strokeColor=#B85450;strokeWidth=1.5;" vertex="1" parent="sys_box">
+          <mxGeometry x="640" y="50" width="230" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc13" value="UC-13: Mask Sensitive PII&#xa;(Luhn Card &amp; Hash Shielding)" style="ellipse;html=1;whiteSpace=wrap;fillColor=#F8CECC;strokeColor=#B85450;strokeWidth=1.5;" vertex="1" parent="sys_box">
+          <mxGeometry x="910" y="50" width="220" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc14" value="UC-14: Export Validated output.csv&#xa;(RFC-4180 Natural Sorted Output)" style="ellipse;html=1;whiteSpace=wrap;fillColor=#D5E8D4;strokeColor=#82B366;strokeWidth=1.5;" vertex="1" parent="sys_box">
+          <mxGeometry x="50" y="600" width="230" height="70" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc15" value="UC-15: Assert Witness Grounding&#xa;(Safety Invariant P(H)=0)" style="ellipse;html=1;whiteSpace=wrap;fillColor=#FFE6CC;strokeColor=#D79B00;strokeWidth=1.5;" vertex="1" parent="sys_box">
+          <mxGeometry x="910" y="290" width="220" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc16" value="UC-16: Record Decision Graph&#xa;(Bounded LRU 2,000 &amp; ASCII RCA)" style="ellipse;html=1;whiteSpace=wrap;fillColor=#E1D5E7;strokeColor=#9673A6;strokeWidth=1.5;" vertex="1" parent="sys_box">
+          <mxGeometry x="640" y="540" width="230" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc17" value="UC-17: Collect RED/USE Metrics&#xa;(Prometheus Latency Percentiles)" style="ellipse;html=1;whiteSpace=wrap;fillColor=#E1D5E7;strokeColor=#9673A6;strokeWidth=1.5;" vertex="1" parent="sys_box">
+          <mxGeometry x="910" y="540" width="220" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc18" value="UC-18: Enforce Circuit Breaker&#xa;(Tri-State Concurrent Guard)" style="ellipse;html=1;whiteSpace=wrap;fillColor=#F8CECC;strokeColor=#B85450;strokeWidth=1.5;" vertex="1" parent="sys_box">
+          <mxGeometry x="640" y="620" width="230" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc19" value="UC-19: Fast-Path NOT_APPLICABLE&#xa;(Bypass Storage Scan for Non-Erasure)" style="ellipse;html=1;whiteSpace=wrap;fillColor=#DAE8FC;strokeColor=#6C8EBF;strokeWidth=1.5;" vertex="1" parent="sys_box">
+          <mxGeometry x="640" y="700" width="230" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc20" value="UC-20: Generate Evaluation Reports&#xa;(evaluation_report &amp; usage_report)" style="ellipse;html=1;whiteSpace=wrap;fillColor=#EDE7F6;strokeColor=#673AB7;strokeWidth=1.5;" vertex="1" parent="sys_box">
+          <mxGeometry x="360" y="780" width="240" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- ACTOR ASSOCIATIONS -->
+        <mxCell id="ass_run_uc1" style="endArrow=none;html=1;strokeColor=#000000;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="act_runner" target="uc1" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ass_run_uc20" style="endArrow=none;html=1;strokeColor=#000000;strokeWidth=1.5;exitX=1;exitY=0.7;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="act_runner" target="uc20" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ass_grader_uc14" style="endArrow=none;html=1;strokeColor=#000000;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="act_grader" target="uc14" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ass_evd_uc5" style="endArrow=none;html=1;strokeColor=#000000;strokeWidth=1.5;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="uc5" target="act_evd" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ass_pol_uc7" style="endArrow=none;html=1;strokeColor=#000000;strokeWidth=1.5;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="uc7" target="act_pol" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ass_obs_uc17" style="endArrow=none;html=1;strokeColor=#000000;strokeWidth=1.5;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="uc17" target="act_obs" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- INCLUDES (<<include>>) -->
+        <mxCell id="inc_1_2" value="&lt;&lt;include&gt;&gt;" style="endArrow=open;dashed=1;html=1;strokeColor=#333333;strokeWidth=1.5;exitX=0.7;exitY=0;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="uc1" target="uc2" parent="sys_box">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="inc_1_3" value="&lt;&lt;include&gt;&gt;" style="endArrow=open;dashed=1;html=1;strokeColor=#333333;strokeWidth=1.5;exitX=0.9;exitY=0.2;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="uc1" target="uc3" parent="sys_box">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="inc_1_4" value="&lt;&lt;include&gt;&gt;" style="endArrow=open;dashed=1;html=1;strokeColor=#333333;strokeWidth=1.5;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="uc1" target="uc4" parent="sys_box">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="inc_1_5" value="&lt;&lt;include&gt;&gt;" style="endArrow=open;dashed=1;html=1;strokeColor=#333333;strokeWidth=1.5;exitX=0.9;exitY=0.8;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="uc1" target="uc5" parent="sys_box">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="inc_1_6" value="&lt;&lt;include&gt;&gt;" style="endArrow=open;dashed=1;html=1;strokeColor=#333333;strokeWidth=1.5;exitX=0.7;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="uc1" target="uc6" parent="sys_box">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- EXTENDS (<<extend>>) -->
+        <mxCell id="ext_3_19" value="&lt;&lt;extend&gt;&gt;" style="endArrow=open;dashed=1;html=1;strokeColor=#2980B9;strokeWidth=1.5;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" source="uc19" target="uc3" parent="sys_box">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ext_10_15" value="&lt;&lt;extend&gt;&gt;" style="endArrow=open;dashed=1;html=1;strokeColor=#2980B9;strokeWidth=1.5;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="uc15" target="uc10" parent="sys_box">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

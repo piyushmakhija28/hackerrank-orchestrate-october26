@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" type="diagram" version="24.0.0">
+  <diagram id="diagram_comp" name="7-Tier Component Architecture Diagram">
+    <mxGraphModel dx="1422" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1500" pageHeight="1000" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- TIER 1: Ingestion -->
+        <mxCell id="t1" value="Tier 1: Data Ingestion &amp; Storage Subsystem (dataset/)" style="swimlane;fontStyle=1;align=left;startSize=26;container=1;collapsible=0;html=1;fillColor=#F8F9FA;strokeColor=#495057;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="40" y="30" width="1420" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="c_dr" value="&lt;&lt;component&gt;&gt;&#xa;DeletionRequests&#xa;[deletion_requests.csv]" style="shape=mxgraph.uml.component;html=1;whiteSpace=wrap;fillColor=#DAE8FC;strokeColor=#6C8EBF;strokeWidth=1.5;" vertex="1" parent="t1">
+          <mxGeometry x="20" y="35" width="190" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="c_id" value="&lt;&lt;component&gt;&gt;&#xa;UserIdentities&#xa;[user_identities.csv]" style="shape=mxgraph.uml.component;html=1;whiteSpace=wrap;fillColor=#DAE8FC;strokeColor=#6C8EBF;strokeWidth=1.5;" vertex="1" parent="t1">
+          <mxGeometry x="250" y="35" width="190" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="c_ual" value="&lt;&lt;component&gt;&gt;&#xa;UserAuditLog&#xa;[user_audit_log.csv]" style="shape=mxgraph.uml.component;html=1;whiteSpace=wrap;fillColor=#DAE8FC;strokeColor=#6C8EBF;strokeWidth=1.5;" vertex="1" parent="t1">
+          <mxGeometry x="480" y="35" width="190" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="c_act" value="&lt;&lt;component&gt;&gt;&#xa;SystemActivity&#xa;[system_activity.csv]" style="shape=mxgraph.uml.component;html=1;whiteSpace=wrap;fillColor=#DAE8FC;strokeColor=#6C8EBF;strokeWidth=1.5;" vertex="1" parent="t1">
+          <mxGeometry x="710" y="35" width="190" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="c_rul" value="&lt;&lt;component&gt;&gt;&#xa;DeletionRules&#xa;[deletion_rules.csv]" style="shape=mxgraph.uml.component;html=1;whiteSpace=wrap;fillColor=#DAE8FC;strokeColor=#6C8EBF;strokeWidth=1.5;" vertex="1" parent="t1">
+          <mxGeometry x="940" y="35" width="190" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="c_evd" value="&lt;&lt;component&gt;&gt;&#xa;EvidenceCorpus&#xa;[evidence_files.csv + files]" style="shape=mxgraph.uml.component;html=1;whiteSpace=wrap;fillColor=#DAE8FC;strokeColor=#6C8EBF;strokeWidth=1.5;" vertex="1" parent="t1">
+          <mxGeometry x="1170" y="35" width="220" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- TIER 2: Security -->
+        <mxCell id="t2" value="Tier 2: Zero-Trust Security &amp; Ingress Guardrails (code/security/)" style="swimlane;fontStyle=1;align=left;startSize=26;container=1;collapsible=0;html=1;fillColor=#FFF5F5;strokeColor=#E03131;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="40" y="160" width="1420" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="c_san" value="&lt;&lt;component&gt;&gt;&#xa;InputSanitizer&#xa;(OWASP LLM01 Injection Filter)" style="shape=mxgraph.uml.component;html=1;whiteSpace=wrap;fillColor=#F8CECC;strokeColor=#B85450;strokeWidth=1.5;" vertex="1" parent="t2">
+          <mxGeometry x="40" y="35" width="280" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="c_pii" value="&lt;&lt;component&gt;&gt;&#xa;PiiShield&#xa;(ISO/IEC 7812 Luhn Card Masking)" style="shape=mxgraph.uml.component;html=1;whiteSpace=wrap;fillColor=#F8CECC;strokeColor=#B85450;strokeWidth=1.5;" vertex="1" parent="t2">
+          <mxGeometry x="380" y="35" width="280" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="c_rate" value="&lt;&lt;component&gt;&gt;&#xa;RateLimiter&#xa;(Token Bucket Burst / Refill)" style="shape=mxgraph.uml.component;html=1;whiteSpace=wrap;fillColor=#F8CECC;strokeColor=#B85450;strokeWidth=1.5;" vertex="1" parent="t2">
+          <mxGeometry x="720" y="35" width="280" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="c_cb" value="&lt;&lt;component&gt;&gt;&#xa;CircuitBreaker&#xa;(Tri-State Concurrent FSM)" style="shape=mxgraph.uml.component;html=1;whiteSpace=wrap;fillColor=#F8CECC;strokeColor=#B85450;strokeWidth=1.5;" vertex="1" parent="t2">
+          <mxGeometry x="1060" y="35" width="280" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- TIER 3: Multi-Agent Squad Core -->
+        <mxCell id="t3" value="Tier 3: Multi-Agent Audit Core (code/agent/ &amp; container.py)" style="swimlane;fontStyle=1;align=left;startSize=26;container=1;collapsible=0;html=1;fillColor=#FEF9E7;strokeColor=#F39C12;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="40" y="290" width="1420" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="c_ir" value="&lt;&lt;component&gt;&gt;&#xa;IdentityResolver&#xa;(DSU Orbit Cache O(α(N)))" style="shape=mxgraph.uml.component;html=1;whiteSpace=wrap;fillColor=#FFF2CC;strokeColor=#D6B656;strokeWidth=1.5;" vertex="1" parent="t3">
+          <mxGeometry x="30" y="45" width="240" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="c_mi" value="&lt;&lt;component&gt;&gt;&#xa;MultimodalInspector&#xa;(In-Memory SQLite Replicas)" style="shape=mxgraph.uml.component;html=1;whiteSpace=wrap;fillColor=#FFF2CC;strokeColor=#D6B656;strokeWidth=1.5;" vertex="1" parent="t3">
+          <mxGeometry x="310" y="45" width="240" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="c_lt" value="&lt;&lt;component&gt;&gt;&#xa;LineageTracer&#xa;(Monotone Bisect Window O(log K))" style="shape=mxgraph.uml.component;html=1;whiteSpace=wrap;fillColor=#FFF2CC;strokeColor=#D6B656;strokeWidth=1.5;" vertex="1" parent="t3">
+          <mxGeometry x="590" y="45" width="250" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="c_pa" value="&lt;&lt;component&gt;&gt;&#xa;PolicyAuditor&#xa;(Multilingual NLU &amp; Retain Rules)" style="shape=mxgraph.uml.component;html=1;whiteSpace=wrap;fillColor=#FFF2CC;strokeColor=#D6B656;strokeWidth=1.5;" vertex="1" parent="t3">
+          <mxGeometry x="880" y="45" width="240" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="c_rp" value="&lt;&lt;component&gt;&gt;&#xa;RemediationPlanner&#xa;(Poset DAG Injective 5-Tuple)" style="shape=mxgraph.uml.component;html=1;whiteSpace=wrap;fillColor=#FFF2CC;strokeColor=#D6B656;strokeWidth=1.5;" vertex="1" parent="t3">
+          <mxGeometry x="1150" y="45" width="240" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- TIER 4: AI & Token Optimization -->
+        <mxCell id="t4" value="Tier 4: AI Token Optimization &amp; Anti-Hallucination (code/ai/)" style="swimlane;fontStyle=1;align=left;startSize=26;container=1;collapsible=0;html=1;fillColor=#FDF2E9;strokeColor=#E67E22;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="40" y="450" width="700" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="c_ctx" value="&lt;&lt;component&gt;&gt;&#xa;ContextBuilder&#xa;(Causal Cone T(e)≤audit_at Knapsack)" style="shape=mxgraph.uml.component;html=1;whiteSpace=wrap;fillColor=#FFE6CC;strokeColor=#D79B00;strokeWidth=1.5;" vertex="1" parent="t4">
+          <mxGeometry x="20" y="40" width="200" height="65" as="geometry" />
+        </mxCell>
+        <mxCell id="c_tok" value="&lt;&lt;component&gt;&gt;&#xa;TokenOptimizer&#xa;(BPE Dedup: 19,332 Saved)" style="shape=mxgraph.uml.component;html=1;whiteSpace=wrap;fillColor=#FFE6CC;strokeColor=#D79B00;strokeWidth=1.5;" vertex="1" parent="t4">
+          <mxGeometry x="250" y="40" width="200" height="65" as="geometry" />
+        </mxCell>
+        <mxCell id="c_grd" value="&lt;&lt;component&gt;&gt;&#xa;PromptGuard&#xa;(Witness Invariant P(H)=0)" style="shape=mxgraph.uml.component;html=1;whiteSpace=wrap;fillColor=#FFE6CC;strokeColor=#D79B00;strokeWidth=1.5;" vertex="1" parent="t4">
+          <mxGeometry x="480" y="40" width="200" height="65" as="geometry" />
+        </mxCell>
+
+        <!-- TIER 5: Observability -->
+        <mxCell id="t5" value="Tier 5: SRE Observability &amp; Diagnostics (code/observability/)" style="swimlane;fontStyle=1;align=left;startSize=26;container=1;collapsible=0;html=1;fillColor=#F4ECF7;strokeColor=#8E44AD;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="760" y="450" width="700" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="c_log" value="&lt;&lt;component&gt;&gt;&#xa;StructuredLogger&#xa;(Thread-Safe JSON MDC)" style="shape=mxgraph.uml.component;html=1;whiteSpace=wrap;fillColor=#E1D5E7;strokeColor=#9673A6;strokeWidth=1.5;" vertex="1" parent="t5">
+          <mxGeometry x="20" y="40" width="150" height="65" as="geometry" />
+        </mxCell>
+        <mxCell id="c_trc" value="&lt;&lt;component&gt;&gt;&#xa;DistributedTracer&#xa;(OpenTelemetry Context)" style="shape=mxgraph.uml.component;html=1;whiteSpace=wrap;fillColor=#E1D5E7;strokeColor=#9673A6;strokeWidth=1.5;" vertex="1" parent="t5">
+          <mxGeometry x="190" y="40" width="150" height="65" as="geometry" />
+        </mxCell>
+        <mxCell id="c_met" value="&lt;&lt;component&gt;&gt;&#xa;MetricsCollector&#xa;(Prometheus RED/USE)" style="shape=mxgraph.uml.component;html=1;whiteSpace=wrap;fillColor=#E1D5E7;strokeColor=#9673A6;strokeWidth=1.5;" vertex="1" parent="t5">
+          <mxGeometry x="360" y="40" width="150" height="65" as="geometry" />
+        </mxCell>
+        <mxCell id="c_rep" value="&lt;&lt;component&gt;&gt;&#xa;ReplayTracer&#xa;(Bounded LRU 2000 &amp; RCA)" style="shape=mxgraph.uml.component;html=1;whiteSpace=wrap;fillColor=#E1D5E7;strokeColor=#9673A6;strokeWidth=1.5;" vertex="1" parent="t5">
+          <mxGeometry x="530" y="40" width="150" height="65" as="geometry" />
+        </mxCell>
+
+        <!-- TIER 6: Orchestration -->
+        <mxCell id="t6" value="Tier 6: Orchestration &amp; Concurrency Engine (code/main.py &amp; code/utils/)" style="swimlane;fontStyle=1;align=left;startSize=26;container=1;collapsible=0;html=1;fillColor=#E8F8F5;strokeColor=#16A085;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="40" y="600" width="1420" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="c_main" value="&lt;&lt;component&gt;&gt;&#xa;DeletionAuditOrchestrator&#xa;(Master Process Coordinator)" style="shape=mxgraph.uml.component;html=1;whiteSpace=wrap;fillColor=#D5E8D4;strokeColor=#82B366;strokeWidth=1.5;" vertex="1" parent="t6">
+          <mxGeometry x="40" y="40" width="280" height="65" as="geometry" />
+        </mxCell>
+        <mxCell id="c_pool" value="&lt;&lt;component&gt;&gt;&#xa;ThreadPoolExecutor&#xa;(8 Concurrent Worker Threads)" style="shape=mxgraph.uml.component;html=1;whiteSpace=wrap;fillColor=#D5E8D4;strokeColor=#82B366;strokeWidth=1.5;" vertex="1" parent="t6">
+          <mxGeometry x="380" y="40" width="280" height="65" as="geometry" />
+        </mxCell>
+        <mxCell id="c_csv" value="&lt;&lt;component&gt;&gt;&#xa;CsvHandler&#xa;(RFC-4180 Streaming File I/O)" style="shape=mxgraph.uml.component;html=1;whiteSpace=wrap;fillColor=#D5E8D4;strokeColor=#82B366;strokeWidth=1.5;" vertex="1" parent="t6">
+          <mxGeometry x="720" y="40" width="280" height="65" as="geometry" />
+        </mxCell>
+        <mxCell id="c_sch" value="&lt;&lt;component&gt;&gt;&#xa;SchemaValidator&#xa;(Strict Output Compliance)" style="shape=mxgraph.uml.component;html=1;whiteSpace=wrap;fillColor=#D5E8D4;strokeColor=#82B366;strokeWidth=1.5;" vertex="1" parent="t6">
+          <mxGeometry x="1060" y="40" width="280" height="65" as="geometry" />
+        </mxCell>
+
+        <!-- TIER 7: Deliverables -->
+        <mxCell id="t7" value="Tier 7: Official Submission Deliverables (Repository Root)" style="swimlane;fontStyle=1;align=left;startSize=26;container=1;collapsible=0;html=1;fillColor=#EBF5FB;strokeColor=#2980B9;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="40" y="750" width="1420" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="art_out" value="&lt;&lt;artifact&gt;&gt;&#xa;output.csv&#xa;(518 Natural Sorted Rows)" style="shape=note;whiteSpace=wrap;html=1;size=14;verticalAlign=middle;align=center;fillColor=#D4E6F1;strokeColor=#2980B9;strokeWidth=1.5;" vertex="1" parent="t7">
+          <mxGeometry x="50" y="35" width="250" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="art_log" value="&lt;&lt;artifact&gt;&gt;&#xa;log.txt&#xa;(Verbatim Agent Audit Log)" style="shape=note;whiteSpace=wrap;html=1;size=14;verticalAlign=middle;align=center;fillColor=#D4E6F1;strokeColor=#2980B9;strokeWidth=1.5;" vertex="1" parent="t7">
+          <mxGeometry x="390" y="35" width="250" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="art_zip" value="&lt;&lt;artifact&gt;&gt;&#xa;code.zip&#xa;(Runnable Solution Package)" style="shape=note;whiteSpace=wrap;html=1;size=14;verticalAlign=middle;align=center;fillColor=#D4E6F1;strokeColor=#2980B9;strokeWidth=1.5;" vertex="1" parent="t7">
+          <mxGeometry x="730" y="35" width="250" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="art_rep" value="&lt;&lt;artifact&gt;&gt;&#xa;evaluation/&#xa;(evaluation_report &amp; usage_report)" style="shape=note;whiteSpace=wrap;html=1;size=14;verticalAlign=middle;align=center;fillColor=#D4E6F1;strokeColor=#2980B9;strokeWidth=1.5;" vertex="1" parent="t7">
+          <mxGeometry x="1070" y="35" width="270" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- CONNECTORS BETWEEN TIERS -->
+        <mxCell id="f1" value="raw request text" style="endArrow=classic;html=1;strokeColor=#333333;strokeWidth=1.5;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" source="c_dr" target="c_san" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="f2" value="identity records" style="endArrow=classic;html=1;strokeColor=#333333;strokeWidth=1.5;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" source="c_id" target="c_ir" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="f3" value="evidence files" style="endArrow=classic;html=1;strokeColor=#333333;strokeWidth=1.5;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" source="c_evd" target="c_mi" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="f4" value="activity stream" style="endArrow=classic;html=1;strokeColor=#333333;strokeWidth=1.5;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" source="c_act" target="c_lt" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="f5" value="statutory rules" style="endArrow=classic;html=1;strokeColor=#333333;strokeWidth=1.5;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" source="c_rul" target="c_pa" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="f6" value="sanitized requests" style="endArrow=classic;html=1;strokeColor=#333333;strokeWidth=1.5;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.15;entryY=0;entryDx=0;entryDy=0;" edge="1" source="c_san" target="c_main" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="f7" value="dispatches cases" style="endArrow=classic;html=1;strokeColor=#333333;strokeWidth=1.5;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="c_main" target="c_pool" parent="t6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="f8" value="writes rows" style="endArrow=classic;html=1;strokeColor=#333333;strokeWidth=1.5;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" source="c_csv" target="art_out" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

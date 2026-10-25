@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2026-10-25T05:00:00.000Z" agent="Antigravity Multi-Agent Runtime" version="24.7.17" type="device">
+  <diagram id="sequence-diagram" name="UML 2.5.1 Sequence Interaction Flow">
+    <mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2000" pageHeight="1400" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Canvas Header -->
+        <mxCell id="hdr" value="&lt;b&gt;Ghost Data Still Exists — UML 2.5.1 Sequence Diagram: Multi-Agent Audit Pipeline&lt;/b&gt;&lt;br&gt;End-to-End Concurrent Trace | Static Pre-Indexing | DSU Orbit Cache | Poset DAG 5-Tuple Scheduling" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0f172a;strokeColor=#1e293b;fontColor=#ffffff;fontSize=18;align=center;" vertex="1" parent="1">
+          <mxGeometry x="50" y="30" width="1900" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================== -->
+        <!-- LIFELINE HEADERS -->
+        <!-- ============================================== -->
+        <mxCell id="ll_actor" value="&lt;b&gt;Participant&lt;/b&gt;&lt;br&gt;CLI Runner" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f1f5f9;strokeColor=#64748b;fontColor=#0f172a;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="60" y="110" width="130" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ll_orch" value="&lt;b&gt;main.py&lt;/b&gt;&lt;br&gt;Orchestrator" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#d97706;fontColor=#78350f;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="230" y="110" width="130" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ll_sec" value="&lt;b&gt;InputSanitizer&lt;/b&gt;&lt;br&gt;OWASP Defense" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe4e6;strokeColor=#e11d48;fontColor=#881337;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="400" y="110" width="130" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ll_pol" value="&lt;b&gt;PolicyAuditor&lt;/b&gt;&lt;br&gt;NLU &amp; Rules" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#2563eb;fontColor=#1e40af;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="570" y="110" width="130" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ll_res" value="&lt;b&gt;IdentityResolver&lt;/b&gt;&lt;br&gt;DSU Orbit Cache" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#2563eb;fontColor=#1e40af;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="740" y="110" width="130" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ll_insp" value="&lt;b&gt;MultimodalInspector&lt;/b&gt;&lt;br&gt;SQLite &amp; Hash" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#2563eb;fontColor=#1e40af;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="910" y="110" width="140" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ll_lin" value="&lt;b&gt;LineageTracer&lt;/b&gt;&lt;br&gt;Bisect Search" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#2563eb;fontColor=#1e40af;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1090" y="110" width="130" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ll_ai" value="&lt;b&gt;Context &amp; Token&lt;/b&gt;&lt;br&gt;Knapsack &amp; BPE" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dcfce7;strokeColor=#16a34a;fontColor=#14532d;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1260" y="110" width="130" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ll_plan" value="&lt;b&gt;RemediationPlanner&lt;/b&gt;&lt;br&gt;Poset Scheduler" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#2563eb;fontColor=#1e40af;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1430" y="110" width="140" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ll_grd" value="&lt;b&gt;PromptGuard&lt;/b&gt;&lt;br&gt;Anti-Hallucination" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dcfce7;strokeColor=#16a34a;fontColor=#14532d;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1610" y="110" width="130" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ll_rep" value="&lt;b&gt;Replay &amp; CSV&lt;/b&gt;&lt;br&gt;LRU &amp; Egress" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f3e8ff;strokeColor=#9333ea;fontColor=#581c87;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1780" y="110" width="130" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================== -->
+        <!-- LIFELINE GUIDELINES (Dashed Vertical Lines) -->
+        <!-- ============================================== -->
+        <mxCell id="line_actor" edge="1" source="ll_actor" parent="1" style="endArrow=none;dashed=1;strokeColor=#cbd5e1;strokeWidth=1;">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="125" y="1250" as="targetPoint" /></mxGeometry>
+        </mxCell>
+        <mxCell id="line_orch" edge="1" source="ll_orch" parent="1" style="endArrow=none;dashed=1;strokeColor=#cbd5e1;strokeWidth=1;">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="295" y="1250" as="targetPoint" /></mxGeometry>
+        </mxCell>
+        <mxCell id="line_sec" edge="1" source="ll_sec" parent="1" style="endArrow=none;dashed=1;strokeColor=#cbd5e1;strokeWidth=1;">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="465" y="1250" as="targetPoint" /></mxGeometry>
+        </mxCell>
+        <mxCell id="line_pol" edge="1" source="ll_pol" parent="1" style="endArrow=none;dashed=1;strokeColor=#cbd5e1;strokeWidth=1;">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="635" y="1250" as="targetPoint" /></mxGeometry>
+        </mxCell>
+        <mxCell id="line_res" edge="1" source="ll_res" parent="1" style="endArrow=none;dashed=1;strokeColor=#cbd5e1;strokeWidth=1;">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="805" y="1250" as="targetPoint" /></mxGeometry>
+        </mxCell>
+        <mxCell id="line_insp" edge="1" source="ll_insp" parent="1" style="endArrow=none;dashed=1;strokeColor=#cbd5e1;strokeWidth=1;">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="980" y="1250" as="targetPoint" /></mxGeometry>
+        </mxCell>
+        <mxCell id="line_lin" edge="1" source="ll_lin" parent="1" style="endArrow=none;dashed=1;strokeColor=#cbd5e1;strokeWidth=1;">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="1155" y="1250" as="targetPoint" /></mxGeometry>
+        </mxCell>
+        <mxCell id="line_ai" edge="1" source="ll_ai" parent="1" style="endArrow=none;dashed=1;strokeColor=#cbd5e1;strokeWidth=1;">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="1325" y="1250" as="targetPoint" /></mxGeometry>
+        </mxCell>
+        <mxCell id="line_plan" edge="1" source="ll_plan" parent="1" style="endArrow=none;dashed=1;strokeColor=#cbd5e1;strokeWidth=1;">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="1500" y="1250" as="targetPoint" /></mxGeometry>
+        </mxCell>
+        <mxCell id="line_grd" edge="1" source="ll_grd" parent="1" style="endArrow=none;dashed=1;strokeColor=#cbd5e1;strokeWidth=1;">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="1675" y="1250" as="targetPoint" /></mxGeometry>
+        </mxCell>
+        <mxCell id="line_rep" edge="1" source="ll_rep" parent="1" style="endArrow=none;dashed=1;strokeColor=#cbd5e1;strokeWidth=1;">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="1845" y="1250" as="targetPoint" /></mxGeometry>
+        </mxCell>
+
+        <!-- ============================================== -->
+        <!-- MESSAGE SEQUENCE CALLS -->
+        <!-- ============================================== -->
+        <!-- Step 1: CLI invocation -->
+        <mxCell id="msg1" value="1. python code/main.py --requests deletion_requests.csv" edge="1" parent="1" style="endArrow=block;strokeColor=#0f172a;strokeWidth=1.5;fontSize=10;">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="125" y="180" as="sourcePoint" /><mxPoint x="295" y="180" as="targetPoint" /></mxGeometry>
+        </mxCell>
+
+        <!-- Step 2: One-time static pre-index box -->
+        <mxCell id="box_init" value="[One-Time Static Pre-Indexing: DSU Orbit Cache + In-Memory SQLite Replicas + Bisect Sorting | ~1.85s, 65 MB RAM]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#64748b;fontColor=#475569;fontSize=11;align=center;" vertex="1" parent="1">
+          <mxGeometry x="250" y="210" width="1600" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Loop 518 cases box -->
+        <mxCell id="box_loop" value="loop [For each case in 518 evaluation requests (ThreadPoolExecutor max_workers=8)]" style="shape=swimlane;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#2563eb;fontColor=#1e40af;fontSize=12;fontStyle=1;startSize=25;" vertex="1" parent="1">
+          <mxGeometry x="100" y="270" width="1800" height="920" as="geometry" />
+        </mxCell>
+
+        <!-- Step 3: InputSanitizer -->
+        <mxCell id="msg2" value="2. sanitize(raw_text) &amp; entropy check H in [2.5, 5.0]" edge="1" parent="1" style="endArrow=block;strokeColor=#e11d48;strokeWidth=1.2;fontSize=10;">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="295" y="320" as="sourcePoint" /><mxPoint x="465" y="320" as="targetPoint" /></mxGeometry>
+        </mxCell>
+        <mxCell id="msg3" value="sanitized_text (OWASP LLM01 neutralized)" edge="1" parent="1" style="endArrow=open;dashed=1;strokeColor=#e11d48;strokeWidth=1.2;fontSize=10;">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="465" y="350" as="sourcePoint" /><mxPoint x="295" y="350" as="targetPoint" /></mxGeometry>
+        </mxCell>
+
+        <!-- Step 4: Policy Intent -->
+        <mxCell id="msg4" value="3. is_deletion_request(text) [30+ non-erasure phrases checked]" edge="1" parent="1" style="endArrow=block;strokeColor=#2563eb;strokeWidth=1.2;fontSize=10;">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="295" y="380" as="sourcePoint" /><mxPoint x="635" y="380" as="targetPoint" /></mxGeometry>
+        </mxCell>
+        <mxCell id="msg5" value="is_authorized : bool" edge="1" parent="1" style="endArrow=open;dashed=1;strokeColor=#2563eb;strokeWidth=1.2;fontSize=10;">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="635" y="410" as="sourcePoint" /><mxPoint x="295" y="410" as="targetPoint" /></mxGeometry>
+        </mxCell>
+
+        <!-- Alt Box for NOT_APPLICABLE vs AUTHORIZED -->
+        <mxCell id="box_alt" value="alt [NOT_APPLICABLE: Non-erasure request] / [AUTHORIZED: Legal Deletion Request]" style="shape=swimlane;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#059669;fontColor=#065f46;fontSize=11;fontStyle=1;startSize=25;" vertex="1" parent="box_loop">
+          <mxGeometry x="150" y="160" width="1620" height="730" as="geometry" />
+        </mxCell>
+
+        <!-- NOT_APPLICABLE fast path -->
+        <mxCell id="na_note" value="Fast-Path Exit: Emit NOT_APPLICABLE with empty steps_json '[]' immediately | Duration: ~0.15ms" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ecfdf5;strokeColor=#059669;fontColor=#065f46;fontSize=10;" vertex="1" parent="box_alt">
+          <mxGeometry x="30" y="35" width="600" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- Divider line in alt -->
+        <mxCell id="alt_line" edge="1" parent="box_alt" style="endArrow=none;dashed=1;strokeColor=#059669;strokeWidth=1.5;">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="0" y="80" as="sourcePoint" /><mxPoint x="1620" y="80" as="targetPoint" /></mxGeometry>
+        </mxCell>
+
+        <!-- Step 5: Identity Resolver -->
+        <mxCell id="msg6" value="4. resolve_cluster(email) [O(alpha(N)) Equivalence Orbit Cache]" edge="1" parent="1" style="endArrow=block;strokeColor=#2563eb;strokeWidth=1.2;fontSize=10;">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="295" y="550" as="sourcePoint" /><mxPoint x="805" y="550" as="targetPoint" /></mxGeometry>
+        </mxCell>
+        <mxCell id="msg7" value="cluster = {user_id, emails, phone, name, email_hash}" edge="1" parent="1" style="endArrow=open;dashed=1;strokeColor=#2563eb;strokeWidth=1.2;fontSize=10;">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="805" y="580" as="sourcePoint" /><mxPoint x="295" y="580" as="targetPoint" /></mxGeometry>
+        </mxCell>
+
+        <!-- Step 6: Evidence & Lineage -->
+        <mxCell id="msg8" value="5. query_facts_for_tokens(cluster, cutoff=audit_at) [Inverted Hash]" edge="1" parent="1" style="endArrow=block;strokeColor=#2563eb;strokeWidth=1.2;fontSize=10;">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="295" y="620" as="sourcePoint" /><mxPoint x="980" y="620" as="targetPoint" /></mxGeometry>
+        </mxCell>
+        <mxCell id="msg9" value="exposed_evidence_facts" edge="1" parent="1" style="endArrow=open;dashed=1;strokeColor=#2563eb;strokeWidth=1.2;fontSize=10;">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="980" y="650" as="sourcePoint" /><mxPoint x="295" y="650" as="targetPoint" /></mxGeometry>
+        </mxCell>
+
+        <mxCell id="msg10" value="6. query_window_worker_activities(rep_dt) [O(log K) Monotone Bisect]" edge="1" parent="1" style="endArrow=block;strokeColor=#2563eb;strokeWidth=1.2;fontSize=10;">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="295" y="690" as="sourcePoint" /><mxPoint x="1155" y="690" as="targetPoint" /></mxGeometry>
+        </mxCell>
+        <mxCell id="msg11" value="active_sync_flows &amp; restore_risks" edge="1" parent="1" style="endArrow=open;dashed=1;strokeColor=#2563eb;strokeWidth=1.2;fontSize=10;">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="1155" y="720" as="sourcePoint" /><mxPoint x="295" y="720" as="targetPoint" /></mxGeometry>
+        </mxCell>
+
+        <!-- Step 7: AI Knapsack & Dedup -->
+        <mxCell id="msg12" value="7. build_knapsack_context(facts, max_budget=4096) &amp; BPE dedup" edge="1" parent="1" style="endArrow=block;strokeColor=#16a34a;strokeWidth=1.2;fontSize=10;">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="295" y="760" as="sourcePoint" /><mxPoint x="1325" y="760" as="targetPoint" /></mxGeometry>
+        </mxCell>
+        <mxCell id="msg13" value="packed_facts (19,332 tokens saved)" edge="1" parent="1" style="endArrow=open;dashed=1;strokeColor=#16a34a;strokeWidth=1.2;fontSize=10;">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="1325" y="790" as="sourcePoint" /><mxPoint x="295" y="790" as="targetPoint" /></mxGeometry>
+        </mxCell>
+
+        <!-- Step 8: Poset Remediation Planner -->
+        <mxCell id="msg14" value="8. build_steps(verdict, findings, verifs) [Poset Injective 5-Tuple Total Order]" edge="1" parent="1" style="endArrow=block;strokeColor=#2563eb;strokeWidth=1.2;fontSize=10;">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="295" y="830" as="sourcePoint" /><mxPoint x="1500" y="830" as="targetPoint" /></mxGeometry>
+        </mxCell>
+        <mxCell id="msg15" value="ordered_steps_1..K" edge="1" parent="1" style="endArrow=open;dashed=1;strokeColor=#2563eb;strokeWidth=1.2;fontSize=10;">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="1500" y="860" as="sourcePoint" /><mxPoint x="295" y="860" as="targetPoint" /></mxGeometry>
+        </mxCell>
+
+        <!-- Step 9: Witness Verification -->
+        <mxCell id="msg16" value="9. verify_witness_grounding(steps, audit_at) [Assert P(Hallucination)=0]" edge="1" parent="1" style="endArrow=block;strokeColor=#16a34a;strokeWidth=1.2;fontSize=10;">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="295" y="900" as="sourcePoint" /><mxPoint x="1675" y="900" as="targetPoint" /></mxGeometry>
+        </mxCell>
+        <mxCell id="msg17" value="grounding_verified : bool" edge="1" parent="1" style="endArrow=open;dashed=1;strokeColor=#16a34a;strokeWidth=1.2;fontSize=10;">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="1675" y="930" as="sourcePoint" /><mxPoint x="295" y="930" as="targetPoint" /></mxGeometry>
+        </mxCell>
+
+        <!-- Step 10: Replay & Egress -->
+        <mxCell id="msg18" value="10. record_decision(...) [Bounded LRU 2,000] &amp; stream_csv_row()" edge="1" parent="1" style="endArrow=block;strokeColor=#9333ea;strokeWidth=1.2;fontSize=10;">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="295" y="970" as="sourcePoint" /><mxPoint x="1845" y="970" as="targetPoint" /></mxGeometry>
+        </mxCell>
+        <mxCell id="msg19" value="row_persisted_to_output_csv" edge="1" parent="1" style="endArrow=open;dashed=1;strokeColor=#9333ea;strokeWidth=1.2;fontSize=10;">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="1845" y="1000" as="sourcePoint" /><mxPoint x="295" y="1000" as="targetPoint" /></mxGeometry>
+        </mxCell>
+
+        <!-- Final Return -->
+        <mxCell id="msg_ret" value="11. output.csv ready (518 valid natural-sorted rows, exit 0)" edge="1" parent="1" style="endArrow=open;dashed=1;strokeColor=#0f172a;strokeWidth=1.5;fontSize=11;">
+          <mxGeometry relative="1" as="geometry"><mxPoint x="295" y="1220" as="sourcePoint" /><mxPoint x="125" y="1220" as="targetPoint" /></mxGeometry>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" type="diagram" version="24.0.0">
+  <diagram id="diagram_inter" name="Interaction Overview Diagram">
+    <mxGraphModel dx="1422" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- INITIAL PSEUDOSTATE -->
+        <mxCell id="init_node" value="" style="ellipse;html=1;strokeColor=#000000;fillColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="585" y="30" width="30" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- REF 1: Pre-Indexing -->
+        <mxCell id="ref_init" value="ref: One-Time Static Pre-Indexing Phase (Amortized Zero Cost)&#xa;-------------------------------------------------------------------------------------------------------&#xa;1. AuditContainer loads deletion_rules.csv into memory&#xa;2. IdentityResolver builds DSU &amp; Equivalence Orbit Cache in O(α(N))&#xa;3. MultimodalInspector spins up in-memory SQLite replicas (:memory:)&#xa;4. LineageTracer sorts worker timestamps for O(log K) bisect window indexing&#xa;Total Memory: ~65 MB | Pre-Index Duration: ~1.85s" style="swimlane;fontStyle=1;startSize=26;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;strokeWidth=2;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="320" y="90" width="560" height="130" as="geometry" />
+        </mxCell>
+
+        <!-- FORK CONCURRENCY -->
+        <mxCell id="fork_conc" value="" style="line;strokeWidth=6;html=1;strokeColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="360" y="250" width="480" height="10" as="geometry" />
+        </mxCell>
+
+        <!-- REF 2: Ingress Sanitization -->
+        <mxCell id="ref_ingress" value="ref: Security Ingress &amp; Sanitization Guardrails&#xa;---------------------------------------------------------------------------------&#xa;1. InputSanitizer neutralizes prompt injections (OWASP LLM01)&#xa;2. Shannon Entropy verified: H in [2.5, 5.0]&#xa;3. TokenBucketRateLimiter asserts burst capacity" style="swimlane;fontStyle=1;startSize=26;html=1;fillColor=#FADBD8;strokeColor=#C0392B;strokeWidth=1.5;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="375" y="290" width="450" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- DECISION: Authorization -->
+        <mxCell id="dec_auth" value="Decision:&#xa;Does request_text&#xa;authorize erasure?" style="rhombus;html=1;strokeColor=#333333;strokeWidth=2;fillColor=#FFFFFF;whiteSpace=wrap;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="515" y="420" width="170" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- REF 3: Fast-Path NOT_APPLICABLE -->
+        <mxCell id="ref_na" value="ref: Fast-Path NOT_APPLICABLE Synthesis&#xa;----------------------------------------------------------------------&#xa;1. PolicyAuditor flags non-erasure keyword (export/rectify/opt-out)&#xa;2. Set deletion_status = NOT_APPLICABLE, steps_json = '[]'&#xa;3. Bypasses heavy SQLite &amp; activity storage scan entirely" style="swimlane;fontStyle=1;startSize=26;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;strokeWidth=1.5;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="40" y="550" width="440" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- REF 4: Deep Audit -->
+        <mxCell id="ref_deep" value="ref: Multi-Agent Deep Estate Investigation&#xa;-------------------------------------------------------------------------------------------------------&#xa;1. IdentityResolver retrieves transitive alias cluster via O(α(N)) orbit cache&#xa;2. MultimodalInspector queries in-memory SQLite replicas where T(e) ≤ audit_at&#xa;3. LineageTracer executes O(log K) bisect window trace for CDC sync &amp; restore hazards&#xa;4. ContextBuilder filters causal cone &amp; allocates knapsack token budget&#xa;5. TokenOptimizer applies SHA-256 digest deduplication (19,332 prompt tokens saved)" style="swimlane;fontStyle=1;startSize=26;html=1;fillColor=#D5E8D4;strokeColor=#82B366;strokeWidth=1.5;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="540" y="550" width="580" height="130" as="geometry" />
+        </mxCell>
+
+        <!-- DECISION: Violations Found -->
+        <mxCell id="dec_viol" value="Decision:&#xa;Were residual records,&#xa;active sync flows, or&#xa;restore risks found?" style="rhombus;html=1;strokeColor=#333333;strokeWidth=2;fillColor=#FFFFFF;whiteSpace=wrap;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="735" y="710" width="190" height="110" as="geometry" />
+        </mxCell>
+
+        <!-- REF 5: Poset Remediation (INCOMPLETE) -->
+        <mxCell id="ref_incomp" value="ref: Poset DAG Remediation Planning (INCOMPLETE)&#xa;---------------------------------------------------------------------------------&#xa;1. Phase 1 (FINDING): Cite participant file_id / activity_id&#xa;2. Phase 2 (REMEDIATION): DISABLE -&gt; BLOCK -&gt; DELETE -&gt; REDACT&#xa;3. Phase 3 (VERIFICATION): Post-remediation dual checks&#xa;4. Strict injective 5-tuple sorting &amp; consecutive renumbering 1..K" style="swimlane;fontStyle=1;startSize=26;html=1;fillColor=#FFE6CC;strokeColor=#D79B00;strokeWidth=1.5;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="460" y="850" width="430" height="110" as="geometry" />
+        </mxCell>
+
+        <!-- REF 6: Proof of Completeness (COMPLETE) -->
+        <mxCell id="ref_comp" value="ref: Verification &amp; Compliance Proof (COMPLETE)&#xa;---------------------------------------------------------------------------------&#xa;1. Evaluate statutory retention and permitted account tombstones&#xa;2. Emit evidence-backed verification steps proving absence/redaction&#xa;3. Set deletion_status = COMPLETE" style="swimlane;fontStyle=1;startSize=26;html=1;fillColor=#E8F8F5;strokeColor=#16A085;strokeWidth=1.5;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="930" y="850" width="410" height="110" as="geometry" />
+        </mxCell>
+
+        <!-- JOIN RESULTS -->
+        <mxCell id="join_res" value="" style="line;strokeWidth=6;html=1;strokeColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="250" y="990" width="900" height="10" as="geometry" />
+        </mxCell>
+
+        <!-- REF 7: Delivery Egress -->
+        <mxCell id="ref_egress" value="ref: Safety Assertions &amp; RFC-4180 Delivery Egress&#xa;---------------------------------------------------------------------------------&#xa;1. PromptGuard asserts witness grounding invariant: P(Hallucination) = 0&#xa;2. ReplayTracer records decision graph in bounded LRU 2,000 registry&#xa;3. CsvHandler writes buffered row preserving natural numeric case order" style="swimlane;fontStyle=1;startSize=26;html=1;fillColor=#EBF5FB;strokeColor=#2980B9;strokeWidth=1.5;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="475" y="1030" width="450" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- FINAL PSEUDOSTATE -->
+        <mxCell id="final_node" value="" style="shape=doubleEllipse;html=1;strokeColor=#000000;fillColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="685" y="1160" width="30" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- FLOW ARROWS -->
+        <mxCell id="a1" style="endArrow=classic;html=1;strokeColor=#000000;strokeWidth=2;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" source="init_node" target="ref_init" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="a2" style="endArrow=classic;html=1;strokeColor=#000000;strokeWidth=2;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" source="ref_init" target="fork_conc" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="a3" style="endArrow=classic;html=1;strokeColor=#000000;strokeWidth=2;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" source="fork_conc" target="ref_ingress" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="a4" style="endArrow=classic;html=1;strokeColor=#000000;strokeWidth=2;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" source="ref_ingress" target="dec_auth" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="a5" value="[No: Export/Rectify]" style="endArrow=classic;html=1;strokeColor=#000000;strokeWidth=2;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;edgeStyle=orthogonalEdgeStyle;" edge="1" source="dec_auth" target="ref_na" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="a6" value="[Yes: Legal Erasure]" style="endArrow=classic;html=1;strokeColor=#000000;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;edgeStyle=orthogonalEdgeStyle;" edge="1" source="dec_auth" target="ref_deep" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="a7" style="endArrow=classic;html=1;strokeColor=#000000;strokeWidth=2;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" source="ref_deep" target="dec_viol" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="a8" value="[Yes: Residuals Exist]" style="endArrow=classic;html=1;strokeColor=#000000;strokeWidth=2;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;edgeStyle=orthogonalEdgeStyle;" edge="1" source="dec_viol" target="ref_incomp" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="a9" value="[No: Zero Residuals]" style="endArrow=classic;html=1;strokeColor=#000000;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;edgeStyle=orthogonalEdgeStyle;" edge="1" source="dec_viol" target="ref_comp" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="a10" style="endArrow=classic;html=1;strokeColor=#000000;strokeWidth=2;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.15;entryY=0;entryDx=0;entryDy=0;edgeStyle=orthogonalEdgeStyle;" edge="1" source="ref_na" target="join_res" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="a11" style="endArrow=classic;html=1;strokeColor=#000000;strokeWidth=2;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" source="ref_incomp" target="join_res" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="a12" style="endArrow=classic;html=1;strokeColor=#000000;strokeWidth=2;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.85;entryY=0;entryDx=0;entryDy=0;edgeStyle=orthogonalEdgeStyle;" edge="1" source="ref_comp" target="join_res" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="a13" style="endArrow=classic;html=1;strokeColor=#000000;strokeWidth=2;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" source="join_res" target="ref_egress" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="a14" style="endArrow=classic;html=1;strokeColor=#000000;strokeWidth=2;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" source="ref_egress" target="final_node" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

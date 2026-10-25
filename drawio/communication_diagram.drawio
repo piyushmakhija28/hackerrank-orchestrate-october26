@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" type="diagram" version="24.0.0">
+  <diagram id="diagram_comm" name="Multi-Agent Collaboration Communication Diagram">
+    <mxGraphModel dx="1422" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- CENTRAL ORCHESTRATOR ROLE -->
+        <mxCell id="role_orch" value="orchestrator :&#xa;DeletionAuditOrchestrator" style="swimlane;fontStyle=1;align=center;startSize=28;container=0;collapsible=0;html=1;fillColor=#D5E8D4;strokeColor=#82B366;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="540" y="340" width="220" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- INPUT SANITIZER ROLE -->
+        <mxCell id="role_san" value="sanitizer :&#xa;InputSanitizer" style="swimlane;fontStyle=1;align=center;startSize=28;container=0;collapsible=0;html=1;fillColor=#F8CECC;strokeColor=#B85450;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="120" y="100" width="180" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- POLICY AUDITOR ROLE -->
+        <mxCell id="role_aud" value="policy_auditor :&#xa;PolicyAuditor" style="swimlane;fontStyle=1;align=center;startSize=28;container=0;collapsible=0;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="560" y="100" width="180" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- DSU IDENTITY RESOLVER ROLE -->
+        <mxCell id="role_dsu" value="identity_resolver :&#xa;IdentityResolver" style="swimlane;fontStyle=1;align=center;startSize=28;container=0;collapsible=0;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="1000" y="100" width="180" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- MULTIMODAL INSPECTOR ROLE -->
+        <mxCell id="role_insp" value="multimodal_inspector :&#xa;MultimodalInspector" style="swimlane;fontStyle=1;align=center;startSize=28;container=0;collapsible=0;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="1060" y="345" width="200" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- LINEAGE TRACER ROLE -->
+        <mxCell id="role_lin" value="lineage_tracer :&#xa;LineageTracer" style="swimlane;fontStyle=1;align=center;startSize=28;container=0;collapsible=0;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="1000" y="580" width="180" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- REMEDIATION PLANNER ROLE -->
+        <mxCell id="role_rem" value="remediation_planner :&#xa;RemediationPlanner" style="swimlane;fontStyle=1;align=center;startSize=28;container=0;collapsible=0;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="560" y="580" width="180" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- PROMPT GUARD ROLE -->
+        <mxCell id="role_grd" value="prompt_guard :&#xa;PromptGuard" style="swimlane;fontStyle=1;align=center;startSize=28;container=0;collapsible=0;html=1;fillColor=#FFE6CC;strokeColor=#D79B00;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="120" y="580" width="180" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- CSV HANDLER ROLE -->
+        <mxCell id="role_csv" value="csv_handler :&#xa;CsvHandler" style="swimlane;fontStyle=1;align=center;startSize=28;container=0;collapsible=0;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="60" y="345" width="180" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- STRUCTURED LOGGER ROLE -->
+        <mxCell id="role_log" value="structured_logger :&#xa;StructuredLogger" style="swimlane;fontStyle=1;align=center;startSize=28;container=0;collapsible=0;html=1;fillColor=#E1D5E7;strokeColor=#9673A6;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="560" y="740" width="180" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- COMMUNICATION LINKS & NUMBERED DISPATCHES -->
+        <!-- Link 1: Orch <-> San -->
+        <mxCell id="link_san" value="1: sanitize(request_text) ▶&#xa;◀ 1.1: sanitized_text, is_injection" style="endArrow=none;html=1;strokeColor=#333333;strokeWidth=2;exitX=0;exitY=0;exitDx=0;exitDy=0;entryX=1;entryY=1;entryDx=0;entryDy=0;" edge="1" source="role_orch" target="role_san" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Link 2: Orch <-> Aud -->
+        <mxCell id="link_aud" value="2: is_deletion_request(text) ▲&#xa;▼ 2.1: is_authorized_deletion&#xa;6: evaluate_violations(facts, flows) ▲&#xa;▼ 6.1: residual_violations" style="endArrow=none;html=1;strokeColor=#333333;strokeWidth=2;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" source="role_orch" target="role_aud" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Link 3: Orch <-> DSU -->
+        <mxCell id="link_dsu" value="3: resolve_cluster(email) ▶&#xa;◀ 3.1: identity_tokens_orbit" style="endArrow=none;html=1;strokeColor=#333333;strokeWidth=2;exitX=1;exitY=0;exitDx=0;exitDy=0;entryX=0;entryY=1;entryDx=0;entryDy=0;" edge="1" source="role_orch" target="role_dsu" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Link 4: Orch <-> Insp -->
+        <mxCell id="link_insp" value="4: query_facts_for_tokens(cluster, audit_at) ▶&#xa;◀ 4.1: candidate_evidence_facts" style="endArrow=none;html=1;strokeColor=#333333;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="role_orch" target="role_insp" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Link 5: Orch <-> Lin -->
+        <mxCell id="link_lin" value="5: trace_active_flows(cluster, audit_at) ▶&#xa;◀ 5.1: active_cdc_flows, restore_hazards" style="endArrow=none;html=1;strokeColor=#333333;strokeWidth=2;exitX=1;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0;entryDx=0;entryDy=0;" edge="1" source="role_orch" target="role_lin" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Link 6: Orch <-> Rem -->
+        <mxCell id="link_rem" value="7: build_steps(verdict, findings, verifications) ▼&#xa;▲ 7.1: poset_ordered_steps" style="endArrow=none;html=1;strokeColor=#333333;strokeWidth=2;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" source="role_orch" target="role_rem" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Link 7: Orch <-> Grd -->
+        <mxCell id="link_grd" value="8: verify_witness_grounding(steps, audit_at) ▼&#xa;▲ 8.1: is_grounded_valid" style="endArrow=none;html=1;strokeColor=#333333;strokeWidth=2;exitX=0;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0;entryDx=0;entryDy=0;" edge="1" source="role_orch" target="role_grd" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Link 8: Orch <-> Csv -->
+        <mxCell id="link_csv" value="◀ 9: write_row(case_id, status, steps_json)&#xa;9.1: row_persisted ▶" style="endArrow=none;html=1;strokeColor=#333333;strokeWidth=2;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="role_orch" target="role_csv" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Link 9: Orch <-> Log -->
+        <mxCell id="link_log" value="10: log_case_audit_metrics(case_id, verdict, duration) ▼" style="endArrow=none;html=1;strokeColor=#333333;strokeWidth=2;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" source="role_rem" target="role_log" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

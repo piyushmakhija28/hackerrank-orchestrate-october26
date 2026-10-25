@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" type="diagram" version="24.0.0">
+  <diagram id="diagram_dep" name="Deployment Architecture Diagram">
+    <mxGraphModel dx="1422" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1500" pageHeight="950" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- NODE: HOST WORKSTATION -->
+        <mxCell id="node_host" value="&lt;&lt;device&gt;&gt;&#xa;Host Workstation (Windows 11 / Ubuntu 24.04 / macOS)" style="shape=cube;html=1;whiteSpace=wrap;fontStyle=1;perimeter=cubePerimeter;fillColor=#F8F9FA;strokeColor=#495057;strokeWidth=2;align=left;spacingLeft=15;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="40" y="30" width="1020" height="880" as="geometry" />
+        </mxCell>
+
+        <!-- EXECUTION ENVIRONMENT: DOCKER CONTAINER -->
+        <mxCell id="node_docker" value="&lt;&lt;executionEnvironment&gt;&gt;&#xa;Docker Container (python:3.13-slim Linux Kernel ≥ 5.15)" style="shape=cube;html=1;whiteSpace=wrap;fontStyle=1;perimeter=cubePerimeter;fillColor=#EBF5FB;strokeColor=#2980B9;strokeWidth=2;align=left;spacingLeft=15;verticalAlign=top;" vertex="1" parent="node_host">
+          <mxGeometry x="30" y="60" width="960" height="420" as="geometry" />
+        </mxCell>
+
+        <!-- PROCESS: CPYTHON VM -->
+        <mxCell id="proc_cpython" value="Process: Python 3.13 CPython Virtual Machine (Heap: ~65 MB RSS)" style="swimlane;fontStyle=1;align=left;startSize=26;container=1;collapsible=0;html=1;fillColor=#E8F8F5;strokeColor=#16A085;strokeWidth=1.5;" vertex="1" parent="node_docker">
+          <mxGeometry x="25" y="60" width="910" height="340" as="geometry" />
+        </mxCell>
+
+        <!-- MAIN THREAD -->
+        <mxCell id="th_main" value="Main Orchestration Thread&#xa;---------------------------------&#xa;+ DeletionAuditOrchestrator (code/main.py)&#xa;+ AuditContainer (IoC Dependency Injector)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#D5E8D4;strokeColor=#82B366;strokeWidth=1.5;align=left;spacingLeft=10;" vertex="1" parent="proc_cpython">
+          <mxGeometry x="20" y="40" width="360" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- WORKER THREAD POOL -->
+        <mxCell id="th_pool" value="Worker ThreadPoolExecutor (max_workers = 8)&#xa;----------------------------------------------------&#xa;+ Worker 1..8 (Concurrent Request Auditing)&#xa;+ CircuitBreaker Protected Invocations" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#D5E8D4;strokeColor=#82B366;strokeWidth=1.5;align=left;spacingLeft=10;" vertex="1" parent="proc_cpython">
+          <mxGeometry x="420" y="40" width="460" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- IN-MEMORY DATA STRUCTURES -->
+        <mxCell id="mem_structs" value="In-Memory Data Structures (Shared Across Workers in RAM)&#xa;---------------------------------------------------------------------------------------------------------&#xa;• DSU Disjoint-Set Maps (Parent &amp; Rank Dicts)&#xa;• Equivalence Orbit Cache (dict[str, set[str]] with O(α(N)) instant lookup)&#xa;• In-Memory Attached SQLite Databases (:memory: / sqlite3.connect)&#xa;• Monotone Pre-Sorted Worker Timestamps (O(log K) Bisect Binary Search Window)&#xa;• ReplayTracer Decision Graph Registry (Bounded LRU Cache with 2,000 capacity)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;strokeWidth=1.5;align=left;spacingLeft=12;verticalAlign=middle;" vertex="1" parent="proc_cpython">
+          <mxGeometry x="20" y="145" width="860" height="170" as="geometry" />
+        </mxCell>
+
+        <!-- DISK STORAGE NODE -->
+        <mxCell id="node_disk" value="&lt;&lt;device&gt;&gt;&#xa;Local NVMe SSD / Storage Subsystem (NTFS / ext4)" style="shape=cube;html=1;whiteSpace=wrap;fontStyle=1;perimeter=cubePerimeter;fillColor=#FEF9E7;strokeColor=#F39C12;strokeWidth=2;align=left;spacingLeft=15;verticalAlign=top;" vertex="1" parent="node_host">
+          <mxGeometry x="30" y="500" width="960" height="350" as="geometry" />
+        </mxCell>
+
+        <!-- DATASET FOLDER -->
+        <mxCell id="folder_dataset" value="Folder: dataset/ (Immutable Participant Corpus)&#xa;------------------------------------------------------------&#xa;• deletion_requests.csv (518 Audit Cases)&#xa;• user_identities.csv &amp; user_audit_log.csv&#xa;• system_activity.csv &amp; deletion_rules.csv&#xa;• evidence_files.csv (Manifest: 94 files)&#xa;• evidence/ (Databases, Docs, Images, Logs, Records)" style="shape=note;whiteSpace=wrap;html=1;size=16;fillColor=#DAE8FC;strokeColor=#6C8EBF;strokeWidth=1.5;align=left;spacingLeft=10;" vertex="1" parent="node_disk">
+          <mxGeometry x="30" y="60" width="420" height="260" as="geometry" />
+        </mxCell>
+
+        <!-- OUTPUT DELIVERABLES FOLDER -->
+        <mxCell id="folder_output" value="Folder: Submission Artifacts (Repository Root)&#xa;------------------------------------------------------------&#xa;• output.csv (518 Natural Sorted Prediction Rows)&#xa;• log.txt (Verbatim Conversation Transcript)&#xa;• code.zip (Runnable Production Package)&#xa;• evaluation/evaluation_report.md (Accuracy Metrics)&#xa;• evaluation/usage_report.md (Token &amp; Cost Audit)" style="shape=note;whiteSpace=wrap;html=1;size=16;fillColor=#D4E6F1;strokeColor=#2980B9;strokeWidth=1.5;align=left;spacingLeft=10;" vertex="1" parent="node_disk">
+          <mxGeometry x="490" y="60" width="440" height="260" as="geometry" />
+        </mxCell>
+
+        <!-- EXTERNAL HARNESS -->
+        <mxCell id="node_harness" value="&lt;&lt;device&gt;&gt;&#xa;HackerRank Official Evaluation Infrastructure" style="shape=cube;html=1;whiteSpace=wrap;fontStyle=1;perimeter=cubePerimeter;fillColor=#FADBD8;strokeColor=#C0392B;strokeWidth=2;align=left;spacingLeft=15;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="1100" y="240" width="360" height="420" as="geometry" />
+        </mxCell>
+
+        <mxCell id="grader_proc" value="Automated Evaluation Harness&#xa;-------------------------------------&#xa;+ Dockerized Isolated Sandbox&#xa;+ Ground-Truth Match Engine&#xa;+ Output Schema &amp; Steps Validator&#xa;+ Sequence Accuracy Metric Evaluator" style="shape=component;whiteSpace=wrap;html=1;fillColor=#F2D7D5;strokeColor=#C0392B;strokeWidth=1.5;align=left;spacingLeft=10;" vertex="1" parent="node_harness">
+          <mxGeometry x="30" y="90" width="300" height="270" as="geometry" />
+        </mxCell>
+
+        <!-- INTERCONNECT ARROWS -->
+        <mxCell id="arr1" value="dispatches cases" style="endArrow=classic;html=1;strokeColor=#333333;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="th_main" target="th_pool" parent="proc_cpython">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="arr2" value="reads in-memory indices" style="endArrow=classic;html=1;strokeColor=#333333;strokeWidth=1.5;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" source="th_pool" target="mem_structs" parent="proc_cpython">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="arr3" value="mmap / read-only POSIX stream" style="endArrow=classic;html=1;strokeColor=#333333;strokeWidth=1.5;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.25;entryY=1;entryDx=0;entryDy=0;" edge="1" source="folder_dataset" target="proc_cpython" parent="node_host">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="arr4" value="buffered thread-safe write" style="endArrow=classic;html=1;strokeColor=#333333;strokeWidth=1.5;exitX=0.75;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" source="proc_cpython" target="folder_output" parent="node_host">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="arr5" value="HTTPS POST / Zip Submission Upload" style="endArrow=classic;html=1;strokeColor=#C0392B;strokeWidth=2.5;dashed=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="folder_output" target="grader_proc" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

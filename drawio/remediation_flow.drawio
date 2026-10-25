@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2026-10-25T05:00:00.000Z" agent="Antigravity Multi-Agent Runtime" version="24.7.17" type="device">
+  <diagram id="remediation-poset" name="Poset DAG Remediation Scheduling">
+    <mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2000" pageHeight="1400" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Canvas Header -->
+        <mxCell id="hdr" value="&lt;b&gt;Ghost Data Still Exists — Partially Ordered Set (Poset) DAG Remediation Architecture&lt;/b&gt;&lt;br&gt;Theorem 3 Injective 5-Tuple Total Order | Dependency-First Invariant | 15 Allowable Operations Mapping" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0f172a;strokeColor=#1e293b;fontColor=#ffffff;fontSize=18;align=center;" vertex="1" parent="1">
+          <mxGeometry x="50" y="30" width="1900" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================== -->
+        <!-- PHASE 1: FINDINGS (Red) -->
+        <!-- ============================================== -->
+        <mxCell id="p_find" value="Phase 1: FINDING (Rank = 1) — Proves Residuals at audit_at" style="swimlane;whiteSpace=wrap;html=1;fillColor=#fff1f2;strokeColor=#e11d48;fontColor=#881337;fontSize=13;fontStyle=1;startSize=28;" vertex="1" parent="1">
+          <mxGeometry x="60" y="120" width="560" height="420" as="geometry" />
+        </mxCell>
+
+        <mxCell id="op_f1" value="&lt;b&gt;1. REPORT_REMAINING_RECORD&lt;/b&gt; (Rank = 1)&lt;hr&gt;State: &lt;b&gt;PRESENT&lt;/b&gt;&lt;br&gt;Evidence: Participant &lt;b&gt;file_id&lt;/b&gt; (SQL / JSON / PDF / Log)&lt;br&gt;Meaning: Data that should have been deleted still exists" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe4e6;strokeColor=#e11d48;fontColor=#881337;align=left;spacingLeft=10;fontSize=10;" vertex="1" parent="p_find">
+          <mxGeometry x="20" y="45" width="520" height="75" as="geometry" />
+        </mxCell>
+
+        <mxCell id="op_f2" value="&lt;b&gt;2. REPORT_EXPOSED_PII&lt;/b&gt; (Rank = 2)&lt;hr&gt;State: &lt;b&gt;PRESENT&lt;/b&gt;&lt;br&gt;Evidence: Participant &lt;b&gt;file_id&lt;/b&gt;&lt;br&gt;Meaning: Record may remain, but direct PII is exposed (violating REDACT)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe4e6;strokeColor=#e11d48;fontColor=#881337;align=left;spacingLeft=10;fontSize=10;" vertex="1" parent="p_find">
+          <mxGeometry x="20" y="135" width="520" height="75" as="geometry" />
+        </mxCell>
+
+        <mxCell id="op_f3" value="&lt;b&gt;3. REPORT_ACTIVE_DATA_FLOW&lt;/b&gt; (Rank = 3)&lt;hr&gt;State: &lt;b&gt;ACTIVE&lt;/b&gt;&lt;br&gt;Evidence: Participant &lt;b&gt;activity_id&lt;/b&gt;&lt;br&gt;Meaning: Active CDC / sync pipeline can copy or recreate deleted data" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe4e6;strokeColor=#e11d48;fontColor=#881337;align=left;spacingLeft=10;fontSize=10;" vertex="1" parent="p_find">
+          <mxGeometry x="20" y="225" width="520" height="75" as="geometry" />
+        </mxCell>
+
+        <mxCell id="op_f4" value="&lt;b&gt;4. REPORT_RESTORE_RISK&lt;/b&gt; (Rank = 4)&lt;hr&gt;State: &lt;b&gt;ACTIVE&lt;/b&gt;&lt;br&gt;Evidence: Participant &lt;b&gt;activity_id&lt;/b&gt;&lt;br&gt;Meaning: Backup / snapshot restore process can bring deleted data back" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe4e6;strokeColor=#e11d48;fontColor=#881337;align=left;spacingLeft=10;fontSize=10;" vertex="1" parent="p_find">
+          <mxGeometry x="20" y="315" width="520" height="75" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================== -->
+        <!-- PHASE 2: REMEDIATION (Amber) -->
+        <!-- ============================================== -->
+        <mxCell id="p_rem" value="Phase 2: REMEDIATION (Rank = 2) — Corrective Actions (evidence_id = '')" style="swimlane;whiteSpace=wrap;html=1;fillColor=#fffbeb;strokeColor=#d97706;fontColor=#78350f;fontSize=13;fontStyle=1;startSize=28;" vertex="1" parent="1">
+          <mxGeometry x="660" y="120" width="600" height="420" as="geometry" />
+        </mxCell>
+
+        <mxCell id="op_r1" value="&lt;b&gt;5. DISABLE_DATA_FLOW&lt;/b&gt; (Rank = 5) [Dependency-First Invariant]&lt;hr&gt;State: &lt;b&gt;DISABLED&lt;/b&gt; | Evidence ID: &lt;b&gt;''&lt;/b&gt;&lt;br&gt;Action: Stop active sync job BEFORE altering dependent records" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#d97706;fontColor=#78350f;align=left;spacingLeft=10;fontSize=10;" vertex="1" parent="p_rem">
+          <mxGeometry x="20" y="40" width="560" height="65" as="geometry" />
+        </mxCell>
+
+        <mxCell id="op_r2" value="&lt;b&gt;6. BLOCK_RESTORE&lt;/b&gt; (Rank = 6) [Dependency-First Invariant]&lt;hr&gt;State: &lt;b&gt;BLOCKED&lt;/b&gt; | Evidence ID: &lt;b&gt;''&lt;/b&gt;&lt;br&gt;Action: Block unpurged backup snapshot BEFORE deleting target records" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#d97706;fontColor=#78350f;align=left;spacingLeft=10;fontSize=10;" vertex="1" parent="p_rem">
+          <mxGeometry x="20" y="115" width="560" height="65" as="geometry" />
+        </mxCell>
+
+        <mxCell id="op_r3" value="&lt;b&gt;7. DELETE_RECORD&lt;/b&gt; (Rank = 7)&lt;hr&gt;State: &lt;b&gt;ABSENT&lt;/b&gt; | Evidence ID: &lt;b&gt;''&lt;/b&gt;&lt;br&gt;Action: Permanently purge the record (required by HARD_DELETE rule)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#d97706;fontColor=#78350f;align=left;spacingLeft=10;fontSize=10;" vertex="1" parent="p_rem">
+          <mxGeometry x="20" y="190" width="560" height="65" as="geometry" />
+        </mxCell>
+
+        <mxCell id="op_r4" value="&lt;b&gt;8. REDACT_RECORD&lt;/b&gt; (Rank = 8)&lt;hr&gt;State: &lt;b&gt;REDACTED&lt;/b&gt; | Evidence ID: &lt;b&gt;''&lt;/b&gt;&lt;br&gt;Action: Keep record but purge PII (name, email, phone, email_hash)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#d97706;fontColor=#78350f;align=left;spacingLeft=10;fontSize=10;" vertex="1" parent="p_rem">
+          <mxGeometry x="20" y="265" width="560" height="65" as="geometry" />
+        </mxCell>
+
+        <mxCell id="op_r5" value="&lt;b&gt;9. ANONYMIZE_RECORD&lt;/b&gt; (Rank = 9)&lt;hr&gt;State: &lt;b&gt;ANONYMIZED&lt;/b&gt; | Evidence ID: &lt;b&gt;''&lt;/b&gt;&lt;br&gt;Action: Irreversibly unlink record from user identity" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#d97706;fontColor=#78350f;align=left;spacingLeft=10;fontSize=10;" vertex="1" parent="p_rem">
+          <mxGeometry x="20" y="340" width="560" height="65" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================== -->
+        <!-- PHASE 3: VERIFICATION (Green) -->
+        <!-- ============================================== -->
+        <mxCell id="p_ver" value="Phase 3: VERIFICATION (Rank = 3) — Proves Compliant Final State" style="swimlane;whiteSpace=wrap;html=1;fillColor=#ecfdf5;strokeColor=#059669;fontColor=#065f46;fontSize=13;fontStyle=1;startSize=28;" vertex="1" parent="1">
+          <mxGeometry x="1300" y="120" width="650" height="420" as="geometry" />
+        </mxCell>
+
+        <mxCell id="op_v1" value="&lt;b&gt;10. VERIFY_RECORD_ABSENT&lt;/b&gt; (Rank = 10)&lt;hr&gt;State: &lt;b&gt;ABSENT&lt;/b&gt; | Confirm record no longer exists anywhere" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d1fae5;strokeColor=#059669;fontColor=#065f46;align=left;spacingLeft=10;fontSize=10;" vertex="1" parent="p_ver">
+          <mxGeometry x="20" y="35" width="610" height="55" as="geometry" />
+        </mxCell>
+
+        <mxCell id="op_v2" value="&lt;b&gt;11. VERIFY_RECORD_PRESENT&lt;/b&gt; (Rank = 11)&lt;hr&gt;State: &lt;b&gt;PRESENT&lt;/b&gt; | Confirm statutory retained record remains intact" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d1fae5;strokeColor=#059669;fontColor=#065f46;align=left;spacingLeft=10;fontSize=10;" vertex="1" parent="p_ver">
+          <mxGeometry x="20" y="95" width="610" height="55" as="geometry" />
+        </mxCell>
+
+        <mxCell id="op_v3" value="&lt;b&gt;12. VERIFY_RECORD_REDACTED&lt;/b&gt; (Rank = 12)&lt;hr&gt;State: &lt;b&gt;REDACTED&lt;/b&gt; | Confirm direct identifiers removed from tombstone" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d1fae5;strokeColor=#059669;fontColor=#065f46;align=left;spacingLeft=10;fontSize=10;" vertex="1" parent="p_ver">
+          <mxGeometry x="20" y="155" width="610" height="55" as="geometry" />
+        </mxCell>
+
+        <mxCell id="op_v4" value="&lt;b&gt;13. VERIFY_RECORD_ANONYMIZED&lt;/b&gt; (Rank = 13)&lt;hr&gt;State: &lt;b&gt;ANONYMIZED&lt;/b&gt; | Confirm data cannot be linked to subject" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d1fae5;strokeColor=#059669;fontColor=#065f46;align=left;spacingLeft=10;fontSize=10;" vertex="1" parent="p_ver">
+          <mxGeometry x="20" y="215" width="610" height="55" as="geometry" />
+        </mxCell>
+
+        <mxCell id="op_v5" value="&lt;b&gt;14. VERIFY_DATA_FLOW_DISABLED&lt;/b&gt; (Rank = 14)&lt;hr&gt;State: &lt;b&gt;DISABLED&lt;/b&gt; | Confirm sync/CDC job is inactive and cannot recreate" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d1fae5;strokeColor=#059669;fontColor=#065f46;align=left;spacingLeft=10;fontSize=10;" vertex="1" parent="p_ver">
+          <mxGeometry x="20" y="275" width="610" height="55" as="geometry" />
+        </mxCell>
+
+        <mxCell id="op_v6" value="&lt;b&gt;15. VERIFY_RESTORE_BLOCKED&lt;/b&gt; (Rank = 15)&lt;hr&gt;State: &lt;b&gt;BLOCKED&lt;/b&gt; | Confirm backup restore hazard is permanently blocked" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d1fae5;strokeColor=#059669;fontColor=#065f46;align=left;spacingLeft=10;fontSize=10;" vertex="1" parent="p_ver">
+          <mxGeometry x="20" y="335" width="610" height="55" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================== -->
+        <!-- THEOREM 3: INJECTIVE 5-TUPLE TOTAL ORDER SPEC -->
+        <!-- ============================================== -->
+        <mxCell id="box_theorem3" value="&lt;b&gt;Theorem 3: Strictly Injective 5-Tuple Total Order Function&lt;/b&gt;&lt;hr&gt;&lt;b&gt;sort_key(s)&lt;/b&gt; = ( phase_rank(s), operation_priority_rank(s), s.system_id, s.resource_id, s.evidence_id, s.state )&lt;br&gt;&amp;bull; &lt;b&gt;phase_rank&lt;/b&gt;: FINDING (1) &amp;lt; REMEDIATION (2) &amp;lt; VERIFICATION (3)&lt;br&gt;&amp;bull; &lt;b&gt;operation_priority_rank&lt;/b&gt;: Operations 1 through 15 strictly ordered by priority&lt;br&gt;&amp;bull; &lt;b&gt;system_id, resource_id, evidence_id&lt;/b&gt;: Alphabetical tie-breakers guarantee 100% deterministic reproducibility across threads" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#3b82f6;fontColor=#1e3a8a;fontSize=11;align=left;spacingLeft=15;" vertex="1" parent="1">
+          <mxGeometry x="60" y="580" width="1890" height="110" as="geometry" />
+        </mxCell>
+
+        <!-- CAUSAL FLOW CONNECTORS -->
+        <mxCell id="cf1" value="Transforms into Remediation" edge="1" source="p_find" target="p_rem" parent="1" style="endArrow=block;strokeColor=#e11d48;strokeWidth=2;fontSize=10;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="cf2" value="Requires Dual Post-Verification" edge="1" source="p_rem" target="p_ver" parent="1" style="endArrow=block;strokeColor=#d97706;strokeWidth=2;fontSize=10;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

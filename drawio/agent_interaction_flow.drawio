@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2026-10-25T05:00:00.000Z" agent="Antigravity Multi-Agent Runtime" version="24.7.17" type="device">
+  <diagram id="agent-dag" name="Multi-Agent Orchestration Directed Acyclic Graph">
+    <mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2000" pageHeight="1400" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Canvas Header -->
+        <mxCell id="hdr" value="&lt;b&gt;Ghost Data Still Exists — Multi-Agent Graph Orchestration DAG&lt;/b&gt;&lt;br&gt;Autonomous Specialized Agent Hierarchy | Concurrent Execution Topologies | Strict Invariant Enforcement" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0f172a;strokeColor=#1e293b;fontColor=#ffffff;fontSize=18;align=center;" vertex="1" parent="1">
+          <mxGeometry x="50" y="30" width="1900" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- SQUAD 1: INGRESS & SECURITY -->
+        <mxCell id="sq_sec" value="Squad 1: Ingress &amp; Security Shield" style="swimlane;whiteSpace=wrap;html=1;fillColor=#fff1f2;strokeColor=#e11d48;fontColor=#881337;fontSize=13;fontStyle=1;startSize=25;" vertex="1" parent="1">
+          <mxGeometry x="60" y="110" width="280" height="420" as="geometry" />
+        </mxCell>
+        <mxCell id="ag_is" value="&lt;b&gt;InputSanitizer&lt;/b&gt;&lt;br&gt;OWASP LLM01 Injection Filter&lt;br&gt;Shannon Entropy H in [2.5, 5.0]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe4e6;strokeColor=#e11d48;fontColor=#881337;fontSize=10;" vertex="1" parent="sq_sec">
+          <mxGeometry x="20" y="45" width="240" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ag_pii" value="&lt;b&gt;PiiShield&lt;/b&gt;&lt;br&gt;ISO/IEC 7812 Luhn Card Masking&lt;br&gt;SSN, Phone &amp;amp; Email Redactor" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe4e6;strokeColor=#e11d48;fontColor=#881337;fontSize=10;" vertex="1" parent="sq_sec">
+          <mxGeometry x="20" y="135" width="240" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ag_rl" value="&lt;b&gt;TokenBucketRateLimiter&lt;/b&gt;&lt;br&gt;Capacity 1000 | Refill 500/s&lt;br&gt;Burst Traffic Absorber" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe4e6;strokeColor=#e11d48;fontColor=#881337;fontSize=10;" vertex="1" parent="sq_sec">
+          <mxGeometry x="20" y="225" width="240" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ag_cb" value="&lt;b&gt;ConcurrentCircuitBreaker&lt;/b&gt;&lt;br&gt;CLOSED / OPEN / HALF_OPEN&lt;br&gt;Fail-Safe Isolation" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe4e6;strokeColor=#e11d48;fontColor=#881337;fontSize=10;" vertex="1" parent="sq_sec">
+          <mxGeometry x="20" y="315" width="240" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- SQUAD 2: GOVERNANCE & NLU PRE-GATE -->
+        <mxCell id="sq_gov" value="Squad 2: Intent Governance Pre-Gate" style="swimlane;whiteSpace=wrap;html=1;fillColor=#fffbeb;strokeColor=#d97706;fontColor=#78350f;fontSize=13;fontStyle=1;startSize=25;" vertex="1" parent="1">
+          <mxGeometry x="380" y="110" width="280" height="420" as="geometry" />
+        </mxCell>
+        <mxCell id="ag_pa" value="&lt;b&gt;PolicyAuditor&lt;/b&gt;&lt;br&gt;Multilingual Intent NLU&lt;br&gt;30+ Non-Erasure Indicator Dictionary&lt;br&gt;Statutory Retention Classifier" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#d97706;fontColor=#78350f;fontSize=10;" vertex="1" parent="sq_gov">
+          <mxGeometry x="20" y="60" width="240" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="dec_auth" value="Does request_text&lt;br&gt;authorize erasure?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fed7aa;strokeColor=#ea580c;fontColor=#7c2d12;fontSize=10;" vertex="1" parent="sq_gov">
+          <mxGeometry x="50" y="220" width="180" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- SQUAD 3: DEEP DOMAIN INVESTIGATION -->
+        <mxCell id="sq_inv" value="Squad 3: Multi-Agent Deep Estate Investigation" style="swimlane;whiteSpace=wrap;html=1;fillColor=#eff6ff;strokeColor=#2563eb;fontColor=#1e40af;fontSize=13;fontStyle=1;startSize=25;" vertex="1" parent="1">
+          <mxGeometry x="700" y="110" width="340" height="420" as="geometry" />
+        </mxCell>
+        <mxCell id="ag_ir" value="&lt;b&gt;IdentityResolver (D21)&lt;/b&gt;&lt;br&gt;DSU Path Compression &amp;amp; Orbit Cache&lt;br&gt;O(alpha(N)) Transitive Alias Cluster&lt;br&gt;Hub Token Frequency Pruner" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#2563eb;fontColor=#1e40af;fontSize=10;" vertex="1" parent="sq_inv">
+          <mxGeometry x="20" y="45" width="300" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="ag_mi" value="&lt;b&gt;MultimodalInspector (D22)&lt;/b&gt;&lt;br&gt;Heterogeneous Evidence Extractor&lt;br&gt;In-Memory SQLite Replicas + Hash Index&lt;br&gt;Temporal Cutoff Filter T(e) &amp;lt;= audit_at" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#2563eb;fontColor=#1e40af;fontSize=10;" vertex="1" parent="sq_inv">
+          <mxGeometry x="20" y="150" width="300" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="ag_lt" value="&lt;b&gt;LineageTracer (D23)&lt;/b&gt;&lt;br&gt;Monotone Bisect Window Search O(log K)&lt;br&gt;Active CDC Sync Stream Detector&lt;br&gt;Unmasked Backup Restore Risk Detector" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#2563eb;fontColor=#1e40af;fontSize=10;" vertex="1" parent="sq_inv">
+          <mxGeometry x="20" y="255" width="300" height="75" as="geometry" />
+        </mxCell>
+
+        <!-- SQUAD 4: AI TOKEN OPTIMIZATION -->
+        <mxCell id="sq_ai" value="Squad 4: AI Context &amp; Token Optimization" style="swimlane;whiteSpace=wrap;html=1;fillColor=#f0fdf4;strokeColor=#16a34a;fontColor=#14532d;fontSize=13;fontStyle=1;startSize=25;" vertex="1" parent="1">
+          <mxGeometry x="1080" y="110" width="280" height="420" as="geometry" />
+        </mxCell>
+        <mxCell id="ag_ctx" value="&lt;b&gt;ContextBuilder (D80)&lt;/b&gt;&lt;br&gt;Causal Cone Boundary Enforcer&lt;br&gt;Priority Knapsack Context Packing&lt;br&gt;Strict 4096-Token Budget Ceiling" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dcfce7;strokeColor=#16a34a;fontColor=#14532d;fontSize=10;" vertex="1" parent="sq_ai">
+          <mxGeometry x="20" y="60" width="240" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="ag_tok" value="&lt;b&gt;TokenOptimizer (D47)&lt;/b&gt;&lt;br&gt;Subword BPE Byte-Pair Encoding&lt;br&gt;SHA-256 Fact Deduplication&lt;br&gt;19,332 Tokens Saved" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dcfce7;strokeColor=#16a34a;fontColor=#14532d;fontSize=10;" vertex="1" parent="sq_ai">
+          <mxGeometry x="20" y="170" width="240" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="ag_grd" value="&lt;b&gt;PromptGuard (D50)&lt;/b&gt;&lt;br&gt;Witness Grounding Invariant&lt;br&gt;Manifest File ID Membership Assert&lt;br&gt;P(Hallucination) == 0" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dcfce7;strokeColor=#16a34a;fontColor=#14532d;fontSize=10;" vertex="1" parent="sq_ai">
+          <mxGeometry x="20" y="280" width="240" height="75" as="geometry" />
+        </mxCell>
+
+        <!-- SQUAD 5: ACTION PLANNING & SYNTHESIS -->
+        <mxCell id="sq_plan" value="Squad 5: Poset DAG Remediation Planning" style="swimlane;whiteSpace=wrap;html=1;fillColor=#faf5ff;strokeColor=#9333ea;fontColor=#581c87;fontSize=13;fontStyle=1;startSize=25;" vertex="1" parent="1">
+          <mxGeometry x="1400" y="110" width="310" height="420" as="geometry" />
+        </mxCell>
+        <mxCell id="ag_rp" value="&lt;b&gt;RemediationPlanner (D51)&lt;/b&gt;&lt;br&gt;Strict Partially Ordered Set (Poset) DAG&lt;br&gt;Lexicographical 5-Tuple Total Order Scheduler&lt;br&gt;(phase_rank, op_rank, sys, res, ev_id, state)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f3e8ff;strokeColor=#9333ea;fontColor=#581c87;fontSize=10;" vertex="1" parent="sq_plan">
+          <mxGeometry x="20" y="60" width="270" height="85" as="geometry" />
+        </mxCell>
+        <mxCell id="dec_verdict" value="Were residual records&lt;br&gt;or active flows found?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#e9d5ff;strokeColor=#7e22ce;fontColor=#581c87;fontSize=10;" vertex="1" parent="sq_plan">
+          <mxGeometry x="55" y="180" width="200" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="res_incomp" value="&lt;b&gt;INCOMPLETE Plan&lt;/b&gt;&lt;br&gt;FINDING -&gt; REMEDIATION -&gt; VERIFY" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe4e6;strokeColor=#e11d48;fontColor=#881337;fontSize=10;" vertex="1" parent="sq_plan">
+          <mxGeometry x="10" y="320" width="135" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="res_comp" value="&lt;b&gt;COMPLETE Proofs&lt;/b&gt;&lt;br&gt;VERIFICATION only with evidence" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ecfdf5;strokeColor=#059669;fontColor=#065f46;fontSize=10;" vertex="1" parent="sq_plan">
+          <mxGeometry x="165" y="320" width="135" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- SQUAD 6: OBSERVABILITY & EGRESS -->
+        <mxCell id="sq_obs" value="Squad 6: Observability &amp; Delivery" style="swimlane;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#64748b;fontColor=#0f172a;fontSize=13;fontStyle=1;startSize=25;" vertex="1" parent="1">
+          <mxGeometry x="1750" y="110" width="200" height="420" as="geometry" />
+        </mxCell>
+        <mxCell id="ag_rep" value="&lt;b&gt;ReplayTracer&lt;/b&gt;&lt;br&gt;Bounded LRU 2,000&lt;br&gt;ASCII RCA Generator" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e2e8f0;strokeColor=#64748b;fontColor=#0f172a;fontSize=10;" vertex="1" parent="sq_obs">
+          <mxGeometry x="15" y="45" width="170" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ag_csv" value="&lt;b&gt;CsvHandler&lt;/b&gt;&lt;br&gt;RFC-4180 Streaming&lt;br&gt;518 Natural Sorted Rows" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e2e8f0;strokeColor=#64748b;fontColor=#0f172a;fontSize=10;" vertex="1" parent="sq_obs">
+          <mxGeometry x="15" y="135" width="170" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ag_met" value="&lt;b&gt;MetricsCollector&lt;/b&gt;&lt;br&gt;Prometheus RED/USE&lt;br&gt;Percentiles P50/P95" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e2e8f0;strokeColor=#64748b;fontColor=#0f172a;fontSize=10;" vertex="1" parent="sq_obs">
+          <mxGeometry x="15" y="225" width="170" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ag_sch" value="&lt;b&gt;SchemaValidator&lt;/b&gt;&lt;br&gt;Zero Validation Errors&lt;br&gt;RFC Compliance" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e2e8f0;strokeColor=#64748b;fontColor=#0f172a;fontSize=10;" vertex="1" parent="sq_obs">
+          <mxGeometry x="15" y="315" width="170" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- DAG EDGES -->
+        <mxCell id="e1" edge="1" source="ag_is" target="ag_pa" parent="1" style="endArrow=block;strokeColor=#e11d48;strokeWidth=1.8;"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e2" edge="1" source="ag_pa" target="dec_auth" parent="sq_gov" style="endArrow=block;strokeColor=#d97706;strokeWidth=1.8;"><mxGeometry relative="1" as="geometry" /></mxCell>
+
+        <!-- Branch No to CSV -->
+        <mxCell id="e_na" value="[No: Fast-Path NOT_APPLICABLE, '[]']" edge="1" source="dec_auth" target="ag_csv" parent="1" style="endArrow=block;dashed=1;strokeColor=#059669;strokeWidth=2;fontSize=10;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points"><mxPoint x="520" y="580" /><mxPoint x="1850" y="580" /></Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Branch Yes to Squad 3 -->
+        <mxCell id="e_auth" value="[Yes: Authorized]" edge="1" source="dec_auth" target="ag_ir" parent="1" style="endArrow=block;strokeColor=#2563eb;strokeWidth=2;fontSize=10;"><mxGeometry relative="1" as="geometry" /></mxCell>
+
+        <mxCell id="e_inv1" edge="1" source="ag_ir" target="ag_mi" parent="sq_inv" style="endArrow=block;strokeColor=#2563eb;strokeWidth=1.5;"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e_inv2" edge="1" source="ag_ir" target="ag_lt" parent="sq_inv" style="endArrow=block;strokeColor=#2563eb;strokeWidth=1.5;"><mxGeometry relative="1" as="geometry" /></mxCell>
+
+        <mxCell id="e_ai1" edge="1" source="ag_mi" target="ag_ctx" parent="1" style="endArrow=block;strokeColor=#16a34a;strokeWidth=1.5;"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e_ai2" edge="1" source="ag_lt" target="ag_ctx" parent="1" style="endArrow=block;strokeColor=#16a34a;strokeWidth=1.5;"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e_ai3" edge="1" source="ag_ctx" target="ag_tok" parent="sq_ai" style="endArrow=block;strokeColor=#16a34a;strokeWidth=1.5;"><mxGeometry relative="1" as="geometry" /></mxCell>
+
+        <mxCell id="e_plan1" edge="1" source="ag_tok" target="ag_rp" parent="1" style="endArrow=block;strokeColor=#9333ea;strokeWidth=1.5;"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e_plan2" edge="1" source="ag_rp" target="dec_verdict" parent="sq_plan" style="endArrow=block;strokeColor=#9333ea;strokeWidth=1.5;"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e_plan3" edge="1" source="dec_verdict" target="res_incomp" parent="sq_plan" style="endArrow=block;strokeColor=#e11d48;strokeWidth=1.5;"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e_plan4" edge="1" source="dec_verdict" target="res_comp" parent="sq_plan" style="endArrow=block;strokeColor=#059669;strokeWidth=1.5;"><mxGeometry relative="1" as="geometry" /></mxCell>
+
+        <mxCell id="e_grd1" edge="1" source="res_incomp" target="ag_grd" parent="1" style="endArrow=block;strokeColor=#16a34a;strokeWidth=1.5;"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e_grd2" edge="1" source="res_comp" target="ag_grd" parent="1" style="endArrow=block;strokeColor=#16a34a;strokeWidth=1.5;"><mxGeometry relative="1" as="geometry" /></mxCell>
+
+        <mxCell id="e_rep" edge="1" source="ag_grd" target="ag_rep" parent="1" style="endArrow=block;strokeColor=#64748b;strokeWidth=1.5;"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e_csv" edge="1" source="ag_rep" target="ag_csv" parent="sq_obs" style="endArrow=block;strokeColor=#059669;strokeWidth=2;"><mxGeometry relative="1" as="geometry" /></mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

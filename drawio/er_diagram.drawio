@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2026-10-25T05:00:00.000Z" agent="Antigravity Multi-Agent Runtime" version="24.7.17" type="device">
+  <diagram id="er-diagram" name="Dataset Entity Relationship Model">
+    <mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2000" pageHeight="1400" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Canvas Header -->
+        <mxCell id="hdr" value="&lt;b&gt;Ghost Data Still Exists — Entity Relationship (ER) &amp; Relational Schema Architecture&lt;/b&gt;&lt;br&gt;Participant-Facing Dataset Entities | Evidence Manifest Topology | Output Prediction Schema &amp; Steps JSON" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0f172a;strokeColor=#1e293b;fontColor=#ffffff;fontSize=18;align=center;" vertex="1" parent="1">
+          <mxGeometry x="50" y="30" width="1900" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- TABLE 1: deletion_requests.csv -->
+        <mxCell id="t_del_req" value="&lt;b&gt;deletion_requests&lt;/b&gt; (Input Requests - 518 cases)&lt;hr&gt;&lt;b&gt;PK&lt;/b&gt; case_id : VARCHAR(32)&lt;br&gt;email : VARCHAR(255)&lt;br&gt;requested_at : TIMESTAMP WITH TIME ZONE&lt;br&gt;reported_status : ENUM ('COMPLETE', 'PARTIALLY_COMPLETE', 'NOT_STARTED')&lt;br&gt;reported_at : TIMESTAMP WITH TIME ZONE&lt;br&gt;&lt;b&gt;CUTOFF&lt;/b&gt; audit_at : TIMESTAMP WITH TIME ZONE&lt;br&gt;request_text : TEXT" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#eff6ff;strokeColor=#3b82f6;fontColor=#1e3a8a;align=left;spacingLeft=10;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="80" y="130" width="380" height="150" as="geometry" />
+        </mxCell>
+
+        <!-- TABLE 2: user_identities.csv -->
+        <mxCell id="t_ident" value="&lt;b&gt;user_identities&lt;/b&gt; (Current Identity Snapshot)&lt;hr&gt;&lt;b&gt;PK&lt;/b&gt; user_id : VARCHAR(64)&lt;br&gt;name : VARCHAR(255)&lt;br&gt;email : VARCHAR(255)&lt;br&gt;phone : VARCHAR(32)&lt;br&gt;email_hash : VARCHAR(64) (SHA-256)&lt;br&gt;snapshot_updated_at : TIMESTAMP WITH TIME ZONE" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#eff6ff;strokeColor=#3b82f6;fontColor=#1e3a8a;align=left;spacingLeft=10;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="560" y="130" width="380" height="150" as="geometry" />
+        </mxCell>
+
+        <!-- TABLE 3: user_audit_log.csv -->
+        <mxCell id="t_audit_log" value="&lt;b&gt;user_audit_log&lt;/b&gt; (Historical Identity Change Ledger)&lt;hr&gt;&lt;b&gt;PK&lt;/b&gt; audit_id : VARCHAR(64)&lt;br&gt;&lt;b&gt;FK&lt;/b&gt; user_id : VARCHAR(64) &amp;rarr; user_identities.user_id&lt;br&gt;field_name : VARCHAR(64) ('email', 'phone', 'name')&lt;br&gt;old_value : VARCHAR(255)&lt;br&gt;new_value : VARCHAR(255)&lt;br&gt;changed_at : TIMESTAMP WITH TIME ZONE" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#eff6ff;strokeColor=#3b82f6;fontColor=#1e3a8a;align=left;spacingLeft=10;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1040" y="130" width="400" height="150" as="geometry" />
+        </mxCell>
+
+        <!-- TABLE 4: system_activity.csv -->
+        <mxCell id="t_sys_act" value="&lt;b&gt;system_activity&lt;/b&gt; (Global Operational Stream)&lt;hr&gt;&lt;b&gt;PK&lt;/b&gt; activity_id : VARCHAR(64)&lt;br&gt;source_system : VARCHAR(64) ('deletion_worker', 'cdc_pipeline', ...)&lt;br&gt;event_type : VARCHAR(64) ('EXPORT', 'BACKUP', 'RESTORE', 'SYNC')&lt;br&gt;resource_id : VARCHAR(128)&lt;br&gt;details : TEXT (Embedded identifiers / tokens)&lt;br&gt;event_time : TIMESTAMP WITH TIME ZONE&lt;br&gt;result : VARCHAR(32) ('SUCCESS', 'FAILED')" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#d97706;fontColor=#78350f;align=left;spacingLeft=10;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="80" y="370" width="430" height="170" as="geometry" />
+        </mxCell>
+
+        <!-- TABLE 5: deletion_rules.csv -->
+        <mxCell id="t_del_rules" value="&lt;b&gt;deletion_rules&lt;/b&gt; (Statutory Retention Policy Rules)&lt;hr&gt;&lt;b&gt;PK&lt;/b&gt; rule_id : VARCHAR(64)&lt;br&gt;data_category : VARCHAR(64) ('orders', 'marketing', 'auth', ...)&lt;br&gt;required_treatment : ENUM ('HARD_DELETE', 'RETAIN', 'REDACT', 'ANONYMIZE', 'ACCOUNT_TOMBSTONE')&lt;br&gt;is_statutory_mandate : BOOLEAN (true / false)&lt;br&gt;description : TEXT" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#d97706;fontColor=#78350f;align=left;spacingLeft=10;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="560" y="370" width="450" height="170" as="geometry" />
+        </mxCell>
+
+        <!-- TABLE 6: evidence_files.csv -->
+        <mxCell id="t_evid_files" value="&lt;b&gt;evidence_files&lt;/b&gt; (Heterogeneous Evidence Manifest)&lt;hr&gt;&lt;b&gt;PK&lt;/b&gt; file_id : VARCHAR(64)&lt;br&gt;file_path : VARCHAR(255) (e.g. 'evidence/databases/replica_01.sql')&lt;br&gt;source_origin : VARCHAR(64)&lt;br&gt;captured_at : TIMESTAMP WITH TIME ZONE&lt;br&gt;file_type : ENUM ('SQL', 'PDF', 'LOG', 'JSON', 'IMAGE')" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#faf5ff;strokeColor=#9333ea;fontColor=#581c87;align=left;spacingLeft=10;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1060" y="370" width="380" height="170" as="geometry" />
+        </mxCell>
+
+        <!-- TABLE 7: output.csv (Final Deliverable) -->
+        <mxCell id="t_output" value="&lt;b&gt;output.csv&lt;/b&gt; (Official Output Deliverable - 518 rows sorted)&lt;hr&gt;&lt;b&gt;PK&lt;/b&gt; case_id : VARCHAR(32) &amp;rarr; deletion_requests.case_id&lt;br&gt;deletion_status : ENUM ('COMPLETE', 'INCOMPLETE', 'NOT_APPLICABLE')&lt;br&gt;steps_json : JSON_ARRAY&amp;lt;AuditStep&amp;gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ecfdf5;strokeColor=#059669;fontColor=#065f46;align=left;spacingLeft=10;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="80" y="620" width="430" height="130" as="geometry" />
+        </mxCell>
+
+        <!-- EMBEDDED OBJECT: AuditStep (JSON Array element) -->
+        <mxCell id="t_step_obj" value="&lt;b&gt;AuditStep&lt;/b&gt; (Embedded JSON Schema Element in steps_json)&lt;hr&gt;step_no : INTEGER (Consecutive 1..K)&lt;br&gt;phase : ENUM ('FINDING', 'REMEDIATION', 'VERIFICATION')&lt;br&gt;system_id : VARCHAR(64)&lt;br&gt;resource_id : VARCHAR(128)&lt;br&gt;operation : ENUM (15 Allowable Operations)&lt;br&gt;state : ENUM ('PRESENT', 'ABSENT', 'ACTIVE', 'BLOCKED', 'DISABLED', 'REDACTED', 'ANONYMIZED')&lt;br&gt;evidence_id : VARCHAR(64) (Cites file_id/activity_id or '')" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ecfdf5;strokeColor=#059669;fontColor=#065f46;align=left;spacingLeft=10;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="560" y="620" width="450" height="150" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================== -->
+        <!-- FOREIGN KEY & RELATIONAL EDGES -->
+        <!-- ============================================== -->
+        <!-- 1. user_identities -> user_audit_log (1 : N) -->
+        <mxCell id="fk1" value="1 : N&lt;br&gt;(user_id)" edge="1" source="t_ident" target="t_audit_log" parent="1" style="endArrow=crow;startArrow=diamondThin;strokeColor=#2563eb;strokeWidth=1.8;fontSize=10;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- 2. deletion_requests -> user_identities (Transitive Match via Email) -->
+        <mxCell id="fk2" value="N : 1&lt;br&gt;(email == email / alias)" edge="1" source="t_del_req" target="t_ident" parent="1" style="endArrow=open;dashed=1;strokeColor=#2563eb;strokeWidth=1.5;fontSize=10;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- 3. deletion_requests -> output.csv (1 : 1 Natural Sort) -->
+        <mxCell id="fk3" value="1 : 1&lt;br&gt;(case_id)" edge="1" source="t_del_req" target="t_output" parent="1" style="endArrow=block;strokeColor=#059669;strokeWidth=2;fontSize=10;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- 4. output.csv -> AuditStep (1 : N array) -->
+        <mxCell id="fk4" value="1 : N&lt;br&gt;(steps_json array)" edge="1" source="t_output" target="t_step_obj" parent="1" style="endArrow=crow;strokeColor=#059669;strokeWidth=2;fontSize=10;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- 5. evidence_files -> AuditStep (evidence_id reference) -->
+        <mxCell id="fk5" value="1 : N&lt;br&gt;(file_id == evidence_id)" edge="1" source="t_evid_files" target="t_step_obj" parent="1" style="endArrow=open;dashed=1;strokeColor=#9333ea;strokeWidth=1.5;fontSize=10;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- 6. system_activity -> AuditStep (activity_id reference) -->
+        <mxCell id="fk6" value="1 : N&lt;br&gt;(activity_id == evidence_id)" edge="1" source="t_sys_act" target="t_step_obj" parent="1" style="endArrow=open;dashed=1;strokeColor=#d97706;strokeWidth=1.5;fontSize=10;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- 7. deletion_rules -> AuditStep (governs operation) -->
+        <mxCell id="fk7" value="Governs Required Operation" edge="1" source="t_del_rules" target="t_step_obj" parent="1" style="endArrow=open;dashed=1;strokeColor=#d97706;strokeWidth=1.5;fontSize=10;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

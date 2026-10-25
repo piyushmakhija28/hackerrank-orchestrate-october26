@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" type="diagram" version="24.0.0">
+  <diagram id="diagram_act" name="Operational Activity Diagram">
+    <mxGraphModel dx="1422" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- INITIAL PSEUDOSTATE -->
+        <mxCell id="start_act" value="" style="ellipse;html=1;strokeColor=#000000;fillColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="585" y="30" width="30" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- ACTION: Ingest & Sanitize -->
+        <mxCell id="act_ingest" value="Ingest Request Row &amp; Sanitize&#xa;(InputSanitizer: Strip Injection &amp; Verify Shannon Entropy)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8CECC;strokeColor=#B85450;strokeWidth=1.5;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="400" y="90" width="400" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- DECISION: Erasure Mandate -->
+        <mxCell id="dec_mandate" value="Decision:&#xa;Does request_text&#xa;authorize erasure?" style="rhombus;html=1;strokeColor=#333333;strokeWidth=2;fillColor=#FFFFFF;whiteSpace=wrap;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="515" y="180" width="170" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- ACTION: Set NOT_APPLICABLE -->
+        <mxCell id="act_set_na" value="Set deletion_status = NOT_APPLICABLE&#xa;Set steps_json = '[]' (Fast-Path)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="80" y="310" width="280" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- ACTION: Resolve DSU -->
+        <mxCell id="act_dsu" value="Execute DSU Identity Resolver&#xa;Lookup Equivalence Orbit Cache in O(α(N)) Amortized" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;strokeWidth=1.5;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="450" y="310" width="300" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- FORK PARALLEL SCAN -->
+        <mxCell id="fork_scan" value="" style="line;strokeWidth=6;html=1;strokeColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="400" y="405" width="400" height="10" as="geometry" />
+        </mxCell>
+
+        <!-- ACTION: Query Evidence (Branch 1) -->
+        <mxCell id="act_q_evd" value="Query Inverted Hash Indexes &amp; SQLite&#xa;Filter admissible records where T(e) ≤ audit_at" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="270" y="445" width="300" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- ACTION: Query Lineage (Branch 2) -->
+        <mxCell id="act_q_lin" value="Query LineageTracer Bisect Window O(log K)&#xa;Detect Active CDC Sync Flows &amp; Restore Risks" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="630" y="445" width="300" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- JOIN PARALLEL SCAN -->
+        <mxCell id="join_scan" value="" style="line;strokeWidth=6;html=1;strokeColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="400" y="535" width="400" height="10" as="geometry" />
+        </mxCell>
+
+        <!-- ACTION: Pack Context & Dedup -->
+        <mxCell id="act_pack" value="ContextBuilder Knapsack Priority Packing (4,096 Token Budget)&#xa;&amp; TokenOptimizer Fact Deduplication (19,332 Tokens Saved)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE6CC;strokeColor=#D79B00;strokeWidth=1.5;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="380" y="575" width="440" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- DECISION: Residual Violations -->
+        <mxCell id="dec_resid" value="Decision:&#xa;Were residual records,&#xa;active sync flows, or&#xa;restore risks found?" style="rhombus;html=1;strokeColor=#333333;strokeWidth=2;fillColor=#FFFFFF;whiteSpace=wrap;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="500" y="665" width="200" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- ACTION: Remediation Planning (INCOMPLETE) -->
+        <mxCell id="act_incomp" value="RemediationPlanner: Schedule Poset DAG Steps&#xa;(Theorem 3 Injective 5-Tuple Total Order)&#xa;Set deletion_status = INCOMPLETE" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8CECC;strokeColor=#B85450;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="300" y="795" width="280" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- ACTION: Verification Proof (COMPLETE) -->
+        <mxCell id="act_comp" value="PolicyAuditor: Verify Permitted Tombstones &amp; Retained Data&#xa;Emit evidence-backed verification steps only&#xa;Set deletion_status = COMPLETE" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#D5E8D4;strokeColor=#82B366;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="640" y="795" width="320" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- ACTION: PromptGuard Assert -->
+        <mxCell id="act_guard" value="PromptGuard: Assert Witness Grounding Invariant P(H) = 0&#xa;&amp; ReplayTracer: Record Decision Graph in LRU 2,000 Registry" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E1D5E7;strokeColor=#9673A6;strokeWidth=1.5;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="380" y="895" width="440" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- ACTION: Emit Row -->
+        <mxCell id="act_emit" value="CsvHandler: Emit Buffered RFC-4180 Row&#xa;(case_id, deletion_status, steps_json)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#D5E8D4;strokeColor=#82B366;strokeWidth=1.5;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="450" y="985" width="300" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- FINAL NODE -->
+        <mxCell id="end_act" value="" style="shape=doubleEllipse;html=1;strokeColor=#000000;fillColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="585" y="1075" width="30" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- ACTIVITY FLOW CONNECTORS -->
+        <mxCell id="af1" style="endArrow=classic;html=1;strokeColor=#000000;strokeWidth=2;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" source="start_act" target="act_ingest" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="af2" style="endArrow=classic;html=1;strokeColor=#000000;strokeWidth=2;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" source="act_ingest" target="dec_mandate" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="af3" value="[No: Export/Opt-out]" style="endArrow=classic;html=1;strokeColor=#000000;strokeWidth=2;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;edgeStyle=orthogonalEdgeStyle;" edge="1" source="dec_mandate" target="act_set_na" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="af4" value="[Yes: Authorized]" style="endArrow=classic;html=1;strokeColor=#000000;strokeWidth=2;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" source="dec_mandate" target="act_dsu" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="af5" style="endArrow=classic;html=1;strokeColor=#000000;strokeWidth=2;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" source="act_dsu" target="fork_scan" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="af6" style="endArrow=classic;html=1;strokeColor=#000000;strokeWidth=2;exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;edgeStyle=orthogonalEdgeStyle;" edge="1" source="fork_scan" target="act_q_evd" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="af7" style="endArrow=classic;html=1;strokeColor=#000000;strokeWidth=2;exitX=0.75;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;edgeStyle=orthogonalEdgeStyle;" edge="1" source="fork_scan" target="act_q_lin" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="af8" style="endArrow=classic;html=1;strokeColor=#000000;strokeWidth=2;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.25;entryY=0;entryDx=0;entryDy=0;edgeStyle=orthogonalEdgeStyle;" edge="1" source="act_q_evd" target="join_scan" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="af9" style="endArrow=classic;html=1;strokeColor=#000000;strokeWidth=2;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.75;entryY=0;entryDx=0;entryDy=0;edgeStyle=orthogonalEdgeStyle;" edge="1" source="act_q_lin" target="join_scan" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="af10" style="endArrow=classic;html=1;strokeColor=#000000;strokeWidth=2;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" source="join_scan" target="act_pack" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="af11" style="endArrow=classic;html=1;strokeColor=#000000;strokeWidth=2;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" source="act_pack" target="dec_resid" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="af12" value="[Yes: Residuals]" style="endArrow=classic;html=1;strokeColor=#000000;strokeWidth=2;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;edgeStyle=orthogonalEdgeStyle;" edge="1" source="dec_resid" target="act_incomp" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="af13" value="[No: Compliant]" style="endArrow=classic;html=1;strokeColor=#000000;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;edgeStyle=orthogonalEdgeStyle;" edge="1" source="dec_resid" target="act_comp" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="af14" style="endArrow=classic;html=1;strokeColor=#000000;strokeWidth=2;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.25;entryY=0;entryDx=0;entryDy=0;edgeStyle=orthogonalEdgeStyle;" edge="1" source="act_incomp" target="act_guard" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="af15" style="endArrow=classic;html=1;strokeColor=#000000;strokeWidth=2;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.75;entryY=0;entryDx=0;entryDy=0;edgeStyle=orthogonalEdgeStyle;" edge="1" source="act_comp" target="act_guard" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="af16" style="endArrow=classic;html=1;strokeColor=#000000;strokeWidth=2;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" source="act_guard" target="act_emit" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="af17" style="endArrow=classic;html=1;strokeColor=#000000;strokeWidth=2;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;edgeStyle=orthogonalEdgeStyle;" edge="1" source="act_set_na" target="act_emit" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="af18" style="endArrow=classic;html=1;strokeColor=#000000;strokeWidth=2;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" source="act_emit" target="end_act" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
