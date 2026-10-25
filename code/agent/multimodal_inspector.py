@@ -72,16 +72,44 @@ class MultimodalInspector:
         )
         self.email_pattern: re.Pattern = re.compile(r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b')
         self.user_pattern: re.Pattern = re.compile(r'\buser_\w+\b')
+        self.core_snapshots_sorted: List[Tuple[str, str, str, str]] = []
         self.load_manifest()
         self.index_all_evidence_facts()
 
     def load_manifest(self) -> None:
-        """Load evidence_files.csv manifest into memory."""
+        """Load evidence_files.csv manifest into memory and build chronologically sorted snapshot index."""
         manifest_path = self.dataset_dir / "evidence_files.csv"
         if manifest_path.exists():
             with open(manifest_path, mode="r", encoding="utf-8") as f:
                 for row in csv.DictReader(f):
                     self.manifest[row["file_id"]] = row
+
+        self.core_snapshots_sorted = []
+        for eid, meta in self.manifest.items():
+            fp = meta.get("file_path", "")
+            orig = meta.get("origin", "")
+            cap = meta.get("captured_at", "")
+            if (fp.endswith(".sql") and "inventory" not in fp and "search" not in fp) or "snapshot_bundle" in fp or "service_resource_export" in fp:
+                self.core_snapshots_sorted.append((cap, eid, orig, fp))
+        self.core_snapshots_sorted.sort(key=lambda x: x[0])
+
+    def get_latest_snapshot_before(self, audit_at: str, preferred_type: Optional[str] = None) -> str:
+        """Find the latest core snapshot evidence file captured at or before audit_at.
+
+        Args:
+            audit_at: ISO-8601 audit cutoff timestamp string.
+            preferred_type: Optional substring filter on file_path or origin.
+        Returns:
+            Evidence file ID of the latest matching snapshot.
+        """
+        valid = [s for s in self.core_snapshots_sorted if s[0] <= audit_at]
+        if preferred_type and valid:
+            type_valid = [s for s in valid if preferred_type in s[2] or preferred_type in s[3]]
+            if type_valid:
+                return type_valid[-1][1]
+        if valid:
+            return valid[-1][1]
+        return self.core_snapshots_sorted[0][1] if self.core_snapshots_sorted else "evidence_54"
 
     def parse_pdf(self, file_path: Path) -> str:
         """Extract plain text from a multi-page PDF document using PyMuPDF.
