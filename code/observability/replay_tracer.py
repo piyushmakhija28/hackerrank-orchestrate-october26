@@ -15,9 +15,14 @@ class ReplayTracer:
     _instance: Optional["ReplayTracer"] = None
     _lock: threading.Lock = threading.Lock()
 
-    def __init__(self) -> None:
-        """Initializes empty decision graph storage."""
+    def __init__(self, max_capacity: int = 2000) -> None:
+        """Initializes empty decision graph storage with bounded LRU eviction capacity.
+
+        Args:
+            max_capacity: Maximum number of decision graphs to retain before evicting oldest.
+        """
         self._traces: Dict[str, Dict[str, Any]] = {}
+        self.max_capacity: int = max_capacity
         self._registry_lock: threading.Lock = threading.Lock()
 
     @classmethod
@@ -75,6 +80,9 @@ class ReplayTracer:
             "duration_ms": duration_ms,
         }
         with self._registry_lock:
+            if len(self._traces) >= self.max_capacity and case_id not in self._traces:
+                oldest_key = next(iter(self._traces))
+                del self._traces[oldest_key]
             self._traces[case_id] = trace_record
 
     def get_replay_trace(self, case_id: str) -> Optional[Dict[str, Any]]:

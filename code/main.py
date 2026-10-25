@@ -117,25 +117,9 @@ class DeletionAuditOrchestrator:
             except Exception:
                 rep_dt = None
 
-        user_acts: List[Dict[str, str]] = []
-        for a in self.container.lineage_tracer.activities:
-            details = a.get("details", "").lower()
-            res = a.get("resource_id", "").lower()
-            if any(c in details for c in cluster) or res in cluster:
-                user_acts.append(a)
-
+        user_acts = self.container.lineage_tracer.query_token_activities(cluster)
         user_resources = set(a.get("resource_id") for a in user_acts if a.get("resource_id"))
-
-        batch_acts: List[Dict[str, str]] = []
-        if rep_dt:
-            for a in self.container.lineage_tracer.activities:
-                if a.get("source_system") == "deletion_worker":
-                    ev_time = a.get("event_time", "")
-                    if ev_time:
-                        ev_dt = datetime.fromisoformat(ev_time.replace("Z", "+00:00"))
-                        diff = (rep_dt - ev_dt).total_seconds()
-                        if -300 <= diff <= 7200:
-                            batch_acts.append(a)
+        batch_acts = self.container.lineage_tracer.query_window_worker_activities(rep_dt) if rep_dt else []
 
         t_inspect_start = datetime.now()
         raw_candidate_facts = []

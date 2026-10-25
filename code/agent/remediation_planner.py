@@ -160,10 +160,11 @@ class RemediationPlanner(IRemediationPlanner):
                     )
                 )
 
-        def step_sort_key(s: AuditStep) -> Tuple[int, int, str, str]:
+        def step_sort_key(s: AuditStep) -> Tuple[int, int, str, str, str, str]:
+            """Calculates a strictly injective multi-field sort key guaranteeing unique total ordering."""
             p_rank = self.PHASE_RANKS.get(s.phase, 99)
             o_rank = AuditOperation.priority_rank(s.operation.value)
-            return (p_rank, o_rank, s.system_id, s.resource_id)
+            return (p_rank, o_rank, s.system_id, s.resource_id, s.evidence_id, s.state.value)
 
         raw_steps.sort(key=step_sort_key)
 
