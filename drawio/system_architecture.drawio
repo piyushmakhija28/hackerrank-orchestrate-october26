@@ -6,7 +6,7 @@
         <mxCell id="1" parent="0" />
         
         <!-- Canvas Header -->
-        <mxCell id="hdr" value="&lt;b&gt;Northstar Shop — Autonomous Deletion Audit Agent Architecture (v2.0.0)&lt;/b&gt;&lt;br&gt;HackerRank Orchestrate (October 2026) | Claude Global Library Orchestration across 5 Engineering Disciplines" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1e293b;strokeColor=#0f172a;fontColor=#ffffff;fontSize=18;align=center;" vertex="1" parent="1">
+        <mxCell id="hdr" value="&lt;b&gt;Northstar Shop — Autonomous Deletion Audit Agent Architecture (v2.1.0)&lt;/b&gt;&lt;br&gt;HackerRank Orchestrate (October 2026) | Claude Global Library Orchestration across 5 Engineering Disciplines" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1e293b;strokeColor=#0f172a;fontColor=#ffffff;fontSize=18;align=center;" vertex="1" parent="1">
           <mxGeometry x="50" y="30" width="1550" height="60" as="geometry" />
         </mxCell>
 
@@ -17,7 +17,7 @@
         <mxCell id="ag_orch" value="&lt;b&gt;orchestrator-agent&lt;/b&gt;&lt;br&gt;ConcurrentAuditOrchestrator (8 Workers)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#2563eb;fontColor=#1e40af;fontSize=11;" vertex="1" parent="g_squad0">
           <mxGeometry x="15" y="45" width="260" height="50" as="geometry" />
         </mxCell>
-        <mxCell id="ag_d21" value="&lt;b&gt;harness-engineering-architect (D50)&lt;/b&gt;&lt;br&gt;Triad Matrix (96 Tests, 100% Pass Rate)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#2563eb;fontColor=#1e40af;fontSize=11;" vertex="1" parent="g_squad0">
+        <mxCell id="ag_d21" value="&lt;b&gt;harness-engineering-architect (D50)&lt;/b&gt;&lt;br&gt;Triad Matrix (128 Tests, 100% Pass Rate)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#2563eb;fontColor=#1e40af;fontSize=11;" vertex="1" parent="g_squad0">
           <mxGeometry x="15" y="110" width="260" height="50" as="geometry" />
         </mxCell>
         <mxCell id="ag_d22" value="&lt;b&gt;context-faithfulness-engineer (D80)&lt;/b&gt;&lt;br&gt;TokenOptimizer (19,332 Tokens Saved)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#2563eb;fontColor=#1e40af;fontSize=11;" vertex="1" parent="g_squad0">
@@ -26,7 +26,7 @@
         <mxCell id="ag_d23" value="&lt;b&gt;impact-analysis-agent (D23)&lt;/b&gt;&lt;br&gt;PromptGuard (Witness Grounding P=0)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#2563eb;fontColor=#1e40af;fontSize=11;" vertex="1" parent="g_squad0">
           <mxGeometry x="15" y="240" width="260" height="50" as="geometry" />
         </mxCell>
-        <mxCell id="ag_sec" value="&lt;b&gt;security-architect&lt;/b&gt;&lt;br&gt;InputSanitizer &amp; PiiShield (Luhn Masking)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#2563eb;fontColor=#1e40af;fontSize=11;" vertex="1" parent="g_squad0">
+        <mxCell id="ag_sec" value="&lt;b&gt;security-architect&lt;/b&gt;&lt;br&gt;CryptoSecurityVault &amp; AntiTamperGuard" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#2563eb;fontColor=#1e40af;fontSize=11;" vertex="1" parent="g_squad0">
           <mxGeometry x="15" y="305" width="260" height="50" as="geometry" />
         </mxCell>
 

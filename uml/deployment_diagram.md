@@ -46,6 +46,8 @@ flowchart TD
                     SQLITE_MEM["In-Memory SQLite Connections<br/>(:memory: / sqlite3.connect)"]
                     BISECT_MEM["Monotone Worker Timestamps<br/>(Pre-sorted bisect array)"]
                     LRU_MEM["ReplayTracer Registry<br/>(Bounded LRU 2,000 Graphs)"]
+                    VAULT_MEM["CryptoSecurityVault Plane<br/>(AES-256-GCM & Blind Index Salt)"]
+                    TAMPER_MEM["AntiTamperGuard State<br/>(Bytecode Hashes & Honeytokens)"]
                 end
             end
         end
@@ -67,6 +69,7 @@ flowchart TD
                 OUT_CSV["artifact: output.csv<br/>(518 Natural Sorted Rows)"]
                 CHAT_LOG["artifact: log.txt<br/>(Verbatim Agent Audit Log)"]
                 CODE_ZIP["artifact: code.zip<br/>(Runnable Solution Package)"]
+                ENC_JOURNAL["artifact: replay_traces.json.enc<br/>(AES-256-GCM Encrypted Journal)"]
                 EVAL_DIR["folder: evaluation/<br/>(evaluation_report.md, usage_report.md)"]
             end
         end

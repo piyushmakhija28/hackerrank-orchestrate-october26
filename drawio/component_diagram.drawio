@@ -30,25 +30,37 @@
         </mxCell>
 
         <!-- TIER 2: Security -->
-        <mxCell id="t2" value="Tier 2: Zero-Trust Security &amp; Ingress Guardrails (code/security/)" style="swimlane;fontStyle=1;align=left;startSize=26;container=1;collapsible=0;html=1;fillColor=#FFF5F5;strokeColor=#E03131;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="40" y="160" width="1420" height="110" as="geometry" />
+        <mxCell id="t2" value="Tier 2: Enterprise Cryptographic Vault, Anti-Tamper &amp; Ingress Guardrails (code/security/)" style="swimlane;fontStyle=1;align=left;startSize=26;container=1;collapsible=0;html=1;fillColor=#FFF5F5;strokeColor=#E03131;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="40" y="160" width="1420" height="160" as="geometry" />
         </mxCell>
         <mxCell id="c_san" value="&lt;&lt;component&gt;&gt;&#xa;InputSanitizer&#xa;(OWASP LLM01 Injection Filter)" style="shape=mxgraph.uml.component;html=1;whiteSpace=wrap;fillColor=#F8CECC;strokeColor=#B85450;strokeWidth=1.5;" vertex="1" parent="t2">
-          <mxGeometry x="40" y="35" width="280" height="60" as="geometry" />
+          <mxGeometry x="40" y="35" width="300" height="50" as="geometry" />
         </mxCell>
         <mxCell id="c_pii" value="&lt;&lt;component&gt;&gt;&#xa;PiiShield&#xa;(ISO/IEC 7812 Luhn Card Masking)" style="shape=mxgraph.uml.component;html=1;whiteSpace=wrap;fillColor=#F8CECC;strokeColor=#B85450;strokeWidth=1.5;" vertex="1" parent="t2">
-          <mxGeometry x="380" y="35" width="280" height="60" as="geometry" />
+          <mxGeometry x="380" y="35" width="300" height="50" as="geometry" />
         </mxCell>
         <mxCell id="c_rate" value="&lt;&lt;component&gt;&gt;&#xa;RateLimiter&#xa;(Token Bucket Burst / Refill)" style="shape=mxgraph.uml.component;html=1;whiteSpace=wrap;fillColor=#F8CECC;strokeColor=#B85450;strokeWidth=1.5;" vertex="1" parent="t2">
-          <mxGeometry x="720" y="35" width="280" height="60" as="geometry" />
+          <mxGeometry x="720" y="35" width="300" height="50" as="geometry" />
         </mxCell>
         <mxCell id="c_cb" value="&lt;&lt;component&gt;&gt;&#xa;CircuitBreaker&#xa;(Tri-State Concurrent FSM)" style="shape=mxgraph.uml.component;html=1;whiteSpace=wrap;fillColor=#F8CECC;strokeColor=#B85450;strokeWidth=1.5;" vertex="1" parent="t2">
-          <mxGeometry x="1060" y="35" width="280" height="60" as="geometry" />
+          <mxGeometry x="1060" y="35" width="300" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="c_vault" value="&lt;&lt;component&gt;&gt;&#xa;CryptoSecurityVault&#xa;(AES-256-GCM &amp; HMAC Blind Index)" style="shape=mxgraph.uml.component;html=1;whiteSpace=wrap;fillColor=#D5E8D4;strokeColor=#82B366;strokeWidth=1.5;" vertex="1" parent="t2">
+          <mxGeometry x="40" y="95" width="300" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="c_tamper" value="&lt;&lt;component&gt;&gt;&#xa;AntiTamperGuard&#xa;(SAC Bytecode Attestation &amp; Honeytokens)" style="shape=mxgraph.uml.component;html=1;whiteSpace=wrap;fillColor=#D5E8D4;strokeColor=#82B366;strokeWidth=1.5;" vertex="1" parent="t2">
+          <mxGeometry x="380" y="95" width="300" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="c_comp" value="&lt;&lt;component&gt;&gt;&#xa;ComplianceFrameworkMapper&#xa;(GDPR Art 17/5/25, DPDP, SOC 2 CC6)" style="shape=mxgraph.uml.component;html=1;whiteSpace=wrap;fillColor=#D5E8D4;strokeColor=#82B366;strokeWidth=1.5;" vertex="1" parent="t2">
+          <mxGeometry x="720" y="95" width="300" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="c_data" value="&lt;&lt;component&gt;&gt;&#xa;DataShieldManager&#xa;(Authenticated AES-256-GCM .enc Files)" style="shape=mxgraph.uml.component;html=1;whiteSpace=wrap;fillColor=#D5E8D4;strokeColor=#82B366;strokeWidth=1.5;" vertex="1" parent="t2">
+          <mxGeometry x="1060" y="95" width="300" height="50" as="geometry" />
         </mxCell>
 
         <!-- TIER 3: Multi-Agent Squad Core -->
         <mxCell id="t3" value="Tier 3: Multi-Agent Audit Core (code/agent/ &amp; container.py)" style="swimlane;fontStyle=1;align=left;startSize=26;container=1;collapsible=0;html=1;fillColor=#FEF9E7;strokeColor=#F39C12;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="40" y="290" width="1420" height="140" as="geometry" />
+          <mxGeometry x="40" y="340" width="1420" height="130" as="geometry" />
         </mxCell>
         <mxCell id="c_ir" value="&lt;&lt;component&gt;&gt;&#xa;IdentityResolver&#xa;(DSU Orbit Cache O(α(N)))" style="shape=mxgraph.uml.component;html=1;whiteSpace=wrap;fillColor=#FFF2CC;strokeColor=#D6B656;strokeWidth=1.5;" vertex="1" parent="t3">
           <mxGeometry x="30" y="45" width="240" height="70" as="geometry" />
@@ -68,7 +80,7 @@
 
         <!-- TIER 4: AI & Token Optimization -->
         <mxCell id="t4" value="Tier 4: AI Token Optimization &amp; Anti-Hallucination (code/ai/)" style="swimlane;fontStyle=1;align=left;startSize=26;container=1;collapsible=0;html=1;fillColor=#FDF2E9;strokeColor=#E67E22;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="40" y="450" width="700" height="130" as="geometry" />
+          <mxGeometry x="40" y="490" width="700" height="130" as="geometry" />
         </mxCell>
         <mxCell id="c_ctx" value="&lt;&lt;component&gt;&gt;&#xa;ContextBuilder&#xa;(Causal Cone T(e)≤audit_at Knapsack)" style="shape=mxgraph.uml.component;html=1;whiteSpace=wrap;fillColor=#FFE6CC;strokeColor=#D79B00;strokeWidth=1.5;" vertex="1" parent="t4">
           <mxGeometry x="20" y="40" width="200" height="65" as="geometry" />
@@ -82,7 +94,7 @@
 
         <!-- TIER 5: Observability -->
         <mxCell id="t5" value="Tier 5: SRE Observability &amp; Diagnostics (code/observability/)" style="swimlane;fontStyle=1;align=left;startSize=26;container=1;collapsible=0;html=1;fillColor=#F4ECF7;strokeColor=#8E44AD;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="760" y="450" width="700" height="130" as="geometry" />
+          <mxGeometry x="760" y="490" width="700" height="130" as="geometry" />
         </mxCell>
         <mxCell id="c_log" value="&lt;&lt;component&gt;&gt;&#xa;StructuredLogger&#xa;(Thread-Safe JSON MDC)" style="shape=mxgraph.uml.component;html=1;whiteSpace=wrap;fillColor=#E1D5E7;strokeColor=#9673A6;strokeWidth=1.5;" vertex="1" parent="t5">
           <mxGeometry x="20" y="40" width="150" height="65" as="geometry" />
@@ -99,7 +111,7 @@
 
         <!-- TIER 6: Orchestration -->
         <mxCell id="t6" value="Tier 6: Orchestration &amp; Concurrency Engine (code/main.py &amp; code/utils/)" style="swimlane;fontStyle=1;align=left;startSize=26;container=1;collapsible=0;html=1;fillColor=#E8F8F5;strokeColor=#16A085;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="40" y="600" width="1420" height="130" as="geometry" />
+          <mxGeometry x="40" y="640" width="1420" height="130" as="geometry" />
         </mxCell>
         <mxCell id="c_main" value="&lt;&lt;component&gt;&gt;&#xa;DeletionAuditOrchestrator&#xa;(Master Process Coordinator)" style="shape=mxgraph.uml.component;html=1;whiteSpace=wrap;fillColor=#D5E8D4;strokeColor=#82B366;strokeWidth=1.5;" vertex="1" parent="t6">
           <mxGeometry x="40" y="40" width="280" height="65" as="geometry" />
@@ -116,7 +128,7 @@
 
         <!-- TIER 7: Deliverables -->
         <mxCell id="t7" value="Tier 7: Official Submission Deliverables (Repository Root)" style="swimlane;fontStyle=1;align=left;startSize=26;container=1;collapsible=0;html=1;fillColor=#EBF5FB;strokeColor=#2980B9;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="40" y="750" width="1420" height="110" as="geometry" />
+          <mxGeometry x="40" y="790" width="1420" height="110" as="geometry" />
         </mxCell>
         <mxCell id="art_out" value="&lt;&lt;artifact&gt;&gt;&#xa;output.csv&#xa;(518 Natural Sorted Rows)" style="shape=note;whiteSpace=wrap;html=1;size=14;verticalAlign=middle;align=center;fillColor=#D4E6F1;strokeColor=#2980B9;strokeWidth=1.5;" vertex="1" parent="t7">
           <mxGeometry x="50" y="35" width="250" height="60" as="geometry" />

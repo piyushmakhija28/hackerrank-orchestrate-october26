@@ -17,13 +17,13 @@
         </mxCell>
 
         <!-- Package: code.security -->
-        <mxCell id="pkg_sec" value="package: code.security&#xa;------------------------&#xa;+ input_sanitizer.py (OWASP LLM01)&#xa;+ pii_shield.py (ISO/IEC 7812 Luhn)&#xa;+ rate_limiter.py (TokenBucket)&#xa;+ threat_detector.py (Entropy)" style="shape=folder;html=1;whiteSpace=wrap;fontStyle=1;tabWidth=130;tabHeight=24;fillColor=#F8CECC;strokeColor=#B85450;strokeWidth=2;align=left;spacingLeft=10;verticalAlign=middle;" vertex="1" parent="pkg_root">
-          <mxGeometry x="40" y="60" width="280" height="150" as="geometry" />
+        <mxCell id="pkg_sec" value="package: code.security&#xa;------------------------&#xa;+ input_sanitizer.py (OWASP LLM01)&#xa;+ pii_shield.py (ISO/IEC 7812 Luhn)&#xa;+ rate_limiter.py (TokenBucket)&#xa;+ threat_detector.py (Shannon Entropy)&#xa;+ crypto_vault.py (AES-256-GCM / HKDF)&#xa;+ anti_tamper_guard.py (SAC Bytecode)&#xa;+ compliance_guard.py (GDPR / DPDP)&#xa;+ data_guard.py (.enc Persistence)" style="shape=folder;html=1;whiteSpace=wrap;fontStyle=1;tabWidth=130;tabHeight=24;fillColor=#F8CECC;strokeColor=#B85450;strokeWidth=2;align=left;spacingLeft=10;verticalAlign=middle;" vertex="1" parent="pkg_root">
+          <mxGeometry x="40" y="40" width="380" height="210" as="geometry" />
         </mxCell>
 
         <!-- Package: code.engine -->
         <mxCell id="pkg_engine" value="package: code.engine &amp; main&#xa;------------------------&#xa;+ main.py (DeletionAuditOrchestrator)&#xa;+ container.py (AuditContainer IoC)&#xa;+ concurrent_orchestrator.py&#xa;+ circuit_breaker.py (Tri-State FSM)" style="shape=folder;html=1;whiteSpace=wrap;fontStyle=1;tabWidth=160;tabHeight=24;fillColor=#D5E8D4;strokeColor=#82B366;strokeWidth=2;align=left;spacingLeft=10;verticalAlign=middle;" vertex="1" parent="pkg_root">
-          <mxGeometry x="500" y="60" width="320" height="160" as="geometry" />
+          <mxGeometry x="480" y="60" width="340" height="170" as="geometry" />
         </mxCell>
 
         <!-- Package: code.observability -->

@@ -15,6 +15,9 @@ sequenceDiagram
     autonumber
     actor Participant as Evaluator / Grader
     participant Main as DeletionAuditOrchestrator
+    participant Tamper as AntiTamperGuard
+    participant Vault as CryptoSecurityVault
+    participant Compl as ComplianceFrameworkMapper
     participant San as InputSanitizer
     participant DSU as IdentityResolver (DSU)
     participant Insp as MultimodalInspector (SQLite)
@@ -29,12 +32,18 @@ sequenceDiagram
     activate Main
 
     Main->>Log: set_context(trace_id, "pipeline_start")
+    Main->>Tamper: verify_module_integrity("orchestrator", self.audit_single_request)
+    Tamper-->>Main: integrity_verified (SHA-256 SAC match)
+    Main->>Tamper: check_debugger_present()
+    Tamper-->>Main: debugger_absent (clean execution)
     Main->>DSU: initialize_identities()
     activate DSU
     DSU-->>Main: identities_loaded (O(alpha(N)) cache ready)
     deactivate DSU
 
     loop For each request row in deletion_requests.csv (518 cases)
+        Main->>Tamper: is_honeytoken_probed(request_text)
+        Tamper-->>Main: probed=False (safe)
         Main->>San: sanitize(request_text)
         activate San
         San-->>Main: sanitized_text, is_injection=False
@@ -96,6 +105,11 @@ sequenceDiagram
             activate Grd
             Grd-->>Main: is_valid = True (Invariant asserted)
             deactivate Grd
+
+            Main->>Compl: generate_case_attestation(case_id, verdict, steps)
+            activate Compl
+            Compl-->>Main: ComplianceAttestation (GDPR, DPDP, SOC2 certified)
+            deactivate Compl
 
             Main->>Csv: write_row(case_id, deletion_status, steps_json)
         end
